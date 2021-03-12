@@ -1,0 +1,41 @@
+#main-wrap {
+  --main-max-width: calc(100vh - #{$site-header-outer-height} - #{$col1-uniboard-controls});
+  @include breakpoint($mq-col2) {
+    --main-max-width: auto;
+  }
+}
+
+.recall {
+  grid-area: main;
+  display: grid;
+
+  &__side { grid-area: side; }
+  &__board { grid-area: board; }
+  &__tools { grid-area: tools; }
+  &__controls { grid-area: controls; }
+
+  grid-template-areas:
+  'board'
+  'controls'
+  'tools'
+  'side';
+  grid-row-gap: $block-gap;
+
+  @include breakpoint($mq-col2) {
+    grid-template-columns: $col2-uniboard-width $block-gap $col2-uniboard-table;
+    grid-template-rows: fit-content(0);
+    grid-template-areas:
+    'board . tools'
+    'side  . controls';
+
+    &__moves { display: block; }
+  }
+
+  @include breakpoint($mq-col3) {
+    grid-template-areas:
+    'side . board . tools'
+    '.    . .     . controls';
+    grid-template-columns: $col3-uniboard-side $block-gap $col3-uniboard-width $block-gap $col3-uniboard-table;
+  }
+
+}

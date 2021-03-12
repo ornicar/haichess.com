@@ -1,0 +1,26 @@
+.create {
+  .head {
+    width: 60px;
+    height: 60px;
+    padding: 0;
+  }
+
+  .course {
+    @extend %flex-between-nowrap;
+    margin-bottom: .5em;
+
+    > *:not(:first-child) {
+      margin-left: .5em;
+    }
+
+    .control {
+      width: 20%;
+      a {
+        color: $c-font;
+      }
+      a:not(:first-child) {
+        margin-left: .5em;
+      }
+    }
+  }
+}

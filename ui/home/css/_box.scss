@@ -1,0 +1,78 @@
+.home-box {
+  @include fluid-size('--box-padding', 15px, 60px);
+  @extend %flex-column;
+  overflow: hidden;
+
+  .box-header {
+    @extend %flex-between;
+    flex: 0 0 auto;
+    padding: .5em;
+    .more {
+      color: $c-font-dim;
+      @include transition();
+      &:hover {
+        color: $c-font-dim;
+      }
+    }
+    .title {
+      font-weight: bold;
+      color: $c-font-dim;
+      &:before {
+        display: inline-block;
+        vertical-align: bottom;
+        font-size: 1.5em;
+        font-weight: bold;
+        color: $c-icon;
+      }
+    }
+  }
+
+  .box-body {
+    flex: 1 1 auto;
+    padding: .5em;
+    @extend %flex-column;
+    >* {
+      flex: 1 1 auto;
+    }
+  }
+
+  table {
+    width: 100%;
+    td {
+      padding: .7em 0;
+      max-width: 30ch;
+      @extend %nowrap-ellipsis;
+      a, .u_name {
+        display: inline-block;
+        max-width: 30ch;
+        @extend %nowrap-ellipsis;
+      }
+      &:last-child {
+        text-align: right;
+      }
+      &.text {
+        color: $c-font-dim;
+        font-weight: bold;
+        &:before {
+          color: $c-icon;
+          font-size: 1.5rem;
+          font-weight: bold;
+        }
+      }
+      &.link a {
+        color: $c-font-dim;
+        font-weight: bold;
+        &:hover {
+          color: $c-font-dim;
+        }
+      }
+      .user-link {
+        font-weight: bold;
+        color: $c-font-dim;
+        &:hover {
+          color: $c-font-dim;
+        }
+      }
+    }
+  }
+}

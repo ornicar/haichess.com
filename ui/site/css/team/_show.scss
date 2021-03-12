@@ -1,0 +1,195 @@
+.team-show {
+  @extend %break-word;
+  overflow: hidden;
+  padding-bottom: 2em;
+  .subject {
+    @extend %flex-center-nowrap;
+  }
+  &__content {
+    margin: 0 var(--box-padding);
+    display: grid;
+    grid-row-gap: 2.2rem;
+    grid-template-columns: 100%;
+    grid-template-areas:
+    'desc'
+    'meta'
+    'actions'
+    'forum'
+    'tour'
+    'members';
+    @include breakpoint($mq-small) {
+      grid-column-gap: var(--box-padding);
+      grid-template-columns: 1fr 3fr;
+      grid-template-rows: 4rem;
+      grid-template-areas:
+      'meta    desc'
+      'actions desc'
+      'members    forum'
+      'members    tour';
+    }
+  }
+  &__meta {
+    grid-area: meta;
+    color: $c-font-dim;
+    div {
+      display: flex;
+    }
+  }
+  &__members {
+    grid-area: members;
+  }
+  &__desc {
+    grid-area: desc;
+    .description {
+      margin-bottom: 1em;
+      font-size: 1.1em;
+    }
+    .banner {
+      margin-bottom: 1em;
+      ul li img {
+        max-height: 500px;
+      }
+    }
+  }
+  &__actions {
+    .join {
+      display: block;
+    }
+    .actions {
+      grid-area: actions;
+      display: flex;
+      align-items: flex-start;
+      .creator-action .button{
+        display: block;
+      }
+    }
+  }
+  &__forum {
+    grid-area: forum;
+  }
+  &__tour {
+    grid-area: tour;
+  }
+  .best-members, .coach-members {
+    margin-bottom: 1.5rem;
+  }
+  .invites, .requests {
+    margin-top: 1.5rem;
+    h2,
+    table {
+      margin: 0;
+    }
+    td {
+      padding: .5rem .7rem;
+    }
+  }
+  .invites {
+    .user-invite {
+      display: flex;
+      flex-flow: row wrap;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-top: 1em;
+      margin-bottom: 1em;
+
+      label, .twitter-typeahead, button {
+        margin: auto 0;
+      }
+
+      .twitter-typeahead {
+        margin-right: 1em;
+        input {
+          padding: .7em 1em;
+        }
+      }
+    }
+  }
+  h2 {
+    font-size: 1.6em;
+    padding-bottom: .3rem;
+    border-bottom: $border;
+    margin-bottom: .8rem;
+  }
+  .userlist > li,
+  .userlist > div.paginated {
+    padding: 5px 0 5px 25px;
+  }
+  &__forum {
+    width: 100%;
+    article {
+      padding: 2rem 2vw;
+      overflow: hidden;
+    }
+    article:nth-child(odd) {
+      background: $c-bg-zebra;
+    }
+    .user-link {
+      font-weight: bold;
+      color: $c-font-dimmer;
+    }
+    .meta {
+      @extend %flex-between;
+      margin-bottom: .5rem;
+      > a {
+        font-size: 120%;
+      }
+    }
+    a.more {
+      display: block;
+      text-align: right;
+      margin: 10px 10px 0 0;
+    }
+  }
+
+  .closed {
+    color: $c-bad;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+
+  .team-tournaments .slist {
+    td {
+      padding: .5rem 1rem;
+      &.duration {
+        white-space: nowrap;
+      }
+    }
+    .header {
+      cursor: pointer;
+      padding: 0;
+      a {
+        padding: 1em;
+        display: block;
+      }
+    }
+    a {
+      color: $c-font;
+      &:hover {
+        color: $c-link;
+      }
+    }
+    .name {
+      font-size: 1.2em;
+      display: block;
+    }
+    .setup {
+      color: $c-font-dim;
+    }
+    .icon {
+      text-align: center;
+      i {
+        font-size: 2em;
+        opacity: 0.6;
+      }
+    }
+    .enterable {
+      .icon i {
+        color: $c-brag;
+        opacity: 1;
+      }
+    }
+    .soon {
+      border: 1px solid $c-brag;
+    }
+  }
+}

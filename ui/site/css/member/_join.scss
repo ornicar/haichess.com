@@ -1,0 +1,53 @@
+.join {
+  h1 {
+    text-align: center;
+  }
+  .content {
+    font-size: 1.1em;
+
+    p {
+      text-indent: 2em;
+      margin: 1em 0;
+    }
+
+    .section {
+      margin-bottom: 1.5em;
+    }
+
+    ul {
+      text-indent: 2em;
+      margin: 1em 0;
+
+      li {
+        list-style: disc outside;
+        margin: .5em 0 0 1.5em;
+      }
+    }
+
+    .strong {
+      font-weight: bold;
+    }
+  }
+
+  .user-invite {
+    display: flex;
+    flex-flow: row wrap;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 1em;
+
+    label, .twitter-typeahead, button {
+      margin: auto 0;
+    }
+
+    input {
+      padding: .7em 1em;
+    }
+
+    margin-right: 1em;
+  }
+
+  button.full {
+    width: 100%;
+  }
+}

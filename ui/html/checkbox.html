@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>checkbox</title>
+</head>
+<style>
+    .tag-group {
+        width: 100%;
+        padding: .5em 0;
+    }
+
+    .tag-group span {
+        display: inline-block;
+        margin: .2em;
+    }
+
+    .tag-group span input[type=checkbox] {
+        display: none;
+    }
+
+    .tag-group span input[type=checkbox] ~ label {
+        display: inline-block;
+        cursor: pointer;
+        padding: 4px 8px;
+        border: 1px dotted #343f4b;
+        border-image: initial;
+    }
+
+    .tag-group span input[type=checkbox]:checked ~ label {
+        color: #ffffff;
+        border: 1px dotted #343f4b;
+        background: #343f4b;
+    }
+</style>
+<body>
+
+<div class="tag-group">
+    <span>
+        <input type="checkbox" id="1">
+        <label for="1">标签1</label>
+    </span>
+    <span>
+        <input type="checkbox" id="2">
+        <label for="2">标签2</label>
+    </span>
+    <span>
+        <input type="checkbox" id="3">
+        <label for="3">标签3</label>
+    </span>
+    <span>
+        <input type="checkbox" id="4">
+        <label for="4">标签4</label>
+    </span>
+</div>
+
+</body>
+</html>

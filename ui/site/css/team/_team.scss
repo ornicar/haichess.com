@@ -1,0 +1,16 @@
+@import 'list';
+@import 'show';
+@import 'edit';
+@import 'member';
+@import 'setting';
+
+h1 {
+  em {
+    color: $c-font-dim;
+    font-size: 72%;
+  }
+}
+
+.inline {
+  display: inline;
+}

@@ -1,0 +1,14 @@
+.main-board {
+  @extend %square;
+  &__preload {
+    position: absolute;
+  }
+  .cg-wrap {
+    @extend %abs-100;
+  }
+}
+
+.mini-board {
+  @extend %square;
+  border-collapse: separate;
+}

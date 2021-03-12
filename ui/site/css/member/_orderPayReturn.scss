@@ -1,0 +1,29 @@
+.orderPayReturn {
+
+  .message {
+    background: $c-bg-low;
+    border-radius: 3px;
+    padding: 1em;
+  }
+
+  .desc {
+    margin-bottom: 1em;
+    @extend %flex-between-nowrap;
+  }
+
+  .amount {
+    .number {
+      color: $c-brag;
+      font-size: 1.5em;
+
+    }
+  }
+
+  .link {
+    text-align: center;
+    .button {
+      width: 100px;
+      display: inline-block;
+    }
+  }
+}

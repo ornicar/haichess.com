@@ -1,0 +1,70 @@
+.member {
+  &__search {
+    font-size: .9em;
+    margin-bottom: 1em;
+
+    table {
+      width: 100%;
+
+      td {
+        padding: .4em 0;
+        text-align: right;
+      }
+
+      .half {
+        float: left;
+        width: 50%;
+        .form-control {
+          width: 75%;
+        }
+      }
+
+      .form-control {
+        display: inline;
+        width: 100%;
+        height: calc(2.2em + 2px);
+        padding: .3em 1em !important;
+      }
+
+      label {
+        margin-right: .5em;
+        white-space: normal;
+      }
+
+      .action {
+        text-align: center;
+        .button {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+.member-editform {
+  text-align:left;
+
+  .modal-content {
+    width: 400px;
+  }
+
+  input, select {
+    width: 170px;
+  }
+
+  .form-group {
+    @extend %flex-center-nowrap;
+    margin-bottom: 2px;
+  }
+
+  .form-label {
+    width: 120px;
+    font-weight: normal;
+  }
+
+  .form-control {
+    height: 2.2em;
+    padding: 2px 5px;
+  }
+}
+

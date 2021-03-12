@@ -1,0 +1,16 @@
+
+.box {
+  h1 {
+    margin-bottom: 0;
+  }
+
+  .box__top > h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  &.box-pad .box__top {
+    padding: 0 0 1em 0;
+  }
+
+}

@@ -1,0 +1,104 @@
+@import "modal";
+
+.timetable {
+  .box__top {
+    @extend %flex-between;
+    padding: 2em 1em;
+
+    .btn-group {
+      margin-top: 0;
+    }
+
+    @include breakpoint($mq-xx-small) {
+      .top-left, .top-right{
+        flex-grow: 0;
+      }
+    }
+  }
+
+  .course-list {
+    width: 100%;
+    table-layout: fixed;
+
+    thead {
+      @extend %metal, %roboto;
+      th {
+        padding: 1em;
+      }
+    }
+    tbody {
+      td {
+        height: 6em;
+        &:first-child {
+          width: 100px;
+          text-align: center;
+          font-weight: bold;
+        }
+      }
+    }
+    td, th {
+      border: $border;
+    }
+    td:first-child, th:first-child {
+      border-left: none;
+    }
+    td:last-child, th:last-child {
+      border-right: none;
+    }
+
+    .course {
+      padding: 1rem;
+      position: relative;
+      cursor: pointer;
+
+      &:hover {
+        background: fade-out($c-accent, .8);
+      }
+
+      &.stopped {
+        cursor: not-allowed;
+        &:after {
+          position: absolute;
+          bottom:10%;
+          right:10%;
+          content: '停课';
+          color: $c-red;
+          font-size: 20px;
+          font-weight: bold;
+          padding: .1em .5em;
+          z-index: 0;
+          opacity: .75;
+          border: solid .1em $c-red;
+          border-radius: .2em;
+          transform: rotate(-15deg) scale(1);
+        }
+      }
+
+      &:not(:last-child) {
+        border-bottom: $border;
+      }
+
+      &.active {
+        &::before {
+          @extend %data-icon;
+          position: absolute;
+          content: 'E';
+          top: 5px;
+          right: 5px;
+          color: $c-good;
+          border: solid .1em $c-good;
+          border-radius: .2em;
+        }
+      }
+
+      .nowrap {
+        @extend %nowrap-ellipsis;
+      }
+
+      .ellipsis {
+        width: 100px;
+        @extend %nowrap-ellipsis;
+      }
+    }
+  }
+}

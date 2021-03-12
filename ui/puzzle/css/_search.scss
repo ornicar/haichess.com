@@ -1,0 +1,45 @@
+.search_form {
+  width: 100%;
+  margin-bottom: 3em;
+
+  table {
+    width: 100%;
+  }
+
+  td {
+    padding: .4em 0;
+  }
+
+  .half {
+    float: left;
+    width: 50%;
+  }
+
+  th {
+    width: 80px;
+  }
+
+  input[type="number"],
+  select {
+    padding: .3em 1em !important;
+  }
+
+  input[type="number"] {
+    width: 86%;
+  }
+
+  select {
+    text-transform: capitalize;
+  }
+
+  .half select {
+    width: 78%;
+  }
+
+  .theme-rnf {
+    padding-bottom: 1em;
+    width: 100%;
+    font-size: 1.5em;
+    color: $c-warn;
+  }
+}

@@ -1,0 +1,108 @@
+.contest__form {
+  .tabs {
+    display: flex;
+    cursor: pointer;
+    margin: 40px 0;
+    text-transform: uppercase;
+    > div {
+      flex: 1 1 100%;
+      padding: 10px 0;
+      text-align: center;
+      position: relative;
+    }
+    > div.data-count::after {
+      padding: 2px 6px;
+      font-size: 1.2em;
+      height: auto;
+      line-height: 1.2em;
+      top: 6px;
+    }
+    > div:hover {
+      color: $c-primary;
+    }
+    > .active {
+      color: $c-primary;
+      border-bottom: 3px solid $c-primary;
+    }
+  }
+  .panel {
+    display: none;
+  }
+  .panel.active {
+    display: block;
+  }
+
+  .top {
+    display: flex;
+    .logo {
+      .single-uploader {
+        width: 125px
+      }
+      label {
+        display: none;
+      }
+    }
+    .name {
+      width: 100%;
+      margin-left: 1em;
+    }
+  }
+
+  .round-space {
+    display: flex;
+    justify-content: space-between;
+    .form-group {
+      margin-bottom: 0;
+    }
+  }
+
+  .button-generate {
+    display: inline-block;
+  }
+
+  .round-generate {
+    .form-group {
+      display: flex;
+    }
+    .form-label {
+      width: 85px;
+      padding: .7em;
+      color: #fff;
+      background: $c-brag;
+      margin-right: 1em;
+      margin-bottom: 0;
+      border-radius: 2px;
+    }
+  }
+
+  .btss-wrap {
+    @extend %flex-center;
+
+    label {
+      margin-right: .5em;
+    }
+
+    .btss-list {
+      .btss {
+        display: inline-block;
+        background: $c-primary;
+        color: $c-primary-over;
+        font-size: .8em;
+        border-radius: 2px;
+        padding: 3px 6px;
+        margin: 4px;
+      }
+    }
+  }
+
+  .starts-position {
+    .group-child {
+      margin-bottom: .5em;
+    }
+    .board-link {
+      display: block;
+      width: 200px;
+      margin: .5em auto 0 auto;
+    }
+  }
+}

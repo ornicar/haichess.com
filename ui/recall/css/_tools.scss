@@ -1,0 +1,48 @@
+.recall__tools {
+  @extend %box-neat-force, %flex-column;
+  max-height: 90vh; /* hack to mitigate safari 10 disaster */
+  background: $c-bg-box;
+  .ceval-wrap {
+    flex: 0 0 38px;
+  }
+  .ceval {
+    height: 38px;
+  }
+}
+
+.recall__moves {
+  flex: 2 1 auto;
+  overflow: auto;
+  border: $border;
+  border-width: 1px 0;
+  position: relative; /* required by line::before */
+
+  .tview2 > move {
+    justify-content: space-between;
+    glyph {
+      font-size: 1.6em;
+      vertical-align: middle;
+    }
+    &.fail glyph {
+      color: $c-bad;
+    }
+    &.win glyph {
+      color: $c-good;
+    }
+    &:hover glyph {
+      color: #fff;
+    }
+  }
+}
+
+.recall__controls {
+  @extend %flex-center;
+  height: $recall-controls-height;
+  margin-top: #{-$block-gap};
+  .jumps {
+    flex: 1 1 auto;
+  }
+  .fbt {
+    @extend %page-text;
+  }
+}

@@ -1,0 +1,127 @@
+.errors {
+
+  .number-menu .to-playing {
+    color: $c-accent;
+    strong {
+      font-weight: bold;
+    }
+  }
+
+  @include breakpoint($mq-not-small) {
+    .game-row__board {
+      display: none;
+    }
+  }
+
+  .search_form {
+    width: 100%;
+    padding: 2em;
+
+    table {
+      width: 100%;
+    }
+
+    td {
+      padding: .4em 0;
+    }
+
+    th {
+      width: 80px;
+    }
+
+    .half {
+      float: left;
+      width: 50%;
+      select {
+        width: 80%;
+      }
+    }
+
+    .form-control {
+      width: 90%;
+      height: auto;
+      padding: .3em 1em!important;
+      display: inline-block;
+    }
+
+    select {
+      text-transform: capitalize;
+    }
+
+    .button {
+      width: 100%;
+    }
+
+    td.action {
+      text-align: right;
+      *:not(:last-child) {
+        margin-right: .5em;
+      }
+
+      select {
+        padding: 0.3em 1em !important;
+      }
+    }
+  }
+
+  .list {
+    border-top: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
+
+    display: grid;
+    --np-min-width: 200px;
+    @include breakpoint($mq-not-xx-small) {
+      --np-min-width: 50%;
+    }
+    grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+    align-content: start;
+
+    .paginated {
+      .btm {
+        @extend %flex-between;
+        padding: .2em 0;
+        color: $c-font-page;
+        font-size: .9em;
+      }
+    }
+
+    a {
+      @extend %box-radius;
+      color: $c-font;
+      padding: .3em;
+      &:not(.selected):hover {
+        background: fade-out($c-link, 0.6);
+        color: $c-font-clear;
+        .btm {
+          color: #fff;
+        }
+      }
+      &.selected {
+        background: mix($c-link, $c-bg-box, 60%);
+        .btm {
+          color: #fff;
+        }
+      }
+    }
+
+  }
+
+  .more {
+    width: 100%;
+  }
+
+  .no-more {
+    text-align: center;
+    margin: 40px 0 80px;
+    font-size: 2em;
+    p {
+      opacity: 0.6;
+    }
+    i {
+      display: block;
+      font-size: 180px;
+      opacity: 0.4;
+    }
+  }
+}
+

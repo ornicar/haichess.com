@@ -1,0 +1,25 @@
+.moves {
+  height: 13em;
+  @include hoverflow;
+
+  move {
+    @extend %nowrap-hidden;
+    display: inline-block;
+    font-weight: bold;
+    margin-right: .5em;
+
+    index {
+      padding: .25em 0;
+    }
+    span {
+      @extend %san;
+      cursor: pointer;
+      padding: .25em .17em;
+
+      &:hover, &.active {
+        background: $c-primary;
+        color: $c-primary-over;
+      }
+    }
+  }
+}

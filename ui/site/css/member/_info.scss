@@ -1,0 +1,106 @@
+.member-info {
+
+  .member-line {
+    @extend %flex-between-nowrap;
+  }
+
+  .bg-silver {
+    color: $c-home-theme;
+    border: 1px solid #c7c7c7;
+    background: linear-gradient(to right, #f6f6f6 0, #f6f6f6 50%, #dfdfdf 100%);
+    background-position: right bottom;
+  }
+
+  .bg-gold {
+    color: $c-home-theme;
+    border: 1px solid #e3b54c;
+    background: linear-gradient(to right, #fcf8ef 0, #fcf8ef 50%, #fcf2de 100%);
+    background-position: right bottom;
+  }
+
+  .btn-vip {
+    display: block;
+    width: 5em;
+    color: #fff;
+    font-size: 1em;
+    padding: .5em;
+    border: none;
+    border-radius: 1.5em;
+    text-align: center;
+    &.gold {
+      background-color: #e3b54c;
+    }
+    &.silver {
+      background-color: #c7c7c7;
+    }
+    &:hover {
+      opacity: .8;
+    }
+  }
+
+  .levels {
+    margin: 2em 0;
+    .level {
+      padding: 1em;
+      border-radius: 5px;
+      &:not(:last-child) {
+        margin-bottom: 1em;
+      }
+      .header {
+        @extend %flex-between-nowrap;
+        margin-bottom: 1em;
+        .title {
+          @extend %flex-between-nowrap;
+          .name {
+            font-size: 1.5em;
+          }
+          .current {
+            margin-left: .5em;
+            padding: 2px 10px;
+            border: none;
+            border-radius: 1em;
+            font-size: .8em;
+            color: #fff;
+            background-color: $c-brag;
+          }
+          .expired {
+            margin-left: .5em;
+            padding: 2px 10px;
+            border: none;
+            border-radius: 1em;
+            font-size: .8em;
+            background-color: #c7c7c7;
+            opacity: .5;
+          }
+        }
+      }
+      .note {
+        .tip {
+          color: $c-brag;
+        }
+      }
+    }
+  }
+
+  .component {
+    .tabs-content {
+      >div {
+        margin-top: 1em;
+      }
+    }
+  }
+
+  .points {
+    .time {
+      width: 150px;
+    }
+    .diff {
+      width: 80px;
+      color: $c-secondary;;
+      &.minus {
+        color: $c-red;
+      }
+    }
+  }
+
+}

@@ -1,0 +1,26 @@
+.search_form {
+  width: 100%;
+  padding: 2em;
+
+  table {
+    width: 100%;
+  }
+  td {
+    padding: .4em 0;
+  }
+  th {
+    width: 3.5em;
+    text-align: right;
+  }
+  .form-control {
+    height: auto;
+    width: 98%
+  }
+  input, select {
+    padding: .3em 1em !important;
+  }
+  .button {
+    padding: .5em 1em;
+  }
+
+}

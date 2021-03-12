@@ -1,0 +1,20 @@
+.orderInfo {
+  width: 100%;
+
+  th, td {
+    padding: .5em;
+  }
+
+  th {
+    width: 8em;
+    vertical-align: top;
+  }
+
+  .symbol {
+    font-size: .9em;
+  }
+
+  .number {
+    font-size: 1.2em;
+  }
+}

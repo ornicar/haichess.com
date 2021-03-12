@@ -1,0 +1,36 @@
+[Event "FIDE World Blitz 2014"]
+[Site "https://haichess.com/TCMsEOzj"]
+[Date "2014.06.20"]
+[Round "16.2"]
+[White "Aronian, L. (2815)"]
+[Black "Carlsen, M. (2881)"]
+[Result "1/2-1/2"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[Variant "标准国际象棋"]
+[TimeControl "-"]
+[ECO "E15"]
+[Opening "Queen's Indian Defense: Fianchetto Variation, Nimzowitsch Variation, Quiet Line"]
+[Termination "Normal"]
+[Annotator "localhost"]
+
+1. d4 Nf6 2. c4 e6 3. Nf3 b6 4. g3 Ba6 5. b3 { E15 Queen's Indian Defense: Fianchetto Variation, Nimzowitsch Variation, Quiet Line } d5 6. cxd5 exd5 7. Bg2 Bb4+ 8. Bd2 Bd6 9. O-O O-O 10. Nc3 Nbd7 11. Re1 Re8 12. Qc2 Rc8 13. a4 c6 14. a5 bxa5 15. e4 dxe4 16. Nxe4 Nxe4 17. Rxe4 Rxe4 18. Qxe4 Nf6 19. Qf5 Rb8 20. Rxa5 Bc8 21. Qc2 Be6 22. Rxa7 Bxb3 23. Qxc6 Bd5 24. Qc1 h6 25. Nh4 Bxg2 26. Kxg2 Bf8 27. Qc4 Qd5+ 28. Qxd5 Nxd5 29. Ra5 Nf6 30. Nf5 h5 31. Bg5 Ne4 32. Ne7+ Bxe7 33. Bxe7 Re8 34. Bc5 Nf6 35. Bd6 Rd8 36. Be7 Rxd4 37. Bxf6 gxf6 38. Rxh5 Kg7 39. Rh4 Rd2 40. Rf4 Kg6 41. g4 Ra2 42. h4 Rb2 43. Rc4 Kg7 44. Kg3 Rb3+ 45. Kf4 Rb2 46. f3 Rh2 47. h5 Ra2 48. Ke4 Ra5 49. Kf4 Rb5 50. Rd4 Ra5 51. Ke3 Ra3+ 52. Rd3 Ra4 53. Rd4 Ra3+ 54. Ke4 Ra5 55. f4 Ra1 56. Rd5 Ra6 57. Kf5 Rb6 58. Ra5 Rc6 59. Rd5 Ra6 60. Ke4 Ra4+ 61. Rd4 Ra5 62. Rd5 Ra4+ 63. Kf5 Ra6 64. g5 fxg5 65. fxg5 Ra1 66. h6+ Kh7 67. Kf6 Rf1+ 68. Rf5 Ra1 69. Kxf7 Ra7+ 70. Kf6 Ra6+ 71. Ke5 Ra5+ 72. Kf4 Ra4+ 73. Kg3 Kg6 74. Rf8 Ra3+ 75. Kg4 Ra4+ 76. Rf4 Ra6 77. Rb4 Rc6 78. Re4 Rb6 79. Kf4 Ra6 80. Re8 Ra4+ 81. Ke5 Ra5+ 82. Kf4 Rf5+ 83. Ke4 Rxg5 84. Rg8+ Kxh6 85. Rxg5 Kxg5 { The game is a draw. } 1/2-1/2
+
+
+[Event "RUS-ch Superfinal 60th"]
+[Site "https://haichess.com/u8c7IZ8C"]
+[Date "2007.12.22"]
+[Round "4"]
+[White "Rychagov, Andrey (2528)"]
+[Black "Morozevich, Alexander (2755)"]
+[Result "0-1"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[Variant "标准国际象棋"]
+[TimeControl "-"]
+[ECO "E15"]
+[Opening "Queen's Indian Defense: Fianchetto Variation, Nimzowitsch Variation, Quiet Line"]
+[Termination "Normal"]
+[Annotator "localhost"]
+
+1. d4 Nf6 2. Nf3 e6 3. c4 b6 4. g3 Ba6 5. b3 { E15 Queen's Indian Defense: Fianchetto Variation, Nimzowitsch Variation, Quiet Line } d5 6. cxd5 exd5 7. Bg2 Bb4+ 8. Bd2 Bd6 9. O-O O-O 10. Nc3 Re8 11. Re1 Bb7 12. Rc1 a6 13. Nh4 Qd7 14. Rc2 Ne4 15. Qc1 Nc6 16. Nf3 Nb4 17. Rb2 a5 18. a3 Na6 19. Rc2 f6 20. Bf4 Bf8 21. Na4 Qb5 22. Qb2 c5 23. Nc3 Nxc3 24. Rxc3 a4 25. Qc2 axb3 26. Rxb3 Qa4 27. Qb1 c4 28. Rxb6 Bc6 29. Qf5 Rad8 30. Nd2 Ba8 31. Re6 Rxe6 32. Qxe6+ Kh8 33. Nb1 Nb8 34. Bxb8 Rxb8 35. Bxd5 Bxd5 36. Qxd5 Qc2 37. Kg2 h6 38. Qf7 Kh7 39. a4 Qe4+ 40. f3 Qxd4 41. Rc1 Rb2 42. Qe6 Bc5 43. Qxc4 Qf2+ 44. Kh3 Rxe2 45. Qd3+ g6 46. Rxc5 Qxh2+ 47. Kg4 Re7 48. Qd6 h5+ 49. Kf4 Qe2 50. Rc3 Kg7 { White resigns. } 0-1

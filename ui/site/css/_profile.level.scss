@@ -1,0 +1,25 @@
+.level {
+  width: 100%;
+
+  th, td {
+    padding: .2rem .5rem;
+    text-align: left;
+  }
+
+  th {
+    font-weight: bold;
+  }
+
+  .form-group {
+    margin-bottom: 0;
+  }
+
+  .form-control {
+    height: auto;
+  }
+
+  input, select {
+    padding: 0.2em 1em !important;
+  }
+
+}

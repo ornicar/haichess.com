@@ -1,0 +1,96 @@
+.puzzle__side {
+
+  &__metas {
+    @extend %box-neat-force;
+    align-self: start;
+    background: $c-bg-box;
+    padding: 1vmin 2vmin;
+    .spinner {
+      margin: 4rem auto;
+    }
+    p {
+      margin: 0;
+    }
+
+    .infos {
+      @extend %flex-center;
+      padding: .5em;
+      overflow: hidden;
+      &::before {
+        font-size: 3rem;
+        margin-right: 1vw;
+      }
+      &.puzzle {
+        border-bottom: $border;
+        .wrapper {
+          width: 70%;
+          a.like {
+            color: #787878;
+            float: right;
+          }
+          a {
+            font-size: 1.2em;
+          }
+          .hidden {
+            opacity: 0.7;
+          }
+        }
+      }
+      &.theme, &.capsule, &.homework {
+        border-bottom: $border;
+      }
+      .players {
+        margin-top: .3rem;
+        font-size: 90%;
+      }
+    }
+  }
+
+  &__user {
+    @extend %box-neat;
+    align-self: start;
+    background: $c-bg-box;
+    // overflow: hidden;
+    h2 {
+      padding: 2vmin;
+      font-size: 1.2rem;
+    }
+    .rp {
+      /* font-size: 1.2em; */
+    }
+    .rp.up {
+      color: $c-good;
+    }
+    .rp.down {
+      color: $c-bad;
+    }
+    canvas {
+      width: 100%;
+      @if $theme == 'transp' {
+        opacity: .5;
+      }
+    }
+  }
+
+  &__tag {
+    @extend %box-neat;
+    background: $c-bg-box;
+    width: 100%;
+  }
+
+  &__mark {
+    span {
+      display: inline-block;
+      user-select: none;
+      padding: 4px 8px;
+      margin: 0 4px 4px 0;
+      background: $c-bg-box;
+      border-radius: 2px;
+      @extend %box-neat;
+    }
+  }
+}
+
+#jqstooltip {
+  box-sizing: content-box;
+}

@@ -1,0 +1,96 @@
+main.importer {
+  .explanation {
+    margin: 3vh 0;
+    text-align: center;
+  }
+  form {
+    label.pgn {
+      display: block;
+      margin-bottom: 1em;
+    }
+
+    label.pgn span {
+      display: block;
+      margin-bottom: 1em;
+    }
+
+    textarea {
+      /*width: 98%;*/
+      height: 20vh!important;
+      padding: .5em;
+    }
+
+    .analyse > span {
+      float: left;
+      margin-right: 10px;
+    }
+    .analyse > label {
+      cursor: pointer;
+    }
+
+    .upload input {
+      margin-left: 1em;
+    }
+
+    button.submit {
+      margin: 0 auto;
+      display: block;
+    }
+
+    p.error {
+      margin: 10px 0;
+      color: red;
+    }
+    .wait {
+      display: none;
+    }
+  }
+}
+
+.tabs {
+  display: flex;
+  cursor: pointer;
+  margin: 40px 0;
+  text-transform: uppercase;
+  > div {
+    flex: 1 1 100%;
+    padding: 10px 0;
+    text-align: center;
+    position: relative;
+  }
+  > div.data-count::after {
+    padding: 2px 6px;
+    font-size: 1.2em;
+    height: auto;
+    line-height: 1.2em;
+    top: 6px;
+  }
+  > div:hover {
+    color: $c-primary;
+  }
+  > .active {
+    color: $c-primary;
+    border-bottom: 3px solid $c-primary;
+  }
+}
+.panel {
+  display: none;
+}
+.panel.active {
+  display: block;
+}
+p {
+  margin-bottom: 0;
+}
+
+textarea::-webkit-input-placeholder {
+  color: #C3C3C3;
+}
+
+textarea::-moz-placeholder {
+  color: #C3C3C3;
+}
+
+textarea::-ms-input-placeholder {
+  color: #C3C3C3;
+}

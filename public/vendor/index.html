@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src="echarts.min.js"></script>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 600px;height:400px;"></div>
+<script type="text/javascript">
+    let puzzleChart = echarts.init(document.getElementById('main'));
+    let puzzleChartOption = {
+        tooltip: {},
+        xAxis: {
+            data: ["完成率", "正确率", "首次正确率"]
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                show: true,
+                interval: 'auto',
+                formatter: '{value}%'
+            },
+            show: true
+        },
+        series: [{
+            type: 'bar',
+            itemStyle: {
+                normal: {
+                    color: '#293c55'
+                }
+            },
+            label: {
+                normal: {
+                    show: true,
+                    formatter: '{c}%'
+                }
+            },
+            data: []
+        }]
+    };
+
+    puzzleChart.setOption(puzzleChartOption);
+    puzzleChart.setOption({
+        series: [{
+            data: [0.31 * 100, 0.44 * 100, 0.10 * 100]
+        }]
+    });
+</script>
+</body>
+</html>

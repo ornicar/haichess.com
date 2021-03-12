@@ -1,0 +1,53 @@
+.team-link {
+  @extend %flex-center-nowrap;
+
+  &.medium {
+    font-size: 1.5em;
+
+    > .badges {
+      font-size: 1rem;
+    }
+  }
+
+  &.large {
+    font-size: 2em;
+
+    > .badges {
+      font-size: 1.2rem;
+    }
+  }
+
+  .logo {
+    width: 1.2em;
+    height: 1.2em;
+    border-radius: 50%;
+    margin-right: .2em;
+  }
+
+  .name {
+    color: $c-font;
+    @extend %nowrap-hidden;
+  }
+
+  a.name:hover {
+    color: $c-link;
+  }
+
+  .badges {
+    font-size: .9rem;
+
+    i {
+      margin-left: .2em;
+    }
+
+    .cert {
+      color: $c-brag;
+      @extend %data-icon;
+      &::before {
+        content: '证';
+      }
+    }
+  }
+
+}
+

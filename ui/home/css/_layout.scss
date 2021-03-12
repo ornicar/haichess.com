@@ -1,0 +1,83 @@
+$mq-col2: $mq-xx-small;
+$mq-col3: $mq-medium;
+
+#main-wrap {
+  display: block;
+}
+
+.home {
+  .home-header-content {
+    display: grid;
+    grid-gap: $block-gap;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, fit-content(0));
+    grid-template-areas: 'appts' 'calendar'
+  }
+
+  .components {
+    margin: 0 auto;
+    max-width: 1120px;
+    display: grid;
+    grid-gap: $block-gap;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(8, auto);
+    grid-template-areas:
+        'daily'
+        'rush'
+        'theme'
+        'leaderboard'
+        'tv'
+        'start'
+        'contest'
+        'study'
+  }
+
+  @include breakpoint($mq-col2) {
+    .home-header-content {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(2, fit-content(0));
+      grid-template-areas: 'appts' 'calendar'
+    }
+    .components {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(4, auto);
+      grid-template-areas:
+          'daily rush'
+          'theme leaderboard'
+          'tv start'
+          'contest study'
+    }
+  }
+
+  @include breakpoint($mq-col3) {
+    .home-header-content {
+      grid-template-columns: repeat(9, 1fr);
+      grid-template-rows: 1fr;
+      grid-template-areas: 'appts  appts  calendar  calendar  calendar  calendar  calendar  calendar  calendar  calendar'
+    }
+    .components {
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(3, auto);
+      grid-template-areas:
+          'daily daily rush rush theme theme'
+          'leaderboard leaderboard tv tv start start'
+          'contest contest contest study study study'
+    }
+  }
+
+  &__appts { grid-area: appts; }
+  &__calendar { grid-area: calendar; }
+
+  &__daily { grid-area: daily; }
+  &__rush { grid-area: rush; }
+  &__theme { grid-area: theme; }
+
+  &__leaderboard { grid-area: leaderboard; }
+  &__tv { grid-area: tv; }
+  &__start { grid-area: start; }
+
+  &__contest { grid-area: contest; }
+  &__study { grid-area: study; }
+  &__error { grid-area: error; }
+
+}

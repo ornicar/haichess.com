@@ -1,0 +1,52 @@
+$mq-col2: $mq-col2-uniboard;
+.appt-form {
+  .record {
+    margin-bottom: 2em;
+
+    .current {
+      background: $c-brag;
+      color: $c-primary-over;
+    }
+  }
+  .create {
+    .top {
+      display: grid;
+      .info {
+        grid-area: info;
+      }
+      .board {
+        grid-area: board;
+      }
+
+      grid-template-areas:
+              'info'
+              'board';
+      grid-row-gap: $block-gap;
+
+      @include breakpoint($mq-col2) {
+        grid-template-columns: minmax(240px, 800px) 200px;
+        grid-column-gap: $block-gap;
+        grid-template-areas: 'info     board'
+      }
+    }
+
+    .info {
+      .titles {
+        margin-bottom: 2em;
+        .contest-name {
+          font-size: 1.5em;
+        }
+      }
+      .times {
+        margin-bottom: 1em;
+      }
+      .players {
+        .player {
+          @extend %flex-center;
+        }
+        margin-bottom: 1em;
+      }
+    }
+  }
+
+}

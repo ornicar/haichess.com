@@ -1,0 +1,32 @@
+.coach-detail {
+  padding-top: 0;
+
+  section {
+    text-align: justify;
+    margin-bottom: 1.5em;
+  }
+
+  h2 {
+    margin: 0 0 12px 0;
+    color: $c-brag;
+    font-size: 1.6em;
+  }
+
+  table {
+    width: 100%;
+
+    tr td, tr th {
+      padding: 1rem;
+      border: $border;
+    }
+    th {
+      font-weight: bold;
+    }
+
+    img {
+      max-width: 300px;
+      max-height: 220px;
+    }
+  }
+
+}

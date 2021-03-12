@@ -1,0 +1,59 @@
+.team-list {
+  .box__top {
+    @extend %flex-center;
+    margin:  0 0 -1em -1em;
+    > * { margin: 0 0 1em 1em; }
+    .search {
+      flex: 3 1 auto;
+      display: flex;
+      input {
+        @extend %box-radius-left;
+        width: 80%;
+        height: 3.2rem;
+        font-size: 1.1em;
+        @include breakpoint($mq-xx-small) {
+          width: 60%;
+          font-size: 1.2em;
+        }
+      }
+      .button {
+        @extend %box-radius-right;
+        padding: 0 1.5em;
+        border-left: 0;
+      }
+    }
+  }
+
+  .slist {
+    @extend %break-word-hard;
+
+    td {
+      padding-top: 1.2rem;
+      padding-bottom: 1.2rem;
+    }
+
+    .subject {
+      @extend %flex-center-nowrap;
+      margin-bottom: .5em;
+
+      .closed {
+        color: $c-bad;
+        font-size: 1em;
+        font-weight: bold;
+        margin-left: 2em;
+      }
+    }
+
+    .info {
+      font-size: .9em;
+      white-space: nowrap;
+      display: none;
+      @include breakpoint($mq-x-small) {
+        display: table-cell;
+      }
+    }
+
+  }
+}
+
+

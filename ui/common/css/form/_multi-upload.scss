@@ -1,0 +1,73 @@
+.multi-uploader {
+  position: relative;
+  display: flex;
+  flex-flow: row;
+  width: 100%;
+  padding: 10px;
+  border: 1px dashed $c-font-dimmer;
+  text-align: center;
+  color: $c-font-dimmer;
+
+  .preview, .uploader {
+    position: relative;
+    width: 105px;
+    height: 103px;
+    border: 1px solid $c-font-dimmer;
+  }
+
+  .uploader {
+    cursor: pointer;
+  }
+
+  .uploader .upload-icon{
+    font-size: 50px;
+  }
+
+  .uploader .upload-icon{
+    font-size: 50px;
+  }
+
+  .uploader .loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: fade-out($c-bg-page, .2);
+    z-index: z('link-overlay');
+  }
+
+  .uploader .loading span {
+    color: $c-secondary;
+  }
+
+  .preview-list {
+    flex: 1;
+    display: flex;
+    margin-right: 10px;
+    overflow-y: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+    @include breakpoint($mq-not-medium) {
+      width: 200px;
+    }
+  }
+
+  .preview {
+    margin-right: 10px;
+  }
+
+  .preview img{
+    width: 103px;
+    height: 101px;
+  }
+
+  .preview .remove {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #fff;
+  }
+
+}

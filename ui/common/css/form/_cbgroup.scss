@@ -1,0 +1,27 @@
+.tag-group {
+  width: 100%;
+
+  span {
+    display: inline-block;
+    margin: .05em;
+
+    input[type=checkbox] {
+      display: none;
+    }
+
+    input[type=checkbox] ~ label {
+      display: inline-block;
+      cursor: pointer;
+      padding: 2px 4px;
+      border: 1px dotted $c-font;
+      border-image: initial;
+      color: $c-font;
+    }
+
+    input[type=checkbox]:checked ~ label {
+      color: #ffffff;
+      border: 1px solid $c-font;
+      background: $c-font;
+    }
+  }
+}

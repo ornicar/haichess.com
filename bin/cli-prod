@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+COMMAND=$*
+
+curl -H "Authorization: Bearer bIhqKUZhHKTIC3MQ" -d "$COMMAND" https://haichess.com/cli

@@ -1,0 +1,40 @@
+let id = 1;
+db.L1_puzzle_geneate.find({}).forEach(function(obj) {
+    var puzzle_ = obj;
+    var mark_ = puzzle_.mark;
+
+    var data = {};
+    data._id = NumberInt(id);
+    data.idHistory = {};
+    data.idHistory.geneate = puzzle_._id;
+    data.idHistory.source = puzzle_.strategy;
+    data.idHistory.version = NumberInt(puzzle_.version);
+    data.gameId = puzzle_.gameId;
+    data.history = puzzle_.history;
+    data.fen = puzzle_.fen;
+    data.lines = puzzle_.lines;
+    data.depth = NumberInt(puzzle_.depth);
+    data.white = puzzle_.white;
+    data.date = puzzle_.date;
+    data.perf = {};
+    data.perf.gl = {};
+    data.perf.gl.r = puzzle_.perf.gl.r;
+    data.perf.gl.d = puzzle_.perf.gl.d;
+    data.perf.gl.v = puzzle_.perf.gl.v;
+    data.perf.nb = NumberInt(1);
+    data.vote = {};
+    data.vote.up = NumberInt(1);
+    data.vote.down = NumberInt(0);
+    data.vote.nb = NumberInt(1);
+    data.vote.ratio = NumberInt(100);
+    data.attempts = NumberInt(99);
+    data.wins = NumberInt(0);
+    data.time = NumberInt(0);
+    data.mate = puzzle_.mate;
+    data.mark = mark_;
+    data.mark.id = NumberInt(1);
+    data.mark.rating = NumberInt(mark_.rating);
+
+    db.L2_puzzle_geneate.save(data);
+    id = id + 1;
+});

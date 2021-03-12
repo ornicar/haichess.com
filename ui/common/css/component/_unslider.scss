@@ -1,0 +1,107 @@
+.banner {
+  position: relative;
+  overflow: auto;
+  background: $c-bg-low;
+  width: 100%;
+
+  ul.items {
+    width: 300%;
+    list-style: none;
+    transition: left 500ms;
+
+    li {
+      display: block;
+      float: left;
+      width: 33%;
+      min-height: 350px;
+      -o-background-size: 100% 100%;
+      -ms-background-size: 100% 100%;
+      -moz-background-size: 100% 100%;
+      -webkit-background-size: 100% 100%;
+      background-size: 100% 100%;
+
+      img {
+        width: 100%;
+        margin-bottom: -4px;
+      }
+    }
+  }
+
+  .dots {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+
+    li {
+      display: inline-block;
+      cursor: pointer;
+      padding: 12px 4px;
+      background-color: transparent;
+
+      .btn {
+        display: block;
+        opacity: .48;
+        width: 30px;
+        height: 2px;
+        border: none;
+        outline: none;
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+        transition: .3s;
+        background-color: #fff;
+      }
+
+      &.active .btn {
+        opacity: 1;
+      }
+    }
+
+  }
+
+  .arrow {
+    border: none;
+    outline: none;
+    padding: 6px;
+    margin: 0;
+    height: 36px;
+    width: 36px;
+    cursor: pointer;
+    transition: .3s;
+    border-radius: 50%;
+    background-color: rgba(31,45,61,.11);
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+
+    &:hover {
+      background-color: rgba(31,45,61,.5);
+    }
+
+
+    &.prev {
+      left: 10px;
+      i {
+        @extend %data-icon;
+        &::before {
+          content: '左';
+        }
+      }
+    }
+
+    &.next {
+      right: 10px;
+      i {
+        @extend %data-icon;
+        &::before {
+          content: '右';
+        }
+      }
+    }
+  }
+
+}
+

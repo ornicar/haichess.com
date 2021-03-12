@@ -1,0 +1,13 @@
+.accept-box {
+  margin-top: 1em;
+  padding: 1em;
+  @extend %metal;
+  @extend %box-radius;
+
+  .actions {
+    @extend %flex-wrap;
+    form {
+      margin-right: 1em;
+    }
+  }
+}

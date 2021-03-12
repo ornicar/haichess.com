@@ -1,0 +1,34 @@
+.givingForm {
+
+  table {
+    width: 100%;
+
+    th, td {
+      padding: .5em;
+    }
+
+    th {
+      width: 8em;
+      text-align: right;
+      vertical-align: top;
+    }
+
+    td {
+      text-align: left;
+    }
+
+    .note {
+      font-size: .9em;
+      opacity: .8;
+    }
+
+    input {
+      padding: .3em .5em;
+    }
+
+    .formError {
+      color: $c-error;
+    }
+  }
+
+}

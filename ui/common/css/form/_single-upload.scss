@@ -1,0 +1,45 @@
+.single-uploader {
+  position: relative;
+  padding: 10px;
+  border: 1px dashed $c-font-dimmer;
+  text-align: center;
+  cursor: pointer;
+  color: $c-font-dimmer;
+
+  .preview, .uploader {
+    position: relative;
+    width: 105px;
+    height: 103px;
+    border: 1px solid $c-font-dimmer;
+  }
+
+  .preview img {
+    width: 103px;
+    height: 101px;
+  }
+
+  .preview .loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: fade-out($c-bg-page, .2);
+    z-index: z('link-overlay');
+  }
+
+  .preview .loading span {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    color: $c-secondary;
+  }
+
+  .uploader .upload-icon{
+    font-size: 50px;
+  }
+
+  .uploader .upload-icon{
+    font-size: 50px;
+  }
+}

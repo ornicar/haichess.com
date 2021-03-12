@@ -1,0 +1,9 @@
+db.L2_puzzle_geneate.drop();
+db.L3_puzzle_geneate_checkmate1.drop();
+db.L3_puzzle_geneate_checkmate2.drop();
+db.L3_puzzle_geneate_checkmate3.drop();
+db.L3_puzzle_geneate_draw.drop();
+db.L4_puzzle_part1.drop();
+db.L4_puzzle_part2.drop();
+db.L4_puzzle_part3.drop();
+db.L5_puzzle_all.drop();

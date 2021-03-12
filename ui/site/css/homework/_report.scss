@@ -1,0 +1,137 @@
+.homework-report {
+
+  .uptime {
+    margin-top: 1em;
+  }
+
+  .part {
+    margin-bottom: 1em;
+    .part-title {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: .2em;
+    }
+  }
+
+  .deadline {
+    color: $c-brag;
+  }
+
+  .complete {
+    color: $c-secondary;
+    font-weight: bold;
+    &:hover {
+      color: $c-secondary;
+    }
+  }
+
+  .uncomplete {
+    color: $c-brag;
+    font-weight: bold;
+    &:hover {
+      color: $c-brag;
+    }
+  }
+
+  .error {
+    color: $c-error;
+    font-weight: bold;
+    &:hover {
+      color: $c-error;
+    }
+  }
+
+  .practice {
+    table {
+      width: 100%;
+      td {
+        padding: .2em .5em;
+        vertical-align: top;
+      }
+      .td-chart {
+        width: 25em;
+      }
+      .td-board {
+        width: 15em;
+      }
+    }
+
+    .practice-title {
+      font-size: 1.1em;
+      font-weight: bold;
+      padding: .2em .8em;
+      background: $c-bg-zebra;
+      margin-bottom: .2em;
+    }
+
+    .puzzles, .replayGames, .fromPositions {
+      margin-bottom: 1em;
+    }
+
+    .puzzle-all-chart {
+      width: calc(1000px - 2 * var(--box-padding));
+      height: 20em;
+      margin-bottom: 2em;
+    }
+
+    .puzzles {
+      .puzzle-chart {
+        width: 25em;
+        height: 15em;
+      }
+
+      .first-move {
+        font-weight: bold;
+        margin-bottom: 1em;
+
+        label {
+          display: block;
+          margin-bottom: .2em;
+        }
+        .right {
+          color: $c-secondary;
+        }
+        .wrong {
+          color: $c-brag;
+        }
+      }
+
+      .controls {
+        margin-top: .2em;
+        @extend %flex-between-nowrap;
+        .button {
+          padding: .8em 1em;
+          font-size: .5em;
+          font-weight: normal;
+        }
+      }
+    }
+
+    .replayGames {
+      .replayGame-chart {
+        width: 25em;
+        height: 15em;
+      }
+    }
+
+    .recallGames {
+      .recallGame-chart {
+        width: 25em;
+        height: 15em;
+      }
+      .pgn {
+        height: 13em;
+        word-break: break-all;
+        @include hoverflow;
+      }
+    }
+
+    .fromPositions {
+      .fromPosition-chart {
+        width: 25em;
+        height: 15em;
+      }
+    }
+  }
+
+}

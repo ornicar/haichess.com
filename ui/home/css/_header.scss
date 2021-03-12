@@ -1,0 +1,260 @@
+$white: rgba(255,255,255,0.9);
+$black: #4d4d4d;
+$red: #cc3333;
+$green: #629924;
+
+.banner {
+  ul.items li {
+    min-height: auto;
+    img {
+      width: 100%;
+      object-fit: cover;
+      min-height: 120px;
+      @include breakpoint(300px) {
+        min-height: 140px;
+      }
+      @include breakpoint(400px) {
+        min-height: 180px;
+      }
+      @include breakpoint(500px) {
+        min-height: 220px;
+      }
+      @include breakpoint(600px) {
+        min-height: 270px;
+      }
+      @include breakpoint(700px) {
+        min-height: 320px;
+      }
+      @include breakpoint(800px) {
+        min-height: 370px;
+      }
+      @include breakpoint(1120px) {
+        min-height: auto;
+      }
+    }
+  }
+
+  .dots li .btn {
+    width: 25px;
+    @include breakpoint(500px) {
+      width: 30px;
+    }
+  }
+}
+
+.home-header-warp {
+  width: 100%;
+  padding: 1em 0;
+  background-image: $bg-home-image;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+
+  .home-header {
+    max-width: 1120px;
+    margin: 0 auto;
+    color: $white;
+
+    button {
+      color: $white;
+      font-size: .9em;
+      padding: 2px 6px;
+      border: 1px solid $white;
+      border-radius: 3px;
+      background-color: transparent;
+      &:focus {
+        outline: none;
+        box-shadow:none;
+      }
+      &:not(.active) {
+        opacity: .7;
+      }
+      &:hover {
+        opacity: 1;
+      }
+
+      &.green {
+        color: $green;
+        border: 1px solid $green;
+      }
+
+      &.red {
+        color: $red;
+        border: 1px solid $red;
+      }
+    }
+
+    .head-box {
+      @include fluid-size('--box-padding', 15px, 60px);
+      .box-header {
+        @extend %flex-between;
+        flex: 0 0 auto;
+        padding: .5em;
+        .title {
+          flex: 0 0 auto;
+        }
+        .more {
+          color: $white;
+          &:hover {
+            color: $white;
+          }
+        }
+        .actions {
+          flex: 1 1 auto;
+          margin-left: 1.5em;
+
+          .week {
+            button:not(:last-child) {
+              margin-right: .5em;
+            }
+          }
+
+          .view {
+            button:not(:last-child) {
+              margin-right: -3px;
+            }
+
+            .active {
+              color: $black;
+              background: $white;
+            }
+          }
+
+        }
+
+        img {
+          width: 1.3em;
+          height: 1.3em;
+          display: inline-block;
+          vertical-align: bottom;
+          margin-right: .5em;
+        }
+
+        .title {
+          font-size: 1.2em;
+        }
+      }
+
+      .box-body {
+        padding: .5em;
+      }
+    }
+
+
+    .home__appts {
+      .list {
+        padding: 1em;
+        background: rgba(0,0,0,0.3);
+      }
+
+      ul {
+        font-size: .9em;
+        li {
+          padding: .5em 0;
+          * {
+            min-height: 1.5em;
+          }
+          &:not(:last-child) {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+          }
+          .players {
+            .user-link {
+              color: $white;
+            }
+          }
+          .actions {
+            padding: .5em 0;
+            button {
+              opacity: .9;
+              &:hover {
+                opacity: 1;
+              }
+            }
+            button:not(:last-child) {
+              margin-right: 1em;
+            }
+          }
+        }
+      }
+    }
+
+    .home__calendar {
+      .actions {
+        @extend %flex-between-nowrap
+      }
+
+      .list {
+        width: 100%;
+        table-layout: fixed;
+        td, th {
+          border: 1px solid rgba(82, 77, 9, 1);
+        }
+
+        thead {
+          background: rgba(0,0,0,0.3);
+          th {
+            padding: .5em 0;
+            div {
+              text-align: center;
+            }
+          }
+        }
+
+        tbody {
+          td, th {
+            &:first-child {
+              width: 3em;
+              height: 90px;
+              text-align: center;
+            }
+          }
+/*          td:not(:first-child) {
+            vertical-align: top;
+          }*/
+        }
+        .event {
+          display: block;
+          position: relative;
+          white-space: nowrap;
+          padding: 4px;
+          color: #000000;
+          background: rgba(255,255,255,0.7);
+          &:hover, &:focus {
+            background: rgba(255,255,255,0.8);
+          }
+          &.overdue {
+            background: rgba(255,255,255,0.4);
+            &:hover, &:focus {
+              background: rgba(255,255,255,0.5);
+            }
+          }
+
+          .event-head {
+            @extend %flex-center;
+            .icon {
+              margin-top: -5px;
+              margin-right: 2px;
+              font-size: 1.2rem;
+            }
+            .time {
+              font-weight: bold;
+            }
+          }
+          .event-content {
+            font-size: .8em;
+            @extend %nowrap-ellipsis;
+          }
+        }
+
+        .event:not(:last-child) {
+          border-bottom: 1px solid $black;
+        }
+      }
+
+      &.calendar-day .event{
+        width: 100%;
+      }
+    }
+  }
+}
+

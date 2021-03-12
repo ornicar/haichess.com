@@ -1,0 +1,11 @@
+.smsCaptcha {
+  .code-send {
+    display: flex;
+    input {
+      margin-right: 1em;
+    }
+    .send {
+      display: block;
+    }
+  }
+}

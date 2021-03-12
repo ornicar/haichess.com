@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>idcard</title>
+    <script src="jquery-1.11.2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('input[type=\'file\']').click(function (event) {
+                event.stopPropagation();
+            }).change(function () {
+                let $file = $(this);
+                let reader = new FileReader();
+                reader.readAsDataURL(this.files[0]);
+                reader.onload = function(){
+                    $file.parent('.single-uploader').find('.preview img').attr('src', this.result);
+                    $file.parent('.single-uploader').find('.preview').removeClass('none');
+                    $file.parent('.single-uploader').find('.preview').prev('.uploader').addClass('none')
+                }
+
+            });
+
+            $('.single-uploader').click(function () {
+                $(this).find('input[type=\'file\']').trigger('click');
+            });
+
+        });
+    </script>
+</head>
+<style>
+    .single-uploader {
+        position: relative;
+        padding: 10px;
+        border: 2px dashed #e2e2e2;
+        background-color: #fff;
+        text-align: center;
+        cursor: pointer;
+        color: #999;
+    }
+
+    .preview, .uploader {
+        border: 1px solid #e2e2e2;
+    }
+
+    .preview img {
+        max-width: 300px;
+        max-height: 220px;
+    }
+
+    .uploader .upload-icon{
+        font-size: 50px;
+    }
+
+    .none {
+        display: none;
+    }
+</style>
+<body>
+<div class="single-uploader">
+    <div class="uploader">
+        <i class="upload-icon">+</i>
+        <p>点击上传图片</p>
+    </div>
+    <div class="preview none">
+        <img>
+    </div>
+    <input class="none" type="file" accept="image/jpg,image/png,image/jpeg">
+</div>
+
+</body>
+</html>

@@ -1,0 +1,856 @@
+mongodb {
+  uri = "mongodb://127.0.0.1:27017/lichess"
+  mongo-async-driver = {}
+  image.collection = "image"
+  file.collection = "file"
+}
+net {
+  domain = "localhost:9663"
+  socket.domain = ${net.domain}
+  socket.remote.domain = ${net.socket.domain}
+  asset.domain = ${net.domain}
+  protocol = "http://"
+  base_url = ${net.protocol}${net.domain}
+  ip = "127.0.0.1"
+  email = ""
+  #email = ""
+  crawlable = false
+  ratelimit = true
+  admin_uid = ""
+}
+play {
+  server {
+    netty {
+      # The maximum length of the initial line. This effectively restricts the maximum length of a URL that the server will
+      # accept, the initial line consists of the method (3-7 characters), the URL, and the HTTP version (8 characters),
+      # including typical whitespace, the maximum URL length will be this number - 18.
+      maxInitialLineLength = 2048 # 4096
+
+      # The maximum length of the HTTP headers. The most common effect of this is a restriction in cookie length, including
+      # number of cookies and size of cookie values.
+      maxHeaderSize = 4096 # 8192
+    }
+  }
+  http {
+    session {
+      cookieName = "haichess-cookie"
+      maxAge = 365 days
+    }
+    parser.maxMemoryBuffer=1MB
+  }
+  ws {
+    useragent = "haichess.org"
+    compressionEnabled = true
+    timeout {
+      connection = 5 seconds
+      idle = 5 minutes
+      request = 5 minutes
+    }
+  }
+  crypto {
+    secret=""
+  }
+  akka.actor-system = "haichess"
+}
+app {
+  scheduler {
+    disabled = false
+    debug = false
+  }
+  renderer.name = "renderer"
+  web_path = "public"
+  forcedev = false
+  stage = false
+}
+api {
+  token = secret
+  influx_event = {
+    endpoint = "http://monitor.lichess.ovh:8086/write?db=events"
+    env = "dev"
+  }
+}
+aliyun {
+  api {
+    url = ""
+    key = ""
+    secret = ""
+  }
+}
+alipay {
+  appId = ""
+  sellerId = ""
+  merchantPrivateKey = ""
+  merchantCertPath = ""
+  alipayCertPath = ""
+  alipayRootCertPath = ""
+  test = true
+}
+chessground {
+  animation {
+    duration = 250 ms
+  }
+}
+editor {
+  animation.duration = ${chessground.animation.duration}
+}
+accessibility {
+  blind {
+    cookie {
+      name = "mBzamRgfXgRBSnXB"
+      salt = "WWcTbz5xxaHU4d96"
+      max_age = 31536000 # one year
+    }
+  }
+}
+prismic {
+  api_url = "http://localhost/prismic/api"
+}
+blog {
+  prismic {
+    api_url = ${prismic.api_url}
+    collection = blog
+  }
+  last_post_cache.ttl = 5 minutes
+}
+chat {
+  collection {
+    chat = chat
+    timeout = chat_timeout
+  }
+  max_lines = 200
+  net.domain = ${net.domain}
+  actor.name = chat
+  timeout {
+    duration = 15 minutes
+    check_every = 15 seconds
+  }
+}
+puzzle {
+  mongodb {
+    uri = "mongodb://127.0.0.1:27017/lichess"
+    mongo-async-driver = {}
+  }
+  collection {
+    puzzle = puzzle
+    round = puzzle_round2
+    round_all = puzzle_round_all
+    vote = puzzle_vote
+    head = puzzle_head
+    tagger = puzzle_tagger
+    rush = puzzle_rush
+    rush_rank_today = puzzle_rush_rank_today
+    rush_rank_history = puzzle_rush_rank_history
+    rush_rank_season = puzzle_rush_rank_season
+  }
+  api.token = ${api.token}
+  selector {
+    puzzle_id_min = 100000
+    puzzle_mark_id_min = 100000
+  }
+  animation.duration = ${chessground.animation.duration}
+}
+coordinate {
+  collection {
+    score = coordinate_score
+  }
+}
+event {
+  collection {
+    event = event
+  }
+}
+video {
+  collection {
+    video = video
+    view = video_view
+  }
+  sheet {
+    url = "https://spreadsheets.google.com/feeds/list/1qYU1XhvC8TlBggXEkjI481ieNGyYGmMTy97A9iboyrM/2/public/values?alt=json"
+    delay = 3 hour
+  }
+  youtube {
+    url = "https://www.googleapis.com/youtube/v3/videos"
+    api_key = ""
+    max = 50
+    delay = 20 minutes
+  }
+}
+search {
+  enabled = false
+  writeable = true
+  endpoint = "http://localhost:9673"
+}
+team {
+  collection{
+    team = team
+    member = team_member
+    request = team_request
+    invite = team_invite
+    tag = team_tag
+    image = ${mongodb.image.collection}
+  }
+  paginator.max_per_page = 15
+  paginator.max_user_per_page = 24
+}
+teamSearch {
+  index = team
+  paginator.max_per_page = ${team.paginator.max_per_page}
+  actor.name = team-search
+}
+relation {
+  collection {
+    relation = relation
+  }
+  actor {
+    name = relation
+    notify_freq = 2 seconds
+  }
+  limit {
+    follow = 500
+    block = 500
+  }
+}
+pref {
+  collection.pref = pref
+  cache.ttl = 10 minutes
+}
+bookmark {
+  collection.bookmark = bookmark
+  paginator.max_per_page = ${game.paginator.max_per_page}
+  actor.name = bookmark
+}
+analyse {
+  socket {
+    sri.ttl = ${site.socket.sri.ttl}
+  }
+  collection.analysis = analysis2
+  collection.requester = analysis_requester
+  net.domain = ${net.domain}
+}
+geoip {
+  file = "data/GeoLite2-City.mmdb"
+  cache_ttl = 20 minutes
+}
+security {
+  collection.security = security
+  collection.print_ban = print_ban
+  flood.duration = 60 seconds
+  firewall {
+    cookie {
+      enabled = false
+      name=fEKHA4zI74ZrZrom
+    }
+    collection.firewall = firewall
+  }
+  geoip = ${geoip}
+  password_reset {
+    secret = ""
+  }
+  email_confirm {
+    enabled = true
+    secret = ""
+    cookie = "email_confirm"
+  }
+  email_change {
+    secret = ""
+  }
+  login_token {
+    secret = ""
+  }
+  tor {
+    provider_url = "https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip="${net.ip}"&port=80"
+    refresh_delay = 1 hour
+  }
+  disposable_email {
+    provider_url = "http://localhost/assets/static/black_domains.txt"
+    refresh_delay = 10 minutes
+  }
+  dns_api {
+    url = "https://cloudflare-dns.com/dns-query"
+    timeout = 5 seconds
+  }
+  check_mail_api {
+    url = "https://mailcheck.p.rapidapi.com/"
+    key = ""
+  }
+  recaptcha = ${recaptcha}
+  mailgun = ${mailgun}
+  aliyun = ${aliyun}
+  smsCaptcher {
+    name = smsCaptcher
+  }
+  net {
+    domain = ${net.domain}
+    base_url = ${net.base_url}
+  }
+  ipintel.email = "-"
+}
+oauth {
+  mongodb {
+    uri = ${mongodb.uri}
+    mongo-async-driver = {}
+  }
+  collection {
+    access_token = oauth_access_token
+    app = oauth_client
+  }
+  base_url = ${net.protocol}oauth.${net.domain}/
+}
+recaptcha {
+  endpoint = "https://www.google.com/recaptcha/api/siteverify"
+  public_key = ""
+  private_key = ""
+  enabled = false
+}
+shutup {
+  collection.shutup = shutup
+  actor.name = shutup
+}
+playban {
+  collection.playban = playban
+}
+perfStat {
+  collection.perf_stat = "perf_stat"
+}
+push {
+  collection {
+    device = push_device
+    subscription = push_subscription
+  }
+  web {
+    vapid_public_key = "BNHCgAkTcPNY/+QTW2Ccoo+SHTQ9+cTVa8bQQOqFPIBFedYZxJ3ih+GWBaFI2XmMb4PtdGv0e2l+8kYy3sZUGuY="
+    url = "http://push.lichess.ovh:9054"
+  }
+  onesignal {
+    url = "https://onesignal.com/api/v1/notifications"
+    app_id = ""
+    key = ""
+  }
+}
+mod {
+  collection {
+    modlog = modlog
+    player_assessment = player_assessment
+    boosting = boosting
+    gaming_history = mod_gaming_history
+  }
+  boosting.nb_games_to_mark = 5
+  boosting.ratio_games_to_mark = 0.01
+  actor.name = mod
+}
+report {
+  collection.report = report2
+  actor.name = report
+  score.threshold = 50
+  net.domain = ${net.domain}
+}
+i18n {
+  web_path.relative = ${app.web_path}/trans
+  net.domain = ${net.domain}
+}
+detectlanguage.api {
+  url = "https://ws.detectlanguage.com/0.2/detect"
+  key = ""
+}
+mailgun {
+  sender = ""
+  reply_to = ""
+}
+lobby {
+  socket {
+    sri.ttl = ${site.socket.sri.ttl}
+  }
+  net.domain = ${net.domain}
+  broom_period = 2 seconds
+  resync_ids_period = 25 seconds
+  collection.seek = seek
+  collection.seek_archive = seek_archive
+  seek {
+    max_per_page = 13
+    max_per_user = 5
+  }
+  max_playing = ${setup.max_playing}
+}
+home {
+  socket {
+    sri.ttl = ${site.socket.sri.ttl}
+  }
+  net.domain = ${net.domain}
+  max_playing = ${setup.max_playing}
+}
+timeline {
+  collection {
+    unsub = timeline_unsub
+    entry = timeline_entry
+  }
+  user {
+    display_max = 12
+    actor.name = user-timeline
+  }
+}
+game {
+  paginator.max_per_page = 12
+  collection {
+    game = game5
+    crosstable = crosstable2
+    matchup = matchup
+  }
+  captcher {
+    name = captcher
+    duration = 15 seconds
+  }
+  net.base_url = ${net.base_url}
+  uci_memo.ttl = 3 minutes
+  png {
+    url = "https://backscattering.de/web-boardimage/board.svg"
+    size = 1024
+  }
+}
+tv {
+  featured {
+    select = 2789 millis
+  }
+}
+streamer {
+  collection.streamer = "streamer"
+  collection.image = ${mongodb.image.collection}
+  paginator.max_per_page = 12
+  streaming {
+    google.api_key = ""
+    keyword = "lichess.org"
+    twitch.client_id = ""
+  }
+}
+explorer {
+  endpoint = "https://explorer.lichess.ovh"
+  internal_endpoint = "http://explorer.lichess.ovh"
+  tablebase = {
+    endpoint = "https://tablebase.lichess.ovh"
+  }
+}
+gameSearch {
+  index = game
+  paginator.max_per_page = 12
+  actor.name = game-search
+}
+round {
+  active.ttl = 40 seconds
+  animation.duration = ${chessground.animation.duration}
+  moretime = 15 seconds
+  player {
+    disconnect.timeout = 120 seconds
+    ragequit.timeout = 10 seconds
+  }
+  socket {
+    timeout = 30 seconds
+    sri.timeout = 10 seconds
+  }
+  collection {
+    note = game_note
+    history = round_history
+    forecast = forecast
+    alarm = round_alarm
+  }
+  net.domain = ${net.domain}
+}
+tournament {
+  collection {
+    tournament = tournament2
+    player = tournament_player
+    pairing = tournament_pairing
+    leaderboard = tournament_leaderboard
+  }
+  history.message.ttl = 20 seconds
+  sri.timeout = 7 seconds # small to avoid missed events
+  socket {
+    name = tournament-socket
+    timeout = 1 minute
+  }
+  api_actor.name = tournament-api
+  sequencer {
+    timeout = 10 minutes
+  }
+  pairing.delay = 3.1 seconds
+  created.cache.ttl = 2 seconds
+  leaderboard.cache.ttl = 1 hour
+  ranking.cache.ttl = 1 hour
+  net.domain = ${net.domain}
+}
+contest {
+  collection {
+    contest = contest
+    round = contest_round
+    board = contest_board
+    player = contest_player
+    request = contest_request
+    invite = contest_invite
+    scoresheet = contest_score_sheet
+    forbidden = contest_forbidden
+    image = ${mongodb.image.collection}
+    file = ${mongodb.file.collection}
+  }
+  socket {
+    name = contest-socket
+    timeout = 1 minute
+  }
+  api_actor.name = contest-api
+  sequencer {
+    timeout = 10 minutes
+  }
+  net.base_url = ${net.base_url}
+}
+offlineContest {
+  collection {
+    contest = offline_contest
+    round = offline_contest_round
+    board = offline_contest_board
+    player = offline_contest_player
+    forbidden = offline_contest_forbidden
+    scoresheet = offline_contest_score_sheet
+    image = ${mongodb.image.collection}
+  }
+}
+simul {
+  collection {
+    simul = simul
+  }
+  sequencer {
+    timeout = 10 minutes
+  }
+  socket {
+    timeout = 2 minutes
+  }
+  created.cache.ttl = 2 seconds
+  history.message.ttl = 20 seconds
+  sri.timeout = 7 seconds # small to avoid missed events
+  feature.views = 10000 # max frontpage views of simul per host per day
+}
+forum {
+  topic.max_per_page = 10
+  post.max_per_page = 10
+  recent {
+    ttl = 1 hour
+    nb = 12
+  }
+  collection {
+    categ = f_categ
+    topic = f_topic
+    post = f_post
+  }
+  public_categ_ids = [
+    general-chess-discussion
+    game-analysis
+    lichess-feedback
+    off-topic-discussion
+  ]
+}
+forumSearch {
+  index = forum
+  paginator.max_per_page = 10
+  actor.name = forum-search
+}
+message {
+  thread.max_per_page = 30
+  collection.thread = m_thread
+}
+coach {
+  collection.coach = coach
+  collection.review = coach_review
+  collection.student = coach_student
+  collection.image = ${mongodb.image.collection}
+}
+memo {
+  collection {
+    cache = cache
+    config = flag
+  }
+}
+practice {
+  collection {
+    progress = practice_progress
+  }
+}
+socket {
+  redis {
+    uri = "redis://127.0.0.1"
+    # uri = "redis-socket:///var/run/redis/redis-server.sock"
+  }
+}
+setup {
+  collection {
+    user_config = config
+    anon_config = config_anon
+  }
+  max_playing = 200
+}
+challenge {
+  collection.challenge = challenge
+  max_per_user = 20
+  socket {
+    timeout = 1 minute
+  }
+  history.message.ttl = 30 seconds
+  sri.timeout = 7 seconds
+  max_playing = ${setup.max_playing}
+}
+evalCache {
+  collection.eval_cache = eval_cache
+}
+irwin {
+  collection.report = irwin_report
+  collection.request = irwin_request
+}
+relay {
+  collection.relay = relay
+  paginator.max_per_page = 20
+}
+activity {
+  collection.activity = activity
+}
+study {
+  collection.study = study
+  collection.chapter = study_chapter
+  socket {
+    timeout = 1 minute
+  }
+  sequencer {
+    timeout = 10 minutes
+  }
+  history.message.ttl = 20 seconds
+  sri.timeout = 10 seconds
+  net.domain = ${net.domain}
+  net.base_url = ${net.base_url}
+  paginator.max_per_page = 14
+}
+studySearch {
+  index = study
+  paginator.max_per_page = ${study.paginator.max_per_page}
+}
+site {
+  socket {
+    sri.ttl = 10 seconds
+  }
+}
+user {
+  paginator.max_per_page = 40
+  cached.nb.ttl = 10 minutes
+  online.ttl = 7 seconds
+  collection {
+    user = user4
+    note = note
+    trophy = trophy
+    trophyKind = trophyKind
+    ranking = ranking
+    image = ${mongodb.image.collection}
+  }
+  password.bpass {
+    secret = "9qEYN0ThHer1KWLNekA76Q=="
+  }
+}
+history {
+  collection.history = history3
+  cached.rating_chart.ttl = 1 hour
+}
+fishnet {
+  collection {
+    analysis = fishnet_analysis
+    client = fishnet_client
+  }
+  offline_mode = false # any client can provide moves and analysis
+  actor.name = fishnet
+  analysis.nodes = 4000000
+  move.plies = 300
+  client_min_version = "1.15.10"
+}
+member {
+  collection {
+    member_card = member_card
+    member_order = member_order
+    member_order_pay = member_order_pay
+    member_order_statuslog = member_order_statuslog
+    member_points_log = member_points_log
+    member_level_log = member_level_log
+    member_card_log = member_card_log
+    member_card_statuslog = member_card_statuslog
+    member_active = member_active
+  }
+}
+
+application {
+  global="lila.app.Global"
+}
+importer {
+  delay = 50 milliseconds
+}
+insight {
+  mongodb {
+    uri = "mongodb://127.0.0.1:27017/lichess-insight"
+    mongo-async-driver = {}
+  }
+  collection {
+    entry = insight
+    user_cache = insight_user_cache
+  }
+}
+notify {
+  collection.notify = notify
+  actor.name = notify
+}
+learn {
+  collection.progress = learn_progress
+}
+clazz {
+  collection.clazz = clazz
+  collection.course = clazz_course
+  collection.homework = clazz_homework
+  collection.homework_student = clazz_homework_student
+  collection.homework_report = clazz_homework_report
+}
+resource {
+  collection.capsule = resource_capsule
+}
+simulation {
+  enabled = false
+  players = 300
+  watchers = 200
+}
+slack {
+  incoming {
+    url = ""
+    default_channel = tavern
+  }
+  domain = ${net.domain}
+}
+plan {
+  stripe {
+    endpoint="https://api.stripe.com/v1"
+    keys {
+      public="pk_test_31E5TIuGtMs4ojhzMIMu8oIc"
+      secret="sk_test_erAQMvv5cF90WXUFlkv7Tke0"
+    }
+  }
+  paypal {
+    ipn_key=""
+  }
+  collection {
+    patron = plan_patron
+    charge = plan_charge
+  }
+}
+appt {
+  collection {
+    appt = appt
+  }
+}
+calendar {
+  collection {
+    calendar = calendar
+  }
+}
+recall {
+  collection {
+    recall = recall
+  }
+  animation.duration = ${chessground.animation.duration}
+}
+errors {
+  collection {
+    puzzle = errors_puzzle
+    game = errors_game
+  }
+}
+hub {
+  actor {
+    game {
+      search = ${gameSearch.actor.name}
+    }
+    renderer = ${app.renderer.name}
+    captcher = ${game.captcher.name}
+    smsCaptcher = ${security.smsCaptcher.name}
+    forum {
+      search = ${forumSearch.actor.name}
+    }
+    team.search = ${teamSearch.actor.name}
+    fishnet = ${fishnet.actor.name}
+    tournament.api = ${tournament.api_actor.name}
+    timeline {
+      user = ${timeline.user.actor.name}
+    }
+    bookmark = ${bookmark.actor.name}
+    relation = ${relation.actor.name}
+    report = ${report.actor.name}
+    shutup = ${shutup.actor.name}
+    mod = ${mod.actor.name}
+    chat = ${chat.actor.name}
+    notify = ${notify.actor.name}
+  }
+}
+
+dbplugin = disabled
+ehcacheplugin = disabled
+
+akka {
+  loggers = ["akka.event.slf4j.Slf4jLogger"]
+  loglevel = INFO
+  stdout-loglevel = INFO
+  log-config-on-start = off
+  log-dead-letters-during-shutdown = off
+}
+
+kamon {
+  metric {
+    tick-interval = 20 second
+    track-unmatched-entities = yes
+    filters {
+      trace {
+        includes = [ "**" ]
+        excludes = [ ]
+      }
+    }
+  }
+
+  influxdb {
+    hostname = "127.0.0.1"
+    port = 8086
+
+    # database = "kamon"
+
+    # The maximum packet size for one POST request, set to 0 to disable batching
+    max-packet-size = 16384
+
+    # The protocol, either http or udp
+    protocol = "udp"
+
+    # The measurements will be named ${application-name}-timers and -counters
+    application-name = "dev"
+
+    # Allow users to override the name of the hostname reported by kamon. When changed, the hostname tag will be
+    # the value given here.
+    hostname-override = none
+
+    # For histograms, which percentiles to count
+    percentiles = [25.0, 50.0, 75.0, 95.0, 99.0]
+
+    # Subscription patterns used to select which metrics will be pushed to InfluxDB. Note that first, metrics
+    # collection for your desired entities must be activated under the kamon.metrics.filters settings.
+    subscriptions {
+      histogram       = [ "**" ]
+      min-max-counter = [ "**" ]
+      gauge           = [ "**" ]
+      counter         = [ "**" ]
+      trace           = [ "**" ]
+      trace-segment   = [ "**" ]
+      akka-actor      = [ "**" ]
+      akka-dispatcher = [ "**" ]
+      akka-router     = [ "**" ]
+      system-metric   = [ "**" ]
+      http-server     = [ "**" ]
+    }
+  }
+
+  modules {
+    kamon-influxdb {
+      auto-start = no
+    }
+  }
+}

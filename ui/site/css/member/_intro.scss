@@ -1,0 +1,181 @@
+#modal-wrap {
+  padding: 0;
+  border-radius: 2px;
+
+  .close {
+    display: none;
+  }
+
+  .modal-header {
+    @extend %flex-between-nowrap;
+    padding: .8em 1em;
+    border-bottom: 1px solid #caad9a;
+
+    h3 {
+      font-size: 1.1em;
+    }
+
+    .close {
+      display: block;
+      position: initial;
+      color: $c-font;
+      cursor: pointer;
+      background: none;
+
+      &:hover {
+        opacity: .8;
+        background: none;
+      }
+    }
+  }
+
+  .member-intro {
+
+    .levels {
+      @include breakpoint($mq-x-small) {
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+
+        table th {
+          width: auto;
+        }
+      }
+
+      .level {
+        &:nth-child(2) {
+          border-left: 1px solid #caad9a;
+          border-right: 1px solid #caad9a;
+        }
+
+        &.gold .level-title {
+          background-image: url(../images/levelbg_gold.png);
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
+        }
+
+        &.silver .level-title {
+          background-image: url(../images/levelbg_silver.png);
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
+        }
+
+        &.general .level-title {
+          background-image: url(../images/levelbg_general.png);
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
+        }
+      }
+
+      .level-title {
+        padding: 1em 0;
+        font-size: 1.2em;
+        color: $c-home-theme;
+
+        .icon {
+          width: 30px;
+          height: 30px;
+          display: inline-block;
+          vertical-align: middle;
+        }
+
+      }
+
+      .level-permission {
+        width: 100%;
+        padding: 0 1.5em;
+        margin-top: 1em;
+
+        table {
+          width: 100%;
+          th {
+            padding: .5em;
+            font-weight: bold;
+            text-align: right;
+            width: 50%;
+          }
+
+          td {
+            padding: .5em;
+            text-align: left;
+            white-space:nowrap;
+          }
+        }
+      }
+
+      .level-foot {
+        padding: 1em;
+
+        .price {
+          .symbol {
+            font-size: .9em;
+          }
+          .number {
+            font-size: 1.5em;
+            font-weight: bold;
+          }
+
+          &.invisible {
+            opacity: 0;
+          }
+        }
+
+        .buy {
+          margin-top: 1em;
+          @extend %flex-center-nowrap;
+          justify-content: center;
+
+          .btn {
+            display: block;
+            width: 6em;
+            font-size: .9em;
+            padding: .5em;
+            border: none;
+            border-radius: 1.5em;
+            text-align: center;
+
+            &:not(.disabled):hover {
+              opacity: .8;
+            }
+
+            &.free {
+              color: #000;
+              background-color: #e6e6e6;
+            }
+
+            &.toBuy {
+              color: #fff;
+              background-color: #A54D20;
+            }
+
+            &.disabled {
+              opacity: 0.5;
+              cursor: not-allowed;
+            }
+          }
+
+          .useCard {
+            display: block;
+            color: #bb5e2e;
+            font-size: .9em;
+            margin-left: 1em;
+            text-decoration: underline;
+            &:hover {
+              opacity: .8;
+            }
+          }
+        }
+      }
+
+    }
+
+    .ad {
+      padding: 1em;
+      color: #bb5e2e;
+      font-size: 1.2em;
+      border-top: 1px solid #caad9a;
+    }
+  }
+}
+
+

@@ -1,0 +1,135 @@
+.practice-box {
+  @extend %flex-column;
+  flex: 0 0 135px;
+
+  .title {
+    font-size: .9rem;
+    line-height: 1.9em;
+    background: mix($c-secondary, $c-bg-box, 40%);
+    padding: 0 7px;
+  }
+
+  .pending {
+    padding: 1em;
+    .conf {
+      @extend %flex-between;
+      .color {
+        @extend %flex-center;
+        .rd {
+          margin-right: .5em;
+        }
+      }
+      .turns {
+        input {
+          padding: .3em .5em;
+          width: 60px;
+        }
+      }
+    }
+    .action {
+      margin-top: 1em;
+      .button {
+        width: 100%;
+      }
+    }
+  }
+
+  .feedback {
+    flex: 1 1 auto;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    .player {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: center;
+      padding: 0 1em;
+      .no-square {
+        flex: 0 0 auto;
+        width: 64px;
+        height: 64px;
+        margin-right: 10px;
+        piece {
+          position: inherit;
+          display: block;
+          width: 100%!important;
+          height: 100%!important;
+        }
+      }
+      .is3d & div.no-square {
+        height: 82px;
+      }
+      .instruction {
+        flex: 0 0 auto;
+        * {
+          display: block;
+        }
+        strong {
+          font-weight: normal;
+          font-size: 1.2em;
+          .choices {
+            line-height: 1.6em;
+            margin: 5px 0 -5px 0;
+            a {
+              display: block;
+            }
+          }
+        }
+      }
+      .action {
+        flex: 1 1 auto;
+        text-align: right;
+      }
+    }
+
+    .progress {
+      flex: 0 0 2em;
+      line-height: 2em;
+      position: relative;
+      background: mix($c-secondary, $c-bg-box, 40%);
+      box-shadow: inset 0 1px 1px rgba(0,0,0,0.1);
+      overflow: hidden;
+
+      @keyframes animatedBackground {
+        from { background-position: 0 0; }
+        to { background-position: 0 1000%; }
+      }
+      @keyframes animatedBar {
+        from { transform: translateX(-100px); }
+        to { transform: translateX(0px); }
+      }
+
+      .bar {
+        @extend %box-radius-right;
+        height: 100%;
+        background: $c-good;
+        background-image: img-url('grain.png');
+        transform: translateX(-100px);
+        animation: animatedBackground 50s linear infinite, animatedBar 1s forwards;
+      }
+
+      .text {
+        @extend %abs-100;
+        line-height: 2em;
+        z-index: 1;
+        color: #fff;
+        font-weight: bold;
+        text-align: center;
+      }
+    }
+  }
+
+  .finished {
+    padding: 1em;
+    .infos {
+      @extend %flex-between;
+    }
+    .action {
+      margin-top: 1.5em;
+      .button {
+        width: 100%;
+      }
+    }
+  }
+
+}

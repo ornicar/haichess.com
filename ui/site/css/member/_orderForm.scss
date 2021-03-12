@@ -1,0 +1,125 @@
+.orderForm {
+  width: 100%;
+
+  th, td {
+    padding: .5em;
+  }
+
+  th {
+    width: 6em;
+    vertical-align: top;
+  }
+
+  input {
+    padding: .4em .5em;
+  }
+
+  .radio-group {
+    span:not(:last-child) {
+      margin-right: .5em;
+    }
+
+    .radio {
+      input {
+        margin-right: 2px;
+      }
+    }
+  }
+
+  .symbol {
+    font-size: .9em;
+  }
+
+  .number {
+    font-size: 1.2em;
+  }
+
+  .note {
+    font-size: .9em;
+    opacity: .8;
+  }
+
+  .price {
+    del {
+      margin-left: 1em;
+      font-size: 0.9em;
+      opacity: .8;
+    }
+  }
+
+  .count {
+    input {
+      width: 80px;
+    }
+  }
+
+  .points {
+    input {
+      width: 80px;
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+    }
+    label {
+      margin-left: .5em;
+    }
+  }
+
+  .inviteUser {
+    @extend %flex-center-nowrap;
+    > div{
+      margin-left: .5em;
+    }
+    .form-control {
+      width: 150px;
+      height: auto;
+      padding: .3em .5em;
+    }
+  }
+
+  .formError {
+    color: $c-error;
+  }
+
+  .payRadio {
+    @extend %flex-center-nowrap;
+
+    .radio {
+      @extend %flex-center-nowrap;
+      padding: .8em 1.5em;
+      border: 1px solid $c-border;
+      border-radius: 5px;
+
+      &:not(:first-child) {
+        margin-left: 1em;
+      }
+
+      input {
+        width: 16px;
+        height: 16px;
+      }
+
+      .radio-label {
+        display: block;
+        margin-left: 1em;
+
+        &:hover {
+          cursor: pointer;
+        }
+
+        .icon {
+          width: 80px;
+          &.wechat {
+            width: 104px;
+          }
+        }
+      }
+    }
+  }
+
+  .topay {
+    width: 100%;
+  }
+
+}

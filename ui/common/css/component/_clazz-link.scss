@@ -1,0 +1,11 @@
+.clazz-link {
+  color: $c-font;
+  @extend %nowrap-hidden;
+
+  &:hover {
+    color: $c-link;
+  }
+}
+
+
+

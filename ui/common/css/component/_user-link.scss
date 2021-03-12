@@ -1,0 +1,98 @@
+.user-link {
+  @extend %flex-center-nowrap;
+  @extend %nowrap-hidden;
+  color: $c-font;
+
+  &.online,&.offline {
+    @extend %flex-center-nowrap;
+  }
+
+  &.online .head-line .line {
+    display: inline-block;
+    color: $c-good;
+  }
+
+  .head-line {
+    position: relative;
+    display: inline-flex;
+    .head {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      margin-right: .5em;
+    }
+
+    .line {
+      display: none;
+      position: absolute;
+      bottom: -3px;
+      right: 0;
+      color: $c-font;
+      text-align: center;
+      @extend %data-icon;
+      &::before {
+        content: '';
+      }
+    }
+  }
+
+  .title {
+    color: $c-brag;
+    font-weight: bold;
+    &[data-bot] {
+      color: $c-bot;
+    }
+  }
+
+  .badges {
+    margin-left: 5px;
+    @extend %flex-center-nowrap;
+
+    * {
+      display: block;
+    }
+
+    .patron {
+      color: $c-brag;
+      @extend %data-icon;
+      &::before {
+        content: '';
+      }
+    }
+
+    .moderator {
+      color: $c-brag;
+      @extend %data-icon;
+      &::before {
+        content: '';
+      }
+    }
+
+    .badge {
+      width: 25px;
+      height: 25px;
+    }
+  }
+
+  &.large {
+    font-size: 2em;
+    .head-line {
+      .head{
+        width: 60px;
+        height: 60px;
+      }
+      .line {
+        right: 4px;
+        bottom: -5px;
+        font-size: 1em;
+      }
+    }
+    .badge {
+      width: 32px;
+      height: 32px;
+    }
+  }
+}
+a.user-link:hover {
+  color: $c-link;
+}

@@ -1,0 +1,31 @@
+.search_form {
+  width: 100%;
+  margin-bottom: 5vh;
+
+  table {
+    width: 100%;
+
+    td {
+      padding: .5em 0;
+    }
+
+    th {
+      padding: .5em;
+      width: 80px;
+    }
+
+    .form-control {
+      width: 100%;
+      height: auto;
+      display: inline-block;
+      padding: .3em 1em!important;
+    }
+  }
+
+  .action {
+    width: 100%;
+    text-align: center;
+    margin-top: 1em;
+  }
+
+}

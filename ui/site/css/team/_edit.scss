@@ -1,0 +1,17 @@
+.edit {
+  .top {
+    display: flex;
+    .logo {
+      .single-uploader {
+        width: 125px
+      }
+      label {
+        display: none;
+      }
+    }
+    .name {
+      width: 100%;
+      margin-left: 1em;
+    }
+  }
+}

@@ -1,0 +1,237 @@
+.homework-form {
+
+  .form3 {
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .invalid {
+      border-color: $c-error;
+    }
+
+    .part-name {
+      font-size: 2em;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .block {
+      position: relative;
+      padding: 1em;
+      min-height: 6em;
+      border: $border;
+      @extend %box-radius;
+      background: $c-bg-input;
+
+      .title {
+        position: absolute;
+        top: calc(50% - .7em);
+        left: calc(50% - 2em);
+        font-size: 2em;
+        opacity: .1;
+      }
+    }
+
+    .items {
+      table {
+        width: 100%;
+        td {
+          padding: .2em .5em;
+        }
+        td.item-name {
+          width: 10em;
+        }
+        td.bit {
+          width: 1em;
+        }
+        td:last-child {
+          text-align: right;
+          white-space: nowrap;
+        }
+      }
+      input {
+        padding: .3em .5em;
+      }
+      .form-control {
+        width: auto;
+        height: auto;
+        display: inline-block;
+      }
+    }
+
+    .capsule {
+      margin-bottom: 1em;
+      .capsule-head {
+        @extend %flex-between;
+        label {
+          font-weight: bold;
+        }
+      }
+      .capsule-puzzles {
+        display: grid;
+        align-content: start;
+        --np-min-width: 200px;
+        grid-template-columns: repeat(auto-fill, minmax(10em, 1fr));
+        gap:.5em;
+      }
+    }
+
+    .replayGames {
+      table {
+        width: 100%;
+        td {
+          padding: .2em .5em;
+          vertical-align: top;
+        }
+        td:first-child {
+          width: 15em;
+          label {
+            font-weight: bold;
+          }
+        }
+        td:last-child {
+          width: 3em;
+          text-align: right;
+          white-space: nowrap;
+        }
+        label {
+          font-weight: bold;
+        }
+      }
+    }
+
+    .recallGames {
+      table {
+        width: 100%;
+        td {
+          padding: .2em .5em;
+          vertical-align: top;
+        }
+        td:first-child {
+          width: 15em;
+          label {
+            font-weight: bold;
+          }
+        }
+        td:last-child {
+          width: 3em;
+          text-align: right;
+          white-space: nowrap;
+        }
+        label {
+          font-weight: bold;
+        }
+        .meta {
+          font-weight: bold;
+        }
+        .pgn {
+          height: 13em;
+          @include hoverflow;
+        }
+      }
+    }
+
+    .fromPositions {
+      table {
+        width: 100%;
+        td {
+          padding: .2em .5em;
+          vertical-align: top;
+        }
+        td:first-child {
+          width: 15em;
+        }
+        td:last-child {
+          width: 3em;
+          text-align: right;
+          white-space: nowrap;
+        }
+      }
+
+      .form {
+        width: 100%;
+        td {
+          padding: .2em .5em;
+          vertical-align: top;
+        }
+        td:first-child {
+          width: 5em;
+        }
+        td:last-child {
+          width: auto;
+        }
+        input, select {
+          padding: .3em .5em;
+          width: 100%;
+        }
+        .form-control {
+          height: auto;
+          display: inline-block;
+        }
+      }
+    }
+
+    @include breakpoint($mq-not-small) {
+      .td-board {
+        display: none;
+      }
+    }
+  }
+}
+
+.modal-capsule {
+  min-width: 260px;
+  .capsule-filter {
+    margin-bottom: .5em;
+  }
+  .capsule-scroll {
+    height: 150px;
+    overflow-y: auto;
+    .capsule-list {
+      width: 100%;
+      text-align: left;
+      td:last-child {
+        text-align: right;
+      }
+    }
+  }
+}
+
+.modal-item {
+  .items {
+    @extend %flex-wrap;
+    justify-content: space-between;
+    margin-bottom: 1em;
+    text-align: left;
+
+    width: 260px;
+    .item {
+      margin-right: .5em;
+      white-space:nowrap;
+    }
+  }
+}
+
+.modal-replay {
+  input {
+    width: 300px;
+  }
+  .chapterLinkExample {
+    margin-top: 1em;
+    img {
+      width: 300px;
+    }
+  }
+}
+
+.modal-recall {
+  width: 360px;
+  .form3 {
+    text-align: left;
+    .form-half {
+      min-width: auto;
+    }
+    .tabs-content {
+      margin-top: 1em;
+    }
+  }
+}

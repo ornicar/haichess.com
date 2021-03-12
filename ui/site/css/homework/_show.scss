@@ -1,0 +1,101 @@
+.homework-show {
+
+  .part {
+    margin-bottom: 1em;
+    .part-title {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: .2em;
+    }
+  }
+
+  .split {
+    @extend %flex-between;
+    align-items: inherit;
+  }
+
+  .half {
+    flex: 1 1 48%;
+    min-width: 200px;
+  }
+
+  .complete {
+    color: $c-secondary;
+    font-weight: bold;
+    &:hover {
+      color: $c-secondary;
+    }
+  }
+
+  .uncomplete {
+    color: $c-brag;
+    font-weight: bold;
+    &:hover {
+      color: $c-brag;
+    }
+  }
+
+  .error {
+    color: $c-error;
+    font-weight: bold;
+    &:hover {
+      color: $c-error;
+    }
+  }
+
+  .practice {
+    table {
+      width: 100%;
+      td {
+        padding: .2em .5em;
+        vertical-align: top;
+      }
+      .td-board {
+        width: 15em;
+      }
+    }
+
+    .practice-title {
+      font-size: 1.1em;
+      font-weight: bold;
+      margin-bottom: .2em;
+    }
+
+    .puzzles, .replayGames, .recallGames, .fromPositions {
+      margin-bottom: 1em;
+    }
+
+    .puzzles {
+      .puzzle-list {
+        display: grid;
+        align-content: start;
+        grid-template-columns: repeat(auto-fill, minmax(10em, 1fr));
+        gap:.5em;
+      }
+    }
+
+    .recallGames {
+      .pgn {
+        height: 13em;
+        @include hoverflow;
+      }
+    }
+
+    .fromPositions {
+      .games {
+        margin-top: 1em;
+        li {
+          padding: .2em 0;
+          font-size: .9em;
+          a {
+            color: $c-font-dim;
+            &:hover {
+              color: $c-font-dim;
+            }
+          }
+        }
+      }
+    }
+  }
+
+}

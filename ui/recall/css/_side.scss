@@ -1,0 +1,95 @@
+.recall__side {
+  @extend %flex-column;
+  overflow: hidden;
+
+  .game__meta {
+    flex: 0 0 auto;
+    @extend %box-neat-force;
+    background: $c-bg-box;
+    padding: #{$block-gap * 0.7} $block-gap;
+    section:not(:last-child) {
+      border-bottom: $border;
+      margin-bottom: #{$block-gap * 2 / 3};
+      padding-bottom: #{$block-gap * 2 / 3};
+    }
+    &__infos {
+      @extend %flex-center-nowrap;
+      position: relative; /* for bookmark */
+      &::before {
+        font-size: 3rem;
+        margin-right: 4%;
+      }
+      p {
+        margin: 0;
+      }
+      time {
+        opacity: 1;
+      }
+    }
+    .status {
+      text-align: center;
+    }
+    &__players {
+      margin-top: .3rem;
+      font-size: 90%;
+      .player {
+        @extend %flex-center-nowrap;
+        padding: 2px;
+      }
+    }
+  }
+
+  .history {
+    flex: 1 1 auto;
+    @extend %box-neat-force;
+    background: $c-bg-box;
+    margin-top: 2vmin;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    .action {
+      @extend %flex-between ;
+      padding: .7em;
+      font-weight: bold;
+    }
+
+    .list  {
+      width: 100%;
+      tr:nth-child(even) {
+        background: $c-bg-zebra;
+      }
+      tr.current {
+        background: $c-brag;
+        color: #fff;
+        &:hover {
+          color: #fff;
+        }
+        a,.name {
+          color: #fff;
+          &:hover {
+            color: #fff;
+          }
+        }
+      }
+      td {
+        padding: .5em .4em;
+        border-top: $border;
+        &:first-child {
+          padding-left: .7em;
+        }
+        .name {
+          font-weight: bold;
+          color: $c-font-dim;
+          @include transition();
+          &:hover {
+            color: $c-link;
+          }
+        }
+      }
+    }
+  }
+}
+
+#jqstooltip {
+  box-sizing: content-box;
+}

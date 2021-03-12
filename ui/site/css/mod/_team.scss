@@ -1,0 +1,25 @@
+.team-detail {
+  padding-top: 0;
+
+  table {
+    width: 100%;
+
+    tr td, tr th {
+      padding: 1rem;
+      border: $border;
+    }
+    th {
+      font-weight: bold;
+    }
+
+    img {
+      max-width: 300px;
+      max-height: 220px;
+    }
+  }
+
+  .btn-group {
+    @extend %flex-center-nowrap;
+  }
+
+}

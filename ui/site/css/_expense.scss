@@ -1,0 +1,49 @@
+.resource {
+  width: 100%;
+
+  tr:nth-child(even) {
+    background: #f7f6f5;
+  }
+
+  td {
+    padding: 1.5rem 2rem;
+    @extend %break-word;
+  }
+
+  td:last-child {
+    white-space: nowrap;
+  }
+
+  td.price {
+    font: 1.5rem bold;
+    color: #ff0000;
+  }
+
+  .subject p {
+    margin-top: .5rem;
+  }
+
+}
+
+.vip {
+  width: 100%;
+
+  tr:nth-child(n + 2) {
+    border-top: 1px dashed #e0e0e0;
+  }
+
+  td {
+    padding: 1.5rem 2rem;
+    @extend %break-word;
+  }
+
+  td h3 {
+    font-size: 1.5rem;
+  }
+
+  td a.price {
+    font: 1.8rem bold;
+    color: #ff0000;
+    vertical-align: top;
+  }
+}

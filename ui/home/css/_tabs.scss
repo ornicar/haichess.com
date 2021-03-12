@@ -1,0 +1,41 @@
+.tabs {
+  @extend %flex-column;
+  background: $c-bg-zebra;
+
+  .header {
+    flex: 0 0 auto;
+    display: flex;
+    cursor: pointer;
+    text-transform: uppercase;
+    border-bottom: 1px solid $c-home-border;
+
+    >div {
+      flex: 1 1 auto;
+      text-align: center;
+      position: relative;
+      span {
+        padding: 1em 0;
+        font-weight: bold;
+        display: inline-block;
+        &:hover {
+          color: $c-home;
+        }
+      }
+      &.active span {
+        color: $c-home;
+        border-bottom: 3px solid $c-home;
+      }
+    }
+  }
+
+  .panels {
+    flex: 1 1 auto;
+    overflow: auto;
+    >div {
+      display: none;
+    }
+    .active {
+      display: block;
+    }
+  }
+}

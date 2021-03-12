@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>about</title>
+    <script src="jquery-1.11.2.min.js"></script>
+    <script src="moment.min.js"></script>
+    <script>
+        let _week_ = 0;
+        function currentWeek() {
+            _week_ = 0;
+            return weekFun();
+        }
+
+        function nextWeek() {
+            _week_ += 1;
+            return weekFun();
+        }
+
+        function prevWeek() {
+            _week_ -= 1;
+            return weekFun();
+        }
+
+        function weekFun() {
+            let mon = moment().weekday(1 + (_week_ * 7)).format("YYYY-MM-DD");
+            let san = moment().weekday(7 + (_week_ * 7)).format("YYYY-MM-DD");
+            return [mon, san];
+        }
+
+        $(document).ready(function () {
+            currentWeek();
+        });
+    </script>
+</head>
+<body>
+<table>
+    <tr>
+        <td>
+            <button onclick="prevWeek();">上一周</button>
+        </td>
+        <td>
+            <button onclick="nextWeek();">下一周</button>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

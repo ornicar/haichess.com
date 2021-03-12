@@ -1,0 +1,11 @@
+.notFound {
+  text-align: center;
+  .message {
+    font-size: 1.2em;
+    color: $c-font-dim;
+  }
+  .button-flat {
+    display: block;
+    width: 100%;
+  }
+}

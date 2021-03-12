@@ -1,0 +1,20 @@
+.certify-callback {
+
+  text-align: center;
+
+  .pay-icon {
+    width: 100px;
+    height: 100px;
+  }
+
+  .message {
+    margin-top: 1em;
+    .passed {
+      color: $c-secondary;
+    }
+    .unpassed {
+      color: $c-accent;
+    }
+  }
+}
+

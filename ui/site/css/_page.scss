@@ -1,0 +1,60 @@
+.page {
+  .body {
+    font-size: 1.15em;
+    text-align: justify;
+
+    p {
+      line-height: 2em;
+    }
+    h2 {
+      margin-top: 1.3em;
+    }
+    p,
+    ul,
+    ol {
+      text-indent: 2em;
+      margin: 1em 0;
+    }
+    .ul-nolist li {
+      list-style: none;
+    }
+    ul li {
+      list-style: disc outside;
+      margin: .5em 0 0 1.5em;
+    }
+    ol li {
+      list-style: decimal inside;
+      margin: .5em 0;
+    }
+    li {
+      margin-left: 2em;
+    }
+    h3 {
+      @extend %roboto;
+      font-size: 1.3em;
+    }
+    em {
+      font-style: italic;
+    }
+    iframe {
+      width: 100%;
+    }
+    .block-img {
+      margin: 1em auto;
+      text-align: center;
+    }
+    .center {
+      text-align: center;
+    }
+    .copy-zone {
+      @extend %flex-center-nowrap;
+      input {
+        flex: 1 1 auto;
+      }
+    }
+  }
+}
+
+.page-title {
+  text-align: center;
+}

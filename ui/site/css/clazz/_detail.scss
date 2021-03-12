@@ -1,0 +1,55 @@
+.detail {
+  .basic {
+    .header {
+      @extend %flex-wrap;
+      margin-bottom: 2em;
+      .head {
+        width: 60px;
+        height: 60px;
+        border-radius: 5px;
+        margin-right: 1em;
+      }
+    }
+    .info {
+      width: 100%;
+      line-height: 1.7;
+      text-shadow: 0 1px 0 #fff;
+      th {
+        color: $c-font-dim;
+        font-weight: bold;
+        text-align: right;
+        vertical-align: top;
+        padding-right: 1.2em;
+      }
+      .course {
+        font-size: .9em;
+      }
+    }
+  }
+}
+
+.relations {
+  margin-top: 1em;
+  .students {
+    .invite {
+      margin-bottom: 1em;
+      .user-invite {
+        display: flex;
+        flex-flow: row wrap;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        label, .twitter-typeahead, button {
+          margin: auto 0;
+        }
+        .twitter-typeahead {
+          margin-right: 1em;
+          input {
+            padding: .7em 1em;
+          }
+        }
+      }
+    }
+  }
+}
+

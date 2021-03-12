@@ -1,0 +1,30 @@
+.single-file {
+
+  @extend %flex-center-nowrap;
+
+  .choose {
+    display: inline-block;
+  }
+
+  .spinner {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+  }
+
+  .choose, .spinner, .preview .name {
+    margin-right: .5em;
+  }
+
+  .preview {
+    .name {
+      color: $c-font;
+      @extend %ellipsis;
+    }
+
+    .remove {
+      color: $c-font;
+    }
+  }
+
+}

@@ -1,0 +1,19 @@
+.setting {
+
+  .setting-actions {
+    margin-bottom: 1em;
+  }
+
+  .setting-tag {
+    border: none;
+    margin-bottom: 1em;
+
+    .tag-actions {
+      @extend %flex-center;
+      margin-bottom: 1em;
+    }
+
+  }
+
+}
+

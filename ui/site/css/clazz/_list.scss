@@ -1,0 +1,19 @@
+.clazz {
+  .clazz-list {
+    tr.empty {
+      height: 400px;
+      td {
+        font-size: 2em;
+        opacity: 0.6;
+        text-align: center;
+        vertical-align: center;
+      }
+    }
+    .course {
+      font-size: .9em;
+      li {
+        padding: 2px 0;
+      }
+    }
+  }
+}

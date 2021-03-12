@@ -1,0 +1,26 @@
+.countdown {
+  @extend %flex-center;
+  z-index: 2;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  .number {
+    font-family: monospace;
+    font-weight: bold;
+    pointer-events: none;
+    color: #eee;
+    text-shadow: 0 10px 10px #444;
+    opacity: 0.2;
+    animation: 300ms change forwards;
+    @keyframes change{
+      0% {font-size: 24px; opacity: 0.2;}
+      50% {font-size: 84px; opacity: 0.4;}
+      100% {font-size: 180px; opacity: 0.8;}
+    }
+  }
+
+}

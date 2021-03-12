@@ -1,0 +1,164 @@
+.drawer {
+  position: fixed;
+  z-index: z('drawer');
+  width: 0;
+  height: 100%;
+  -webkit-transition: height 0s ease .3s, width 0s ease .3s, -webkit-transform .3s cubic-bezier(.7, .3, .1, 1);
+  transition: height 0s ease .3s, width 0s ease .3s, -webkit-transform .3s cubic-bezier(.7, .3, .1, 1);
+  transition: transform .3s cubic-bezier(.7, .3, .1, 1), height 0s ease .3s, width 0s ease .3s;
+  transition: transform .3s cubic-bezier(.7, .3, .1, 1), height 0s ease .3s, width 0s ease .3s, -webkit-transform .3s cubic-bezier(.7, .3, .1, 1)
+}
+
+.drawer > * {
+  -webkit-transition: -webkit-transform .3s cubic-bezier(.7, .3, .1, 1), -webkit-box-shadow .3s cubic-bezier(.7, .3, .1, 1);
+  transition: -webkit-transform .3s cubic-bezier(.7, .3, .1, 1), -webkit-box-shadow .3s cubic-bezier(.7, .3, .1, 1);
+  transition: transform .3s cubic-bezier(.7, .3, .1, 1), box-shadow .3s cubic-bezier(.7, .3, .1, 1);
+  transition: transform .3s cubic-bezier(.7, .3, .1, 1), box-shadow .3s cubic-bezier(.7, .3, .1, 1), -webkit-transform .3s cubic-bezier(.7, .3, .1, 1), -webkit-box-shadow .3s cubic-bezier(.7, .3, .1, 1)
+}
+
+.drawer-content-wrapper {
+  position: absolute;
+}
+
+.drawer .drawer-content {
+  width: 100%;
+  height: 100%
+}
+
+.drawer-left, .drawer-right {
+  top: 0;
+  width: 0;
+  height: 100%
+}
+
+.drawer-left {
+  left: 0
+}
+
+.drawer-left .drawer-content-wrapper, .drawer-right .drawer-content-wrapper {
+  height: 100%
+}
+
+.drawer-left.drawer-open, .drawer-right.drawer-open {
+  width: 100%;
+  -webkit-transition: -webkit-transform .3s cubic-bezier(.7, .3, .1, 1);
+  transition: -webkit-transform .3s cubic-bezier(.7, .3, .1, 1);
+  transition: transform .3s cubic-bezier(.7, .3, .1, 1);
+  transition: transform .3s cubic-bezier(.7, .3, .1, 1), -webkit-transform .3s cubic-bezier(.7, .3, .1, 1)
+}
+
+.drawer-left.drawer-open.no-mask, .drawer-right.drawer-open.no-mask {
+  width: 0
+}
+
+.drawer-left.drawer-open .drawer-content-wrapper {
+  -webkit-box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15)
+}
+
+.drawer-right {
+  right: 0
+}
+
+.drawer-right .drawer-content-wrapper {
+  right: 0
+}
+
+.drawer-right.drawer-open .drawer-content-wrapper {
+  -webkit-box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15)
+}
+
+.drawer-right.drawer-open.no-mask {
+  right: 1px;
+  -webkit-transform: translateX(1px);
+  -ms-transform: translateX(1px);
+  transform: translateX(1px)
+}
+
+.drawer.drawer-open .drawer-mask {
+  height: 100%;
+  opacity: 1;
+  -webkit-transition: none;
+  transition: none;
+  -webkit-animation: antdDrawerFadeIn .3s cubic-bezier(.7, .3, .1, 1);
+  animation: antdDrawerFadeIn .3s cubic-bezier(.7, .3, .1, 1);
+}
+
+.drawer-content {
+  position: relative;
+  background-color: $c-bg-box;
+  background-clip: padding-box;
+  border: 0
+}
+
+.drawer-wrapper-body {
+  overflow: scroll;
+  height: 100%;
+}
+
+.drawer-header {
+  position: relative;
+  color: $c-font;
+  padding: 0 24px;
+  background-color: $c-bg-box;
+  border-bottom: $border;
+  border-radius: 4px 4px 0 0;
+  height: $site-header-height;
+  line-height: $site-header-height;
+  text-align: center;
+}
+
+.drawer-title {
+  margin: 0;
+  color: $c-font;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.drawer-toggle {
+  position: absolute;
+  top: $site-header-height;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  cursor: pointer;
+  color: $c-font;
+  text-align: center;
+  border-top: $border;
+  border-bottom: $border;
+  background-color: $c-bg-box;
+}
+
+.drawer-footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  border-top: $border;
+  background-color: $c-bg-box;
+  text-align: right;
+}
+
+.drawer-footer-btn {
+  padding: 10px 16px;
+}
+
+.drawer-body {
+  padding: 24px;
+  line-height: 1.5;
+  word-wrap: break-word
+}
+
+.drawer-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  opacity: 0;
+  background-color: $c-page-mask;
+  filter: alpha(opacity=45);
+  -webkit-transition: opacity .3s linear, height 0s ease .3s;
+  transition: opacity .3s linear, height 0s ease .3s
+}
