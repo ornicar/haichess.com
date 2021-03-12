@@ -1,7 +1,9 @@
 bin/dev
 bin/prod
 conf/base.conf
+conf/base.conf.prod
 conf/application.conf
+conf/application.conf.prod
 logs
 project/project
 project/target
