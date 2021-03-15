@@ -27,7 +27,7 @@ case class Simul(
 ) {
   def id = _id
 
-  def fullName = s"$name 车轮塞"
+  def fullName = s"$name 车轮赛"
 
   def isCreated = !isStarted
 
