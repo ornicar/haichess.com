@@ -14,6 +14,10 @@ object MemberCard extends LilaController {
 
   private def env = Env.member
 
+  def hasSignupGiven(userId: String) = Auth { implicit ctx => me =>
+    env.memberCardLogApi.hasSignupGiven(userId) map (bool => Ok(bool.toString))
+  }
+
   def page(page: Int, status: Option[String], level: Option[String]) = Auth { implicit ctx => me =>
     Permiss {
       val st = status.map(s => MemberCardMode.CardStatus(s))

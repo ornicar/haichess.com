@@ -787,6 +787,7 @@ POST /member/card/giving/validUsername controllers.MemberCard.validUsername
 POST /member/card/giving               controllers.MemberCard.giving(id: String)
 GET  /member/card/giving/logs          controllers.MemberCard.givingLogPage(page: Int ?= 1)
 POST /member/card/user                 controllers.MemberCard.use(id: String)
+#GET  /member/card/hasSignupGiven       controllers.MemberCard.hasSignupGiven(userId: String)
 
 POST /member/order/toPay               controllers.MemberOrder.toPay
 GET  /member/order/page                controllers.MemberOrder.page(page: Int ?= 1)

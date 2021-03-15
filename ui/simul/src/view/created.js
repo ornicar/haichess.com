@@ -115,7 +115,7 @@ module.exports = function(ctrl) {
               ' 已接受的棋手'
             ])), (simul.createdByMe(ctrl) && candidates.length && !accepted.length) ? m('tr.help',
               m('th',
-                '现在你可以接受一些棋手，然后开始车轮塞')) : null
+                '现在你可以接受一些棋手，然后开始车轮赛')) : null
           ]),
           m('tbody', accepted.map(function(applicant) {
             var variant = util.playerVariant(ctrl, applicant.player);

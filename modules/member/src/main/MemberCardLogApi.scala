@@ -38,7 +38,7 @@ case class MemberCardLogApi(coll: Coll) {
   ).void
 
   def hasSignupGiven(userId: User.ID): Fu[Boolean] = coll.exists(
-    $doc("status" -> MemberCardLog.Type.SignupGiven.id, "newUserId" -> userId)
+    $doc("typ" -> MemberCardLog.Type.SignupGiven.id, "newUserId" -> userId)
   )
 
   def setStatus(cardId: String, status: CardStatus): Funit =
