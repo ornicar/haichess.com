@@ -19,6 +19,7 @@ case class Team(
     tagTip: Boolean,
     certification: Option[Certification],
     clazzIds: Option[List[String]],
+    ratingSetting: Option[RatingSetting],
     createdAt: DateTime,
     createdBy: User.ID
 ) {
@@ -41,7 +42,9 @@ case class Team(
 
   def envPictureOrDefault = envPicture | List.empty[String]
 
-  def location = s"${provinceName} ${cityName}"
+  def ratingSettingOrDefault = ratingSetting | RatingSetting.default
+
+  def location = s"$provinceName $cityName"
 }
 
 object Team {
@@ -90,6 +93,7 @@ object Team {
     open = open,
     tagTip = true,
     certification = None,
+    ratingSetting = RatingSetting.default.some,
     clazzIds = None,
     createdAt = DateTime.now,
     createdBy = createdBy.id

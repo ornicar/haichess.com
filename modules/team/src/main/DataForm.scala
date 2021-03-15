@@ -45,10 +45,18 @@ private[team] final class DataForm(
 
   def setting(team: Team) = Form(mapping(
     Fields.open,
-    Fields.tagTip
+    Fields.tagTip,
+    "ratingSetting" -> mapping(
+      "open" -> boolean,
+      "defaultRating" -> number,
+      "coachSupport" -> boolean,
+      "turns" -> number(min = 0, max = 500),
+      "minutes" -> number(min = 0, max = 240)
+    )(RatingSetting.apply)(RatingSetting.unapply)
   )(TeamSetting.apply)(TeamSetting.unapply)) fill TeamSetting(
     open = if (team.open) 1 else 0,
-    tagTip = if (team.tagTip) 1 else 0
+    tagTip = if (team.tagTip) 1 else 0,
+    ratingSetting = team.ratingSettingOrDefault
   )
 
   def edit(team: Team) = Form(mapping(
@@ -221,7 +229,8 @@ private[team] case class TeamSetup(
 
 private[team] case class TeamSetting(
     open: Int,
-    tagTip: Int
+    tagTip: Int,
+    ratingSetting: RatingSetting
 ) {
 
   def isOpen = open == 1

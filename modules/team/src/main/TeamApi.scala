@@ -82,7 +82,8 @@ final class TeamApi(
   def setting(team: Team, s: TeamSetting, me: User): Funit =
     team.copy(
       open = s.open == 1,
-      tagTip = s.tagTip == 1
+      tagTip = s.tagTip == 1,
+      ratingSetting = s.ratingSetting.some
     ) |> { team =>
       coll.team.update($id(team.id), team).void >>
         !team.isCreator(me.id) ?? {

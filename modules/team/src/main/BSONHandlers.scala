@@ -35,6 +35,7 @@ private object BSONHandlers {
     def write(x: MemberTags) = BSONDocument(x.tagMap.mapValues(MemberTagBSONWriter.write))
   }
 
+  implicit val RatingSettingBSONHandler = Macros.handler[RatingSetting]
   implicit val EnvPictureHandler = lila.db.dsl.bsonArrayToListHandler[String]
   implicit val CertificationBSONHandler = Macros.handler[Certification]
   implicit val TeamBSONHandler = Macros.handler[Team]
