@@ -8,7 +8,7 @@ import lila.db.BSON
 
 case class Glicko(
     rating: Double,
-    deviation: Double,
+    deviation: Double, // 评分误差 值越高意味着选手并不频繁地进行对战，评分越不可信
     volatility: Double
 ) {
 
