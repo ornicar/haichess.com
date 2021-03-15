@@ -174,6 +174,7 @@ case class OrderApi(
       byId(data.out_trade_no) flatMap {
         case None => fufail(s"can not find order ${data.out_trade_no}")
         case Some(order) => {
+          logger.info(s"orderId：${data.out_trade_no}，aliOrderId：${data.out_biz_no}，seller_id：${data.seller_id}，app_id：${data.app_id}，ali_amount：${data.total_amount}，my_amount：${order.totalAmount.setScale(2, RoundingMode.DOWN)}")
           val amountEquals = data.total_amount.??(amount => if (payTest) amount.equals(BigDecimal(0.01)) else amount.equals(order.totalAmount.setScale(2, RoundingMode.DOWN)))
           val appIdEquals = data.app_id == appId
           val sellerIdEquals = data.seller_id.??(_ == sellerId)
