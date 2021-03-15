@@ -76,7 +76,9 @@ object topnav {
         a(href := s"${routes.UserAnalysis.index}#explorer")(trans.openingExplorer()),
         a(href := routes.Editor.index)(trans.boardEditor()),
         a(href := routes.Search.index())(trans.advancedSearch()),
-        a(href := routes.OffContest.home())("比赛编排")
+        ctx.me.map { me =>
+          isGranted(_.Coach) || me.hasTeam option a(href := routes.OffContest.home())("比赛编排")
+        }
       )
     ),
     st.section(
