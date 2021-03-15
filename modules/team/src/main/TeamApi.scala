@@ -217,12 +217,12 @@ final class TeamApi(
       }
     }
 
-  def acceptRequest(team: Team, request: Request, tags: MemberTags, mark: Option[String], rating: Int, clazzIds: List[String]): Funit = for {
+  def acceptRequest(team: Team, request: Request, tags: MemberTags, mark: Option[String], rating: Option[Int], clazzIds: List[String]): Funit = for {
     _ ← coll.request.remove(request)
     _ = cached.nbRequests invalidate team.createdBy
     userOption ← UserRepo byId request.user
     _ ← userOption.??(user =>
-      doJoin(team, user, tags = tags.some, mark = mark, rating = rating.some, clazzIds = clazzIds) >>- notifier.acceptRequest(team, request))
+      doJoin(team, user, tags = tags.some, mark = mark, rating = rating, clazzIds = clazzIds) >>- notifier.acceptRequest(team, request))
   } yield ()
 
   def processRequest(team: Team, request: Request, accept: Boolean, clazzIds: List[String]): Funit = for {

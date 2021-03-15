@@ -525,7 +525,7 @@ object Team extends LilaController {
                 mwu.member.copy(
                   role = lila.team.Member.Role(data.role),
                   mark = data.mark,
-                  rating = data.rating.some,
+                  rating = data.rating,
                   tags = lila.team.MemberTags.byTagList(data.fields).some
                 )
               ) inject Redirect(routes.Team.members(mwu.team, 1))
