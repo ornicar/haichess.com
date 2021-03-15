@@ -147,7 +147,7 @@ case class OrderApi(
 
   // 参考文档: https://opendocs.alipay.com/apis/api_1/alipay.trade.page.pay/?scene=API002020081300013629
   def alipay(order: Order): Fu[String] = {
-    val expireAt = order.createAt.plusMinutes(if (payTest) 3 else 10)
+    val expireAt = order.createAt.plusMinutes(if (payTest) 3 else 30)
     val response = Payment.Page()
       .asyncNotify("https://haichess.com/member/order/asyncNotify")
       .optional("goods_type", "0") // 商品主类型：0-虚拟类商品，1-实物类商品
@@ -174,8 +174,8 @@ case class OrderApi(
       byId(data.out_trade_no) flatMap {
         case None => fufail(s"can not find order ${data.out_trade_no}")
         case Some(order) => {
-          logger.info(s"orderId：${data.out_trade_no}，aliOrderId：${data.out_biz_no}，seller_id：${data.seller_id}，app_id：${data.app_id}，ali_amount：${data.total_amount}，my_amount：${order.totalAmount.setScale(2, RoundingMode.DOWN)}")
-          val amountEquals = data.total_amount.??(amount => if (payTest) amount.equals(BigDecimal(0.01)) else amount.equals(order.totalAmount.setScale(2, RoundingMode.DOWN)))
+          logger.info(s"orderId：${data.out_trade_no}，aliOrderId：${data.out_biz_no}，seller_id：${data.seller_id}，app_id：${data.app_id}，ali_amount：${data.total_amount}，my_amount：${order.payAmount.setScale(2, RoundingMode.DOWN)}")
+          val amountEquals = data.total_amount.??(amount => if (payTest) amount.equals(BigDecimal(0.01)) else amount.equals(order.payAmount.setScale(2, RoundingMode.DOWN)))
           val appIdEquals = data.app_id == appId
           val sellerIdEquals = data.seller_id.??(_ == sellerId)
           if (amountEquals && appIdEquals && sellerIdEquals) {
@@ -215,7 +215,7 @@ case class OrderApi(
     coll.find(
       $doc(
         "status" -> OrderStatus.Create.id,
-        "createAt" $lt DateTime.now.minusMinutes(if (payTest) 3 else 10)
+        "createAt" $lt DateTime.now.minusMinutes(if (payTest) 3 else 30)
       )
     ).list(100) flatMap { cards =>
         cards.map { card =>
