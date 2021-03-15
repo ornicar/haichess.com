@@ -75,8 +75,8 @@ object topnav {
         a(href := routes.UserAnalysis.index)(trans.analysis()),
         a(href := s"${routes.UserAnalysis.index}#explorer")(trans.openingExplorer()),
         a(href := routes.Editor.index)(trans.boardEditor()),
-        a(href := routes.Search.index())(trans.advancedSearch()) /*,
-        a(href := routes.OffContest.home())("比赛编排")*/
+        a(href := routes.Search.index())(trans.advancedSearch()),
+        a(href := routes.OffContest.home())("比赛编排")
       )
     ),
     st.section(
