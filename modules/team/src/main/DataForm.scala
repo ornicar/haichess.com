@@ -48,7 +48,7 @@ private[team] final class DataForm(
     Fields.tagTip,
     "ratingSetting" -> mapping(
       "open" -> boolean,
-      "defaultRating" -> number,
+      "defaultRating" -> number(min = RatingSetting.min, max = RatingSetting.max),
       "coachSupport" -> boolean,
       "turns" -> number(min = 0, max = 500),
       "minutes" -> number(min = 0, max = 240)
@@ -166,23 +166,26 @@ private[team] final class DataForm(
 
   def memberAdd = Form(mapping(
     "mark" -> optional(text(minLength = 1, maxLength = 20)),
+    "rating" -> number(min = RatingSetting.min, max = RatingSetting.max),
     "fields" -> list(mapping(
       "fieldName" -> nonEmptyText,
       "fieldValue" -> optional(nonEmptyText)
     )(MemberTag.apply)(MemberTag.unapply))
   )(MemberAdd.apply)(MemberAdd.unapply))
 
-  def memberEditOf(mwu: MemberWithUser) = memberEdit(mwu.user) fill MemberEdit(
+  def memberEditOf(team: Team, mwu: MemberWithUser) = memberEdit(mwu.user) fill MemberEdit(
     role = mwu.member.role.id,
     mark = mwu.member.mark,
+    rating = mwu.member.rating | team.ratingSettingOrDefault.defaultRating,
     fields = mwu.member.tagsIfEmpty.toList.map {
       case (_, t) => t
     }
   )
 
   def memberEdit(u: lila.user.User) = Form(mapping(
-    "role" -> nonEmptyText.verifying(v => if (Granter(_.Coach)(u)) { Set("coach", "trainee") contains v } else { Set("trainee") contains v }),
+    "role" -> nonEmptyText.verifying("role can not apply", Member.Role.list.map(_._1).contains _),
     "mark" -> optional(text(minLength = 1, maxLength = 10)),
+    "rating" -> number(min = RatingSetting.min, max = RatingSetting.max),
     "fields" -> list(mapping(
       "fieldName" -> nonEmptyText,
       "fieldValue" -> optional(nonEmptyText)
@@ -311,6 +314,7 @@ object MemberSearch {
 
 private[team] case class MemberAdd(
     mark: Option[String],
+    rating: Int,
     fields: List[MemberTag]
 ) {
 }
@@ -318,6 +322,7 @@ private[team] case class MemberAdd(
 private[team] case class MemberEdit(
     role: String,
     mark: Option[String],
+    rating: Int,
     fields: List[MemberTag]
 ) {
   def realRole = Member.Role(role)

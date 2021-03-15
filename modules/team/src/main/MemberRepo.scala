@@ -67,9 +67,10 @@ object MemberRepo {
     role: Member.Role = Member.Role.Trainee,
     tags: Option[MemberTags] = None,
     mark: Option[String] = None,
+    rating: Option[Int] = None,
     clazzIds: Option[List[String]] = None
   ): Funit =
-    coll.insert(Member.make(team = teamId, user = userId, role = role, tags = tags, mark = mark, clazzIds = clazzIds)).void
+    coll.insert(Member.make(team = teamId, user = userId, role = role, tags = tags, mark = mark, rating = rating, clazzIds = clazzIds)).void
 
   def remove(teamId: String, userId: String): Funit =
     coll.remove(selectId(teamId, userId)).void

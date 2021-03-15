@@ -358,7 +358,7 @@ object Team extends LilaController {
           forms.memberAdd.bindFromRequest.fold(
             err => fuccess(BadRequest(html.team.request.accept(team, requestId, referrer, tags, err))),
             data => Env.clazz.api.myTeamClazz(request.user, team.id) flatMap { clazzIds =>
-              api.acceptRequest(team, request, lila.team.MemberTags.byTagList(data.fields), data.mark, clazzIds) inject Redirect(referrer)
+              api.acceptRequest(team, request, lila.team.MemberTags.byTagList(data.fields), data.mark, data.rating, clazzIds) inject Redirect(referrer)
             }
           )
         }
@@ -504,7 +504,7 @@ object Team extends LilaController {
       OptionFuResult(api team mwu.team) { team =>
         TagRepo.findByTeam(mwu.team) flatMap { tags =>
           OwnerAndEnable(team) {
-            Ok(html.team.member.edit(mwu, tags, forms.memberEditOf(mwu))).fuccess
+            Ok(html.team.member.edit(mwu, tags, forms.memberEditOf(team, mwu))).fuccess
           }
         }
       }
@@ -525,6 +525,7 @@ object Team extends LilaController {
                 mwu.member.copy(
                   role = lila.team.Member.Role(data.role),
                   mark = data.mark,
+                  rating = data.rating.some,
                   tags = lila.team.MemberTags.byTagList(data.fields).some
                 )
               ) inject Redirect(routes.Team.members(mwu.team, 1))

@@ -5,8 +5,9 @@ import lila.api.Context
 import lila.app.templating.Environment._
 import lila.app.ui.ScalatagsTemplate._
 import lila.common.String.html.richText
-import controllers.routes
+import lila.team.RatingSetting
 import lila.team.Team
+import controllers.routes
 
 object request {
 
@@ -90,6 +91,7 @@ object request {
       p("如果不想默认添加标签，您可以", a(href := routes.Team.setting(team.id))("设置")),
       postForm(cls := "form3 member-editform", style := "text-align:left;", action := routes.Team.acceptMemberApply(requestId, referrer))(
         form3.group(form("mark"), "备注")(form3.input(_)),
+        form3.group(form("rating"), "初始等级分")(form3.input2(_, typ = "number", vl = team.ratingSettingOrDefault.toString.some)),
         tags.zipWithIndex.map {
           case (t, i) => buildAcceptField(t, form(s"fields[$i]"))
         },

@@ -23,8 +23,6 @@ case class Member(
   def isOwner = role == Member.Role.Owner
   def isCoach = role == Member.Role.Coach
   def isOwnerOrCoach = isOwner || isCoach
-
-  def ratingOrDefault = rating | 0
   def clazzIdOrDefault = clazzIds | Nil
 
 }
@@ -39,13 +37,14 @@ object Member {
     role: Role = Role.Trainee,
     tags: Option[MemberTags] = None,
     mark: Option[String] = None,
+    rating: Option[Int] = None,
     clazzIds: Option[List[String]] = None
   ): Member = new Member(
     _id = makeId(team, user),
     user = user,
     team = team,
     role = role,
-    rating = none,
+    rating = rating,
     tags = tags,
     mark = mark,
     clazzIds = clazzIds,

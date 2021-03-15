@@ -10,9 +10,13 @@ case class RatingSetting(
 
 object RatingSetting {
 
+  val min = 600
+  val max = 2800
+  val defaultRating = 1500
+
   def default = new RatingSetting(
     open = false,
-    defaultRating = 1500,
+    defaultRating = defaultRating,
     coachSupport = false,
     turns = 10,
     minutes = 10

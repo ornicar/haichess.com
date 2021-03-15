@@ -69,6 +69,7 @@ object member {
                   th("账号"),
                   th("角色"),
                   th("姓名（备注）"),
+                  th("等级分"),
                   th("性别"),
                   th("年龄"),
                   th("级别"),
@@ -86,6 +87,7 @@ object member {
                       td(userLink(mu.user)),
                       td(mu.member.role.name),
                       td(mu.viewName),
+                      td(mu.member.rating.map(_.toString) | "-"),
                       td(mu.profile.ofSex.map(_.name) | "-"),
                       td(mu.profile.age.map(_.toString) | "-"),
                       td(mu.profile.ofLevel.name),
@@ -94,7 +96,7 @@ object member {
                       },
                       td(
                         a(cls := "button button-empty", href := "/inbox/new?user=" + mu.user.username)("发消息"),
-                        !team.isCreator(mu.user.id) option a(cls := "button button-empty member-edit", href := routes.Team.editMemberModal(mu.member.id))("编辑"),
+                        a(cls := "button button-empty member-edit", href := routes.Team.editMemberModal(mu.member.id))("编辑"),
                         postForm(cls := "inline", action := routes.Team.kick(team.id))(
                           input(tpe := "hidden", name := "url", value := routes.Team.members(team.id, 1)),
                           !team.isCreator(mu.user.id) option button(name := "userId", title := "移除成员后不可恢复，是否继续？", cls := "button button-empty button-no-upper confirm", value := mu.user.id)("移除")
@@ -173,8 +175,9 @@ object member {
     div(cls := "modal-content none")(
       h2(mu.user.username),
       postForm(cls := "form3 member-editform", style := "text-align:left;", action := routes.Team.editMemberApply(mu.member.id))(
-        form3.group(form("role"), "角色", klass = (!ctx.me.??(Granter(_.Team)) || !Granter(_.Coach)(mu.user)) ?? "none")(form3.radio(_, Member.Role.list.filterNot(_._1 == "owner"))),
+        form3.group(form("role"), "角色", klass = mu.member.isOwner ?? "none")(form3.radio(_, if (mu.member.isOwner) Member.Role.list else Member.Role.list.filterNot(_._1 == "owner"))),
         form3.group(form("mark"), "备注")(form3.input(_)),
+        form3.group(form("rating"), "初始等级分")(form3.input(_, typ = "number")),
         tags.zipWithIndex.map {
           case (t, i) => buildEditField(mu.member, t, form(s"fields[$i]"))
         },
