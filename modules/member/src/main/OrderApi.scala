@@ -67,8 +67,8 @@ case class OrderApi(
     )
   }
 
-  def findLastId(typ: ProductType): Fu[Option[String]] = {
-    coll.find($doc("typ" -> typ.id), $id(true))
+  def findLastId(typ: ProductType, now: DateTime): Fu[Option[String]] = {
+    coll.find($doc("typ" -> typ.id, "createAt" -> ($gte(now.withTimeAtStartOfDay()) ++ $lte(now.withTime(23, 59, 59, 999)))), $id(true))
       .sort($sort desc "_id")
       .uno[Bdoc] map {
         _ flatMap { doc => doc.getAs[String]("_id") }
@@ -96,7 +96,7 @@ case class OrderApi(
     val now = DateTime.now
     val productType = ProductType(data.productTyp)
     val prefix = productType.prefix + payTest.??(Random nextString 4) + now.toString("yyyyMMdd")
-    findLastId(ProductType(data.productTyp)) map {
+    findLastId(ProductType(data.productTyp), now) map {
       case None => prefix + "000001"
       case Some(lastId) => {
         if (lastId.contains(prefix)) {
