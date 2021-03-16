@@ -28,6 +28,9 @@ case class OrderApi(
 
   import BSONHandlers.OrderBSONHandler
 
+  // 24小时22分钟内阿里会不断重发通知，所以要保证超过这个时间
+  val alipayTimeout = 24 * 60 + 25
+
   def byId(id: String): Fu[Option[Order]] = coll.byId(id)
 
   def mine(userId: User.ID, typ: Option[ProductType] = none): Fu[List[Order]] = coll.find(
@@ -147,7 +150,7 @@ case class OrderApi(
 
   // 参考文档: https://opendocs.alipay.com/apis/api_1/alipay.trade.page.pay/?scene=API002020081300013629
   def alipay(order: Order): Fu[String] = {
-    val expireAt = order.createAt.plusMinutes(if (payTest) 3 else 30)
+    val expireAt = order.createAt.plusMinutes(if (payTest) 3 else alipayTimeout)
     val response = Payment.Page()
       .asyncNotify("https://haichess.com/member/order/asyncNotify")
       .optional("goods_type", "0") // 商品主类型：0-虚拟类商品，1-实物类商品
@@ -182,8 +185,8 @@ case class OrderApi(
             // WAIT_BUYER_PAY（交易创建，等待买家付款）、TRADE_CLOSED（未付款交易超时关闭，或支付完成后全额退款）、TRADE_SUCCESS（交易支付成功）、TRADE_FINISHED（交易结束，不可退款）
             // logger.info("formParams => " + formParams)
             orderPayApi.setAlipayData(order, data) >>
-              ( /*order.isCreate && */ data.trade_status.??(s => s == "TRADE_SUCCESS" || s == "TRADE_FINISHED")).??(payCallback(order)) >>
-              ( /*order.isCreate && */ data.trade_status.??(_ == "TRADE_CLOSED")).??(setStatus(order, OrderStatus.Canceled))
+              (order.isCreate && data.trade_status.??(s => s == "TRADE_SUCCESS" || s == "TRADE_FINISHED")).??(payCallback(order)) >>
+              (order.isCreate && data.trade_status.??(_ == "TRADE_CLOSED")).??(setStatus(order, OrderStatus.Canceled))
           } else {
             fufail(s"alipay verify failed, orderId: ${data.out_trade_no}, amountEquals: $amountEquals, appIdEquals: $appIdEquals, sellerIdEquals: $sellerIdEquals")
           }
@@ -215,7 +218,7 @@ case class OrderApi(
     coll.find(
       $doc(
         "status" -> OrderStatus.Create.id,
-        "createAt" $lt DateTime.now.minusMinutes(if (payTest) 3 else 30)
+        "createAt" $lt DateTime.now.minusMinutes(if (payTest) 3 else alipayTimeout)
       )
     ).list(100) flatMap { cards =>
         cards.map { card =>
