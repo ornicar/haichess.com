@@ -182,8 +182,8 @@ case class OrderApi(
             // WAIT_BUYER_PAY（交易创建，等待买家付款）、TRADE_CLOSED（未付款交易超时关闭，或支付完成后全额退款）、TRADE_SUCCESS（交易支付成功）、TRADE_FINISHED（交易结束，不可退款）
             // logger.info("formParams => " + formParams)
             orderPayApi.setAlipayData(order, data) >>
-              (order.isCreate && data.trade_status.??(s => s == "TRADE_SUCCESS" || s == "TRADE_FINISHED")).??(payCallback(order)) >>
-              (order.isCreate && data.trade_status.??(_ == "TRADE_CLOSED")).??(setStatus(order, OrderStatus.Canceled))
+              ( /*order.isCreate && */ data.trade_status.??(s => s == "TRADE_SUCCESS" || s == "TRADE_FINISHED")).??(payCallback(order)) >>
+              ( /*order.isCreate && */ data.trade_status.??(_ == "TRADE_CLOSED")).??(setStatus(order, OrderStatus.Canceled))
           } else {
             fufail(s"alipay verify failed, orderId: ${data.out_trade_no}, amountEquals: $amountEquals, appIdEquals: $appIdEquals, sellerIdEquals: $sellerIdEquals")
           }
