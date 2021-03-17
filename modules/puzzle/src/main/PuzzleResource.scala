@@ -7,6 +7,7 @@ import lila.db.paginator.Adapter
 import Puzzle.{ BSONFields => F }
 import lila.user.User
 import lila.resource.DataForm.puzzle.{ ImportedData, LikedData, ThemeData }
+import reactivemongo.bson.BSONDocument
 
 private[puzzle] final class PuzzleResource(
     puzzleColl: Coll,
@@ -87,7 +88,7 @@ private[puzzle] final class PuzzleResource(
     )
   }
 
-  def themeSearchCondition(query: ThemeData, fromPuzzleId: Option[Int] = None) = {
+  def themeSearchCondition(query: ThemeData, fromPuzzleId: Option[Int] = None, equalsPuzzleId: Option[Int] = None) = {
     var condition = $doc(F.mark $exists true) ++ enabled
 
     if (query.ratingMin.isDefined || query.ratingMax.isDefined) {
@@ -145,9 +146,14 @@ private[puzzle] final class PuzzleResource(
       condition = condition ++ $doc(s"${F.mark}.comprehensive" -> $in(tg: _*))
     }
 
+    equalsPuzzleId foreach { puzzleId =>
+      condition = condition ++ $doc(F.id -> puzzleId)
+    }
+
     fromPuzzleId foreach { minPuzzleId =>
       condition = condition ++ $doc(F.id -> $gt(minPuzzleId))
     }
+    //println(BSONDocument.pretty(condition))
     condition
   }
 

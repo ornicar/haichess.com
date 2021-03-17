@@ -27,6 +27,7 @@ final class Env(
     val CollectionPuzzleRushRankHistory = config getString "collection.rush_rank_history"
     val CollectionPuzzleRushRankToday = config getString "collection.rush_rank_today"
     val CollectionPuzzleRushRankSeason = config getString "collection.rush_rank_season"
+    val CollectionPuzzleThemeRecord = config getString "collection.puzzle_theme_record"
 
     val ApiToken = config getString "api.token"
     val AnimationDuration = config duration "animation.duration"
@@ -128,6 +129,10 @@ final class Env(
     puzzleColl = puzzleColl
   )
 
+  lazy val puzzleThemeRecord = new ThemeRecordApi(
+    coll = puzzleThemeRecordColl
+  )
+
   lazy val forms = DataForm
 
   lazy val daily = new Daily(
@@ -160,6 +165,7 @@ final class Env(
   private[puzzle] lazy val puzzleRushRankHistoryColl = db(CollectionPuzzleRushRankHistory)
   private[puzzle] lazy val puzzleRushRankTodayColl = db(CollectionPuzzleRushRankToday)
   private[puzzle] lazy val puzzleRushRankSeasonColl = db(CollectionPuzzleRushRankSeason)
+  private[puzzle] lazy val puzzleThemeRecordColl = db(CollectionPuzzleThemeRecord)
 
   system.lilaBus.subscribeFun('finishPuzzle, 'beginRush) {
     case res: lila.puzzle.Puzzle.UserResult => puzzleRoundApi.createBySub(res)
@@ -177,6 +183,11 @@ final class Env(
   system.lilaBus.subscribeFun('finishRush) {
     case rush: lila.puzzle.PuzzleRush => puzzleRushRankSeasonApi.createBySub(rush)
   }
+
+  system.lilaBus.subscribeFun('nextThemePuzzle) {
+    case lila.hub.actorApi.puzzle.NextThemePuzzle(puzzleId, userId, queryString) => puzzleThemeRecord.upsert(userId, puzzleId, queryString)
+  }
+
 }
 
 object Env {

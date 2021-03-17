@@ -66,12 +66,12 @@ private[puzzle] final class Selector(
     }
   }
 
-  def nextThemePuzzle(user: User, themeSearchCondition: BSONDocument): Fu[Option[Puzzle]] = {
+  def nextThemePuzzle(user: User, themeSearchCondition: BSONDocument, queryString: String): Fu[Option[Puzzle]] = {
     puzzleColl.find(themeSearchCondition, projection)
       .sort($sort asc F.id)
       .uno[Puzzle].map { po =>
         po.?? { p =>
-          bus.publish(NextThemePuzzle(p.id, user.id), 'nextPuzzle)
+          bus.publish(NextThemePuzzle(p.id, user.id, queryString), 'nextThemePuzzle)
         }
         po
       }
