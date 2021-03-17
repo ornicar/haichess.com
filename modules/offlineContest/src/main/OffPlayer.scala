@@ -157,7 +157,7 @@ object OffPlayer {
       var attr = Json.obj(
         "id" -> userId,
         "name" -> realNameOrUsername,
-        "teamRating" -> member.??(_.rating),
+        "teamRating" -> member.??(_.rating.map(_.intValue)),
         "clazz" -> member.??(_.clazzIds | List.empty[String]),
         "level" -> user.profileOrDefault.currentLevel.level,
         "sex" -> user.profileOrDefault.sex
@@ -190,7 +190,7 @@ object OffPlayer {
       var attr = Json.obj(
         "id" -> userId,
         "name" -> realNameOrUsername,
-        "teamRating" -> member.??(_.rating),
+        "teamRating" -> member.??(_.rating.map(_.intValue)),
         "clazz" -> member.??(_.clazzIds | List.empty[String]),
         "level" -> user.profileOrDefault.currentLevel.level,
         "sex" -> user.profileOrDefault.sex

@@ -35,6 +35,19 @@ private object BSONHandlers {
     def write(x: MemberTags) = BSONDocument(x.tagMap.mapValues(MemberTagBSONWriter.write))
   }
 
+  implicit val eloRatingBSONHandler = new BSON[EloRating] {
+
+    def reads(r: BSON.Reader): EloRating = EloRating(
+      rating = r double "r",
+      games = r int "g"
+    )
+
+    def writes(w: BSON.Writer, o: EloRating) = BSONDocument(
+      "r" -> w.double(o.rating),
+      "g" -> w.int(o.games)
+    )
+  }
+
   implicit val RatingSettingBSONHandler = Macros.handler[RatingSetting]
   implicit val EnvPictureHandler = lila.db.dsl.bsonArrayToListHandler[String]
   implicit val CertificationBSONHandler = Macros.handler[Certification]

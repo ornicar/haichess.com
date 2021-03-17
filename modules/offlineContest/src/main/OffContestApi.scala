@@ -143,7 +143,7 @@ class OffContestApi(
           OffPlayerRepo.findNextNo(c.id) flatMap { no =>
             val players = members.zip(userIds).zipWithIndex map {
               case ((memberOption, userId), index) => {
-                OffPlayer.make(c.id, if (c.isCreated) index + 1 else no + index, userId, memberOption.??(_.rating), OffPlayer.isExternal(userId), c.currentRound, round.isOverPairing)
+                OffPlayer.make(c.id, if (c.isCreated) index + 1 else no + index, userId, memberOption.??(_.rating.map(_.intValue)), OffPlayer.isExternal(userId), c.currentRound, round.isOverPairing)
               }
             }
             if (c.isCreated) {

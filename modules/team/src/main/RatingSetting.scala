@@ -10,9 +10,9 @@ case class RatingSetting(
 
 object RatingSetting {
 
-  val min = 600
-  val max = 2800
-  val defaultRating = 1500
+  val min = EloRating.min
+  val max = EloRating.max
+  val defaultRating = EloRating.defaultRating
 
   def default = new RatingSetting(
     open = false,

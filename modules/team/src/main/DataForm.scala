@@ -166,7 +166,7 @@ private[team] final class DataForm(
 
   def memberAdd = Form(mapping(
     "mark" -> optional(text(minLength = 1, maxLength = 20)),
-    "rating" -> optional(number(min = RatingSetting.min, max = RatingSetting.max)),
+    "rating" -> optional(number(min = EloRating.min, EloRating.max)),
     "fields" -> list(mapping(
       "fieldName" -> nonEmptyText,
       "fieldValue" -> optional(nonEmptyText)
@@ -176,7 +176,6 @@ private[team] final class DataForm(
   def memberEditOf(team: Team, mwu: MemberWithUser) = memberEdit(mwu.user) fill MemberEdit(
     role = mwu.member.role.id,
     mark = mwu.member.mark,
-    rating = mwu.member.rating,
     fields = mwu.member.tagsIfEmpty.toList.map {
       case (_, t) => t
     }
@@ -185,7 +184,6 @@ private[team] final class DataForm(
   def memberEdit(u: lila.user.User) = Form(mapping(
     "role" -> nonEmptyText.verifying("role can not apply", Member.Role.list.map(_._1).contains _),
     "mark" -> optional(text(minLength = 1, maxLength = 10)),
-    "rating" -> optional(number(min = RatingSetting.min, max = RatingSetting.max)),
     "fields" -> list(mapping(
       "fieldName" -> nonEmptyText,
       "fieldValue" -> optional(nonEmptyText)
@@ -322,7 +320,6 @@ private[team] case class MemberAdd(
 private[team] case class MemberEdit(
     role: String,
     mark: Option[String],
-    rating: Option[Int],
     fields: List[MemberTag]
 ) {
   def realRole = Member.Role(role)

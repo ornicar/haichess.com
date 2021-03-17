@@ -87,7 +87,7 @@ object member {
                       td(userLink(mu.user)),
                       td(mu.member.role.name),
                       td(mu.viewName),
-                      td(mu.member.rating.map(_.toString) | "-"),
+                      td(mu.member.rating.map(_.intValue.toString) | "-"),
                       td(mu.profile.ofSex.map(_.name) | "-"),
                       td(mu.profile.age.map(_.toString) | "-"),
                       td(mu.profile.ofLevel.name),
@@ -177,7 +177,6 @@ object member {
       postForm(cls := "form3 member-editform", style := "text-align:left;", action := routes.Team.editMemberApply(mu.member.id))(
         form3.group(form("role"), "角色", klass = mu.member.isOwner ?? "none")(form3.radio(_, if (mu.member.isOwner) Member.Role.list else Member.Role.list.filterNot(_._1 == "owner"))),
         form3.group(form("mark"), "备注")(form3.input(_)),
-        form3.group(form("rating"), "初始等级分")(form3.input(_, typ = "number")),
         tags.zipWithIndex.map {
           case (t, i) => buildEditField(mu.member, t, form(s"fields[$i]"))
         },

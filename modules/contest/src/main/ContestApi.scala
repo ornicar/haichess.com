@@ -163,11 +163,11 @@ class ContestApi(
   private def teamRating(c: Contest, user: User): Fu[Option[Int]] = {
     {
       c.typ match {
-        case Contest.Type.Public | Contest.Type.TeamInner => MemberRepo.byId(c.organizer, user.id) map (_.??(_.rating))
+        case Contest.Type.Public | Contest.Type.TeamInner => MemberRepo.byId(c.organizer, user.id) map (_.??(_.rating.map(_.intValue)))
         case Contest.Type.ClazzInner => clazzApi.byId(c.organizer) flatMap {
           _.?? { clazz =>
             clazz.team.fold(fuccess(none[Int])) { teamId =>
-              MemberRepo.byId(teamId, user.id) map (_.??(_.rating))
+              MemberRepo.byId(teamId, user.id) map (_.??(_.rating.map(_.intValue)))
             }
           }
         }

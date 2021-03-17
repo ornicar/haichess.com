@@ -6,7 +6,7 @@ import lila.common.paginator.Paginator
 import lila.common.{ HTTPRequest, MaxPerSecond }
 import lila.memo.UploadRateLimit
 import lila.security.Granter
-import lila.team.{ Invite, InviteRepo, Joined, MemberRepo, MemberSearch, Motivate, RequestRepo, TagRepo, TeamRepo, Team => TeamModel }
+import lila.team.{ EloRating, Invite, InviteRepo, Joined, MemberRepo, MemberSearch, Motivate, RequestRepo, TagRepo, TeamRepo, Team => TeamModel }
 import lila.user.{ UserRepo, User => UserModel }
 import ornicar.scalalib.Random
 import play.api.libs.json.Json
@@ -525,7 +525,6 @@ object Team extends LilaController {
                 mwu.member.copy(
                   role = lila.team.Member.Role(data.role),
                   mark = data.mark,
-                  rating = data.rating,
                   tags = lila.team.MemberTags.byTagList(data.fields).some
                 )
               ) inject Redirect(routes.Team.members(mwu.team, 1))
