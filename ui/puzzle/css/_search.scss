@@ -42,4 +42,57 @@
     font-size: 1.5em;
     color: $c-warn;
   }
+
+  .themeHistory {
+    h2 {
+      font-size: 1em;
+      text-transform: uppercase;
+      text-align: center;
+      white-space: nowrap;
+      margin: $block-gap 0 3px 0;
+      display: table;
+      padding: 0 10px;
+      &:before,
+      &:after {
+        border-top: $border;
+        content: '';
+        display: table-cell;
+        position: relative;
+        top: .5em;
+        width: 45%;
+      }
+      &:before {
+        right: 8px;
+      }
+      &:after {
+        left: 8px;
+      }
+    }
+
+    .tags {
+      font-size: .8rem;
+      span {
+        display: inline-block;
+        color: #fff;
+        padding: 1px 4px;
+        background: $c-font-dim;
+        margin-top: 2px;
+        margin-right: 2px;
+        border-radius: 2em;
+      }
+    }
+
+    .actions {
+      font-size: .8rem;
+      text-align: right;
+      a {
+        color: $c-font-dim;
+        margin-right: 3px;
+        white-space: nowrap;
+        &:hover {
+          color: $c-font-dimmer;
+        }
+      }
+    }
+  }
 }

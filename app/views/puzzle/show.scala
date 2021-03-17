@@ -6,9 +6,8 @@ import lila.app.templating.Environment._
 import lila.app.ui.ScalatagsTemplate._
 import lila.common.String.html.safeJsonValue
 import lila.resource.ThemeQuery
-import play.api.data.Form
-import controllers.routes
 import lila.puzzle.ThemeShow
+import controllers.routes
 
 object show {
 
@@ -21,6 +20,7 @@ object show {
         tagsinputTag,
         drawerTag,
         jsAt(s"compiled/lichess.puzzle${isProd ?? (".min")}.js"),
+        jsTag("puzzle.theme.js"),
         embedJsUnsafe(s"""
 lichess = lichess || {};
 lichess.puzzle = ${
@@ -62,7 +62,7 @@ lichess.puzzle = ${
       drawer("搜索", "主题搜索") {
         st.form(
           cls := "search_form",
-          action := s"${routes.Puzzle.themePuzzle(ts.id)}#results",
+          action := s"${routes.Puzzle.themePuzzle(100000)}#results",
           method := "GET"
         )(
             ts.rnf option div(cls := "theme-rnf")("没有搜索到，换个主题吧~"),
@@ -129,6 +129,27 @@ lichess.puzzle = ${
                   form3.tags(ts.searchForm, "tags", ts.markTags)
                 )
               )*/
+            ),
+            div(cls := "themeHistory")(
+              h2("做题历史"),
+              table(
+                tbody(
+                  ts.history map { record =>
+                    tr(
+                      td(cls := "tags")(
+                        record.toTags map { tg =>
+                          span(tg)
+                        }
+                      ),
+                      td(cls := "actions")(
+                        a(cls := "continue", dataHref := routes.Puzzle.themePuzzleHistoryUri(record.id))("继续"),
+                        a(cls := "restart", dataHref := routes.Puzzle.themePuzzleHistoryUri(record.id))("重开"),
+                        a(cls := "remove", dataHref := routes.Puzzle.themePuzzleHistoryRemove(record.id))("删除")
+                      )
+                    )
+                  }
+                )
+              )
             ),
             div(cls := "drawer-footer")(
               div(cls := "drawer-footer-btn")(

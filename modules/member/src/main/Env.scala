@@ -81,7 +81,7 @@ final class Env(
 
   bus.subscribeFun('nextPuzzle, 'nextThemePuzzle, 'startPuzzleRush) {
     case NextPuzzle(_, userId) => memberActiveRecordApi.updateRecord(userId, puzzle = true)
-    case NextThemePuzzle(_, userId) => memberActiveRecordApi.updateRecord(userId, themePuzzle = true)
+    case NextThemePuzzle(_, userId, _) => memberActiveRecordApi.updateRecord(userId, themePuzzle = true)
     case StartPuzzleRush(_, userId) => memberActiveRecordApi.updateRecord(userId, puzzleRush = true)
   }
 
