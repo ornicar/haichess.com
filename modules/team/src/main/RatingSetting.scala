@@ -19,7 +19,7 @@ object RatingSetting {
     defaultRating = defaultRating,
     coachSupport = false,
     turns = 10,
-    minutes = 10
+    minutes = 22
   )
 
 }

@@ -45,14 +45,14 @@
     }
 
     .info {
+      text-align: right;
       font-size: .9em;
       white-space: nowrap;
-      display: none;
-      @include breakpoint($mq-x-small) {
-        display: table-cell;
+
+      .rating {
+        color: $c-brag;
       }
     }
-
   }
 }
 

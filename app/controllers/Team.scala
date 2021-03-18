@@ -6,7 +6,7 @@ import lila.common.paginator.Paginator
 import lila.common.{ HTTPRequest, MaxPerSecond }
 import lila.memo.UploadRateLimit
 import lila.security.Granter
-import lila.team.{ EloRating, Invite, InviteRepo, Joined, MemberRepo, MemberSearch, Motivate, RequestRepo, TagRepo, TeamRepo, Team => TeamModel }
+import lila.team.{ Invite, InviteRepo, Joined, MemberRepo, MemberSearch, Motivate, RequestRepo, TagRepo, TeamRepo, Team => TeamModel }
 import lila.user.{ UserRepo, User => UserModel }
 import ornicar.scalalib.Random
 import play.api.libs.json.Json

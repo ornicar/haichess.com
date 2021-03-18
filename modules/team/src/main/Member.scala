@@ -23,6 +23,8 @@ case class Member(
   def isOwner = role == Member.Role.Owner
   def isCoach = role == Member.Role.Coach
   def isOwnerOrCoach = isOwner || isCoach
+  def intRating = rating.map(_.intValue)
+
   def clazzIdOrDefault = clazzIds | Nil
 
 }

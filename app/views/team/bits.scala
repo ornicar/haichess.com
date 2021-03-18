@@ -58,9 +58,7 @@ object bits {
       ),
       td(cls := "info")(
         p(trans.nbMembers.plural(t.nbMembers, t.nbMembers.localize)),
-        p(
-          b(twm.member.role.name)
-        )
+        p(a(cls := "rating")(twm.member.intRating.map(r => s"${r}分")), nbsp, b(twm.member.role.name))
       )
     )
   }

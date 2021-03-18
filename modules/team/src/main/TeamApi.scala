@@ -85,11 +85,13 @@ final class TeamApi(
       tagTip = s.tagTip == 1,
       ratingSetting = s.ratingSetting.some
     ) |> { team =>
-      coll.team.update($id(team.id), team).void >>
+      coll.team.update($id(team.id), team).void >> s.ratingSetting.open.?? {
+        MemberRepo.updateMembersRating(team.id, s.ratingSetting.defaultRating)
+      } >> {
         !team.isCreator(me.id) ?? {
           modLog.teamEdit(me.id, team.createdBy, team.name)
-        } >>-
-        (indexer ! InsertTeam(team))
+        } >>- (indexer ! InsertTeam(team))
+      }
     }
 
   def update(team: Team, edit: TeamEdit, me: User): Funit = edit.trim |> { e =>

@@ -90,6 +90,15 @@ object MemberRepo {
 
   def updateMember(member: Member) = coll.update($id(member.id), member)
 
+  def updateMembersRating(teamId: ID, defaultRating: Int): Funit =
+    coll.update(
+      teamQuery(teamId) ++ $doc("rating" $exists false),
+      $set(
+        "rating" -> EloRating(defaultRating, 0)
+      ),
+      multi = true
+    ).void
+
   def removeTag(teamId: ID, field: String) = coll.update(
     teamQuery(teamId),
     $unset(s"tags.$field")
