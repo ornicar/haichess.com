@@ -17,8 +17,10 @@ private[puzzle] final class ThemeRecordApi(coll: Coll) {
   ): Funit = {
     val emptys = List(
       "showDrawer=true",
+      "showDrawer=false",
       "ratingMin=&ratingMax=&stepsMin=&stepsMax=",
-      "ratingMin=&ratingMax=&stepsMin=&stepsMax=&showDrawer=true"
+      "ratingMin=&ratingMax=&stepsMin=&stepsMax=&showDrawer=true",
+      "ratingMin=&ratingMax=&stepsMin=&stepsMax=&showDrawer=false"
     )
     !emptys.contains(queryString) ?? {
       val record = ThemeRecord.make(userId, puzzleId, queryString)
