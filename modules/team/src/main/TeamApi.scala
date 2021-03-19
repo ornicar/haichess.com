@@ -15,7 +15,7 @@ import lila.team.Team.TeamWithMember
 import lila.user.User.ID
 import akka.pattern.ask
 import makeTimeout.large
-import lila.hub.actorApi.contest.GetContestNote
+import lila.hub.actorApi.contest.{ContestBoard, GetContestBoard}
 
 final class TeamApi(
     coll: Colls,
@@ -404,59 +404,99 @@ final class TeamApi(
         } yield {
           val teamIds = whiteTeamIds & blackTeamIds
           teamFromSecondary(teamIds.toSeq) flatMap { teams =>
-            teams.foreach { team =>
+            teams.map { team =>
               team.ratingSetting.?? { setting =>
-                (setting.open && game.turns > setting.turns && (game.clock.??{ c => (c.limitSeconds + c.incrementSeconds * 40) / 60 >= math.max(setting.minutes, 2) }).?? {
-                  for {
-                    whiteMemberOption <- MemberRepo.byId(team.id, white.id)
-                    blackMemberOption <- MemberRepo.byId(team.id, black.id)
-                  } yield {
-                    (whiteMemberOption |@| blackMemberOption).tupled ?? {
-                      case (whiteMember, blackMember) => {
-                        val whiteRating = (whiteMember.rating | EloRating(setting.defaultRating, 0))
-                        val blackRating = (blackMember.rating | EloRating(setting.defaultRating, 0))
-                        val newWhiteRating = whiteRating.calc(blackRating.rating, game.whitePlayer.isWinner)
-                        val newBlackRating = blackRating.calc(whiteRating.rating, game.blackPlayer.isWinner)
-                      }
-                    }
-                  }
-                }
+                funit
               }
-            }
+            }.sequenceFu.void
           }
         }
       }
     }
   }
 
-  private def setRating(game: Game, member: Member, oldRating: EloRating, newRating: EloRating, whiteUserId: String, blackUserId: String) = {
-    if(game.isContest) {
-      TeamRating.makeId(
-        userId = member.user,
-        diff = newRating.intValue - oldRating.intValue,
-        note: String,
-        typ: TeamRating.Typ
-      )
+/*  (setting.open && game.turns > setting.turns && (game.clock.??{ c => (c.limitSeconds + c.incrementSeconds * 40) / 60 >= math.max(setting.minutes, 2) }).?? {
+    for {
+      whiteMemberOption <- MemberRepo.byId(team.id, white.id)
+      blackMemberOption <- MemberRepo.byId(team.id, black.id)
+    } yield {
+      (whiteMemberOption |@| blackMemberOption).tupled ?? {
+        case (whiteMember, blackMember) => {
+          val whiteRating = (whiteMember.rating | EloRating(setting.defaultRating, 0))
+          val blackRating = (blackMember.rating | EloRating(setting.defaultRating, 0))
+          val newWhiteRating = whiteRating.calc(blackRating.rating, game.whitePlayer.isWinner)
+          val newBlackRating = blackRating.calc(whiteRating.rating, game.blackPlayer.isWinner)
+
+          if(game.isContest) {
+            game.contestId.?? { contestId =>
+              (contestActor ? GetContestBoard(contestId)).mapTo[Option[ContestBoard]] flatMap {
+                _.?? { board =>
+                  board.teamRated.?? {
+                    setContestRating(game, whiteMember, board, whiteRating, newWhiteRating, white.id, black.id) >>
+                      setContestRating(game, blackMember, board, blackRating, newBlackRating, white.id, black.id)
+                  }
+                }
+              }
+            }
+          } else {
+            game.rated.?? {
+              setGameRating(game, whiteMember, whiteRating, newWhiteRating, white.id, black.id) >>
+                setGameRating(game, blackMember, blackRating, newBlackRating, white.id, black.id)
+            }
+          }
+        }
+      }
     }
-    MemberRepo.updateMember(member.copy(rating = newRating.some)).void
+  }*/
+
+  private def setGameRating(
+    game: Game,
+    member: Member,
+    oldRating: EloRating,
+    newRating: EloRating,
+    whiteUserId: String,
+    blackUserId: String
+  ): Funit = {
+    setRating(member, oldRating, newRating, gameResult(game, whiteUserId, blackUserId))
   }
 
-  private def makeMemberRatingNote(game: Game, whiteUserId: String, blackUserId: String): Fu[String] = {
+  private def setContestRating(
+    game: Game,
+    member: Member,
+    board: ContestBoard,
+    oldRating: EloRating,
+    newRating: EloRating,
+    whiteUserId: String,
+    blackUserId: String
+  ): Funit = {
+    val note = s"${board.contestFullName} 第${board.roundNo}轮  ${gameResult(game, whiteUserId, blackUserId)}"
+    setRating(member, oldRating, newRating, note)
+  }
+
+  private def setRating(
+    member: Member,
+    oldRating: EloRating,
+    newRating: EloRating,
+    note: String
+  ): Funit = {
+    TeamRatingRepo.insert(
+      TeamRating.make(
+        userId = member.user,
+        diff = newRating.intValue - oldRating.intValue,
+        note = note,
+        typ = TeamRating.Typ.Contest
+      )
+    ) >> MemberRepo.updateMember(member.copy(rating = newRating.some)).void
+  }
+
+  private def gameResult(game: Game, whiteUserId: String, blackUserId: String): String = {
     val result = {
       game.winnerColor match {
         case None => "1/2-1/2"
         case Some(c) => c.fold("1-0", "0-1")
       }
     }
-
-    val resultWithUser = s"$whiteUserId $result $blackUserId"
-    if(game.isContest /*&& teamRating*/) {
-      game.contestId.?? { id =>
-        (contestActor ? GetContestNote(id)).mapTo[String] map { note =>
-          s"$note  $resultWithUser"
-        }
-      }
-    } else fuccess(resultWithUser)
+    s"$whiteUserId $result $blackUserId"
   }
 
 }

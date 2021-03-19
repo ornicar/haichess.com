@@ -19,6 +19,7 @@ case class Contest(
     variant: Variant,
     position: StartingPosition,
     mode: Mode, // rated ?
+    teamRated: Boolean,
     clock: ClockConfig,
     rule: Contest.Rule,
     startsAt: DateTime,
@@ -169,6 +170,7 @@ object Contest {
     variant: Variant,
     position: StartingPosition,
     mode: Mode, // rated ?
+    teamRated: Boolean,
     clock: ClockConfig,
     rule: Contest.Rule,
     startsAt: DateTime,
@@ -200,6 +202,7 @@ object Contest {
     variant = variant,
     position = position,
     mode = mode,
+    teamRated = teamRated,
     clock = clock,
     rule = rule,
     startsAt = startsAt,

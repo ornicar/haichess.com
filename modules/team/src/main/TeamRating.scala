@@ -18,7 +18,7 @@ case class TeamRating(
 
 object TeamRating {
 
-  def makeId(
+  def make(
     userId: String,
     diff: Int,
     note: String,

@@ -62,7 +62,7 @@ final class Env(
     timeline = hub.timeline,
     modLog = modLog,
     photographer = photographer,
-    getContestNote = getContestNote,
+    contestActor = hub.contest,
     adminUid = AdminUid
   )
 

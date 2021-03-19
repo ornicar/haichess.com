@@ -47,10 +47,6 @@ class ContestApi(
       case (board, round, contest) => Board.FullInfo(board, round, contest)
     }
 
-  def getContestNote(gameId: Game.ID): Fu[String] = fullBoardInfo(gameId) map {
-    _.?? { b => s"${b.contest.fullName} 第${b.round.no}轮" }
-  }
-
   def contestBoard(game: Game): Fu[Option[Board]] = BoardRepo.byId(game.id)
 
   def create(contest: Contest, rounds: List[Round]): Fu[Contest] = {
@@ -70,6 +66,7 @@ class ContestApi(
         mode = c.mode,
         clock = c.clock,
         rule = c.rule,
+        teamRated = c.teamRated,
         startsAt = c.startsAt,
         finishAt = c.finishAt,
         deadline = c.deadline,

@@ -309,7 +309,8 @@ package clazz {
 }
 
 package contest {
-  case class GetContestNote(gameId: String)
+  case class ContestBoard(contestId: String, contestFullName: String, teamRated: Boolean, roundNo: Int)
+  case class GetContestBoard(gameId: String)
 }
 
 package calendar {

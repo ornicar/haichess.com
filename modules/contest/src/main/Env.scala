@@ -5,7 +5,7 @@ import lila.common.{AtMost, Every, ResilientScheduler}
 import scala.concurrent.duration._
 import lila.hub.{Duct, DuctMap}
 import akka.actor._
-import lila.hub.actorApi.contest.GetContestNote
+import lila.hub.actorApi.contest.{GetContestBoard, ContestBoard}
 
 final class Env(
     config: Config,
@@ -101,7 +101,15 @@ final class Env(
 
   system.actorOf(Props(new Actor {
     def receive = {
-      case GetContestNote(gameId: String) => sender ! contestApi.getContestNote(gameId)
+      case GetContestBoard(gameId: String) => {
+        sender ! {
+          contestApi.fullBoardInfo(gameId) map {
+            _.map { c =>
+              ContestBoard(c.contest.id, c.contest.fullName, c.contest.teamRated, c.round.no)
+            }
+          }
+        }
+      }
     }
   }), name = ActorName)
 

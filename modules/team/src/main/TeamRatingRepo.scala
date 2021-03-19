@@ -14,7 +14,7 @@ object TeamRatingRepo {
   def findByUser(userId: String): Fu[List[TeamRating]] =
     coll.find(userQuery(userId)).sort($doc("createAt" -> -1)).list()
 
-  def create(rating: TeamRating): Funit = coll.insert(rating).void
+  def insert(rating: TeamRating): Funit = coll.insert(rating).void
 
   def page(page: Int, userId: String): Fu[Paginator[TeamRating]] = {
     val adapter = new Adapter[TeamRating](
