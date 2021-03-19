@@ -308,6 +308,10 @@ package clazz {
   case class ClazzJoinAccept(clazzId: String, clazzName: String, coachId: String, studentId: String)
 }
 
+package contest {
+  case class GetContestNote(gameId: String)
+}
+
 package calendar {
 
   case class CalendarCreate(

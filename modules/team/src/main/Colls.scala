@@ -7,5 +7,6 @@ private final class Colls(
     val request: Coll,
     val invite: Coll,
     val member: Coll,
-    val tag: Coll
+    val tag: Coll,
+    val rating: Coll
 )

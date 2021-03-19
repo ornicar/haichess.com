@@ -38,14 +38,18 @@ class ContestApi(
 
   def byId(id: Contest.ID): Fu[Option[Contest]] = ContestRepo.byId(id)
 
-  def fullBoardInfo(game: Game): Fu[Option[Board.FullInfo]] =
+  def fullBoardInfo(gameId: Game.ID): Fu[Option[Board.FullInfo]] =
     for {
-      boardOption <- BoardRepo.byId(game.id)
+      boardOption <- BoardRepo.byId(gameId)
       roundOption <- boardOption.?? { b => RoundRepo.byId(b.roundId) }
       contestOption <- boardOption.?? { b => byId(b.contestId) }
     } yield (boardOption |@| roundOption |@| contestOption).tupled map {
       case (board, round, contest) => Board.FullInfo(board, round, contest)
     }
+
+  def getContestNote(gameId: Game.ID): Fu[String] = fullBoardInfo(gameId) map {
+    _.?? { b => s"${b.contest.fullName} 第${b.round.no}轮" }
+  }
 
   def contestBoard(game: Game): Fu[Option[Board]] = BoardRepo.byId(game.id)
 

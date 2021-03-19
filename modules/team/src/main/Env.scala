@@ -2,8 +2,8 @@ package lila.team
 
 import akka.actor._
 import com.typesafe.config.Config
-
 import lila.common.MaxPerPage
+import lila.game.actorApi.FinishGame
 import lila.mod.ModlogApi
 import lila.notify.NotifyApi
 
@@ -24,6 +24,7 @@ final class Env(
     val CollectionRequest = config getString "collection.request"
     val CollectionInvite = config getString "collection.invite"
     val CollectionTag = config getString "collection.tag"
+    val CollectionRating = config getString "collection.rating"
     val CollectionImage = config getString "collection.image"
     val AdminUid = rootConfig getString "net.admin_uid"
     val PaginatorMaxPerPage = config getInt "paginator.max_per_page"
@@ -36,7 +37,8 @@ final class Env(
     request = db(CollectionRequest),
     invite = db(CollectionInvite),
     member = db(CollectionMember),
-    tag = db(CollectionTag)
+    tag = db(CollectionTag),
+    rating = db(CollectionRating)
   )
 
   lazy val forms = new DataForm(
@@ -60,6 +62,7 @@ final class Env(
     timeline = hub.timeline,
     modLog = modLog,
     photographer = photographer,
+    getContestNote = getContestNote,
     adminUid = AdminUid
   )
 
@@ -85,6 +88,13 @@ final class Env(
 
   system.lilaBus.subscribeFun('shadowban) {
     case lila.hub.actorApi.mod.Shadowban(userId, true) => api deleteRequestsByUserId userId
+  }
+
+  system.lilaBus.subscribeFun('finishGame) {
+    case FinishGame(game, white, black) =>
+      if (game.nonAi && game.hasClock) {
+        api.updateRating(game, white, black)
+      }
   }
 }
 

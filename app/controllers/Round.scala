@@ -213,7 +213,7 @@ object Round extends LilaController with TheftPrevention {
     tourId ?? { Env.tournament.api.miniView(_, withTop) }
 
   private[controllers] def myContest(game: GameModel): Fu[Option[Board.FullInfo]] =
-    game.contestId ?? { _ => Env.contest.contestApi.fullBoardInfo(game) }
+    game.contestId ?? { _ => Env.contest.contestApi.fullBoardInfo(game.id) }
 
   private[controllers] def getWatcherChat(game: GameModel)(implicit ctx: Context): Fu[Option[lila.chat.UserChat.Mine]] = {
     ctx.noKid && ctx.me.fold(true)(Env.chat.panic.allowed) && {

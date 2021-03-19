@@ -56,4 +56,5 @@ private object BSONHandlers {
   implicit val InviteBSONHandler = Macros.handler[Invite]
   implicit val MemberBSONHandler = Macros.handler[Member]
   implicit val TagBSONHandler = Macros.handler[Tag]
+  implicit val TeamRatingBSONHandler = Macros.handler[TeamRating]
 }

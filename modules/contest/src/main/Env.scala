@@ -1,10 +1,11 @@
 package lila.contest
 
 import com.typesafe.config.Config
-import lila.common.{ AtMost, Every, ResilientScheduler }
+import lila.common.{AtMost, Every, ResilientScheduler}
 import scala.concurrent.duration._
-import lila.hub.{ Duct, DuctMap }
+import lila.hub.{Duct, DuctMap}
 import akka.actor._
+import lila.hub.actorApi.contest.GetContestNote
 
 final class Env(
     config: Config,
@@ -37,6 +38,7 @@ final class Env(
     val ApiActorName = config getString "api_actor.name"
     val SequencerTimeout = config duration "sequencer.timeout"
     val NetBaseUrl = config getString "net.base_url"
+    val ActorName = config getString "actor.name"
   }
 
   import settings._
@@ -96,6 +98,12 @@ final class Env(
     reminder = new ContestReminder(system.lilaBus),
     asyncCache = asyncCache
   )
+
+  system.actorOf(Props(new Actor {
+    def receive = {
+      case GetContestNote(gameId: String) => sender ! contestApi.getContestNote(gameId)
+    }
+  }), name = ActorName)
 
   // 报名截止
   ResilientScheduler(
