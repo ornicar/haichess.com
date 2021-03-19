@@ -179,6 +179,8 @@ final class DataForm(
 
   def modEmail(user: User) = Form(single("email" -> acceptableUniqueEmail(user.some)))
 
+  def modPassword = Form(single("password" -> trimField(signup.password)))
+
   def closeAccount(u: User) = authenticator loginCandidate u map { candidate =>
     Form(single("passwd" -> passwordMapping(candidate)))
   }

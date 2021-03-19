@@ -154,6 +154,19 @@ object Mod extends LilaController {
     }
   }
 
+  import UserModel.ClearPassword
+  def resetPassword(username: String) = SecureBody(_.SuperAdmin) { implicit ctx => me =>
+    implicit def req = ctx.body
+    OptionFuResult(UserRepo named username) { user =>
+      Env.security.forms.modPassword.bindFromRequest.fold(
+        err => BadRequest(err.toString).fuccess,
+        rawPwd => {
+          Env.user.authenticator.setPassword(user.id, ClearPassword(rawPwd)) inject redirect(user.username, mod = true)
+        }
+      )
+    }
+  }
+
   def notifySlack(username: String) = OAuthMod(_.ModNote) { _ => me =>
     withSuspect(username) { sus =>
       Env.slack.api.userMod(user = sus.user, mod = me) map some
