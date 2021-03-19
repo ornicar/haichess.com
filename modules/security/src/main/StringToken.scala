@@ -1,9 +1,10 @@
 package lila.security
 
+import java.net.{ URLDecoder, URLEncoder }
+
 import com.roundeights.hasher.Algo
 import lila.common.String.base64
 import org.mindrot.BCrypt
-
 import StringToken.ValueChecker
 
 private[security] final class StringToken[A](
@@ -19,10 +20,11 @@ private[security] final class StringToken[A](
     val signed = signPayload(serializer write payload, hashedValue)
     val checksum = makeHash(signed)
     val token = s"$signed$separator$checksum"
-    base64 encode token
+
+    URLEncoder.encode(base64 encode token, "UTF-8")
   }
 
-  def read(token: String): Fu[Option[A]] = (base64 decode token) ?? {
+  def read(token: String): Fu[Option[A]] = (base64.decode(URLDecoder.decode(token, "UTF-8"))).?? {
     _ split separator match {
       case Array(payloadStr, hashed, checksum) =>
         BCrypt.bytesEqualSecure(makeHash(signPayload(payloadStr, hashed)).getBytes("utf-8"), checksum.getBytes("utf-8")) ?? {
