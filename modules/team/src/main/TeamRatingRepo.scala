@@ -12,7 +12,7 @@ object TeamRatingRepo {
   def byId(id: String): Fu[Option[TeamRating]] = coll.byId[TeamRating](id)
 
   def findByUser(userId: String): Fu[List[TeamRating]] =
-    coll.find(userQuery(userId)).sort($doc("createAt" -> -1)).list()
+    coll.find(userQuery(userId)).sort($doc("createAt" -> -1)).list[TeamRating]()
 
   def insert(rating: TeamRating): Funit = coll.insert(rating).void
 

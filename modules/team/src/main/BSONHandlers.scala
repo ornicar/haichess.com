@@ -48,6 +48,11 @@ private object BSONHandlers {
     )
   }
 
+  implicit val teamRatingTypBSONHandler = new BSONHandler[BSONString, TeamRating.Typ] {
+    def read(b: BSONString) = TeamRating.Typ(b.value)
+    def write(x: TeamRating.Typ) = BSONString(x.id)
+  }
+
   implicit val RatingSettingBSONHandler = Macros.handler[RatingSetting]
   implicit val EnvPictureHandler = lila.db.dsl.bsonArrayToListHandler[String]
   implicit val CertificationBSONHandler = Macros.handler[Certification]

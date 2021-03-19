@@ -1,11 +1,11 @@
 package lila.contest
 
 import com.typesafe.config.Config
-import lila.common.{AtMost, Every, ResilientScheduler}
+import lila.common.{ AtMost, Every, ResilientScheduler }
 import scala.concurrent.duration._
-import lila.hub.{Duct, DuctMap}
+import lila.hub.{ Duct, DuctMap }
 import akka.actor._
-import lila.hub.actorApi.contest.{GetContestBoard, ContestBoard}
+import lila.hub.actorApi.contest.{ GetContestBoard, ContestBoard }
 
 final class Env(
     config: Config,
