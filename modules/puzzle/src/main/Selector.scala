@@ -66,15 +66,22 @@ private[puzzle] final class Selector(
     }
   }
 
-  def nextThemePuzzle(user: User, themeSearchCondition: BSONDocument, queryString: String): Fu[Option[Puzzle]] = {
+  def themePuzzleSearch(themeSearchCondition: BSONDocument): Fu[Option[Puzzle]] = {
     puzzleColl.find(themeSearchCondition, projection)
       .sort($sort asc F.id)
-      .uno[Puzzle].map { po =>
-        po.?? { p =>
-          bus.publish(NextThemePuzzle(p.id, user.id, queryString), 'nextThemePuzzle)
-        }
-        po
+      .uno[Puzzle]
+  }
+
+  def nextThemePuzzle(user: User, themeSearchCondition: BSONDocument, id: PuzzleId): Fu[Option[Puzzle]] = {
+    themePuzzleSearch(themeSearchCondition) flatMap {
+      case None => (id != puzzleIdMin).?? {
+        nextThemePuzzle(user, themeSearchCondition.remove("_id") ++ $doc(F.id -> $gt(puzzleIdMin)), puzzleIdMin)
       }
+      case Some(p) => {
+        bus.publish(NextThemePuzzle(p.id, user.id), 'nextThemePuzzle)
+        fuccess(p.some)
+      }
+    }
   }
 
   def nextCapsulePuzzle(lastPlayed: Option[PuzzleId], ids: List[PuzzleId]): Fu[Option[Puzzle]] = {

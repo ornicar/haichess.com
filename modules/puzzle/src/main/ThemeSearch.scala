@@ -7,7 +7,7 @@ class ThemeShow(
     val searchForm: Form[_],
     val markTags: Set[String],
     val rnf: Boolean,
-    val history: List[ThemeRecord],
+    val history: Option[ThemeRecord],
     val showDrawer: Boolean
 )
 
@@ -18,7 +18,7 @@ object ThemeShow {
     searchForm: Form[_] = null,
     markTags: Set[String] = Set.empty,
     rnf: Boolean = false,
-    history: List[ThemeRecord] = Nil,
+    history: Option[ThemeRecord] = None,
     showDrawer: Boolean = false
   ): Option[ThemeShow] = new ThemeShow(id, searchForm, markTags, rnf, history, showDrawer).some
 }

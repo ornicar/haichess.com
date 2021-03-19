@@ -6,16 +6,14 @@ import java.net.URLDecoder
 import lila.resource.ThemeQuery
 
 case class ThemeRecord(
-    _id: String,
-    userId: User.ID,
+    _id: User.ID,
     puzzleId: PuzzleId,
-    queryString: String,
     updateAt: DateTime
 ) {
 
   def id = _id
 
-  def toTags: List[String] = {
+  /*  def toTags: List[String] = {
     val qs = URLDecoder.decode(queryString, "UTF-8")
     val dataMap = qs.split("&").map { kvString =>
       val kv = kvString.split("=")
@@ -42,7 +40,7 @@ case class ThemeRecord(
       ThemeQuery.parseArrayLabel(dataMap.get("comprehensive").map(_.toList), ThemeQuery.comprehensive),
       dataMap.get("tags").map(_.toList)
     ).filter(_.isDefined).flatMap(_.get)
-  }
+  }*/
 
 }
 
@@ -50,24 +48,20 @@ object ThemeRecord {
 
   def make(
     userId: User.ID,
-    puzzleId: PuzzleId,
-    queryString: String
+    puzzleId: PuzzleId
   ) = {
-    val qs = if (queryString.contains("&_=")) queryString.dropRight(16) else queryString
     ThemeRecord(
-      _id = makeId(qs),
-      userId = userId,
+      _id = userId,
       puzzleId = puzzleId,
-      queryString = qs,
       updateAt = DateTime.now
     )
   }
 
-  def makeId(queryString: String): String = {
+  /*  def makeId(queryString: String): String = {
     import java.security.MessageDigest
     val md5 = MessageDigest.getInstance("MD5")
     val encoded = md5.digest(queryString.getBytes)
     encoded.map("%02x".format(_)).mkString
-  }
+  }*/
 
 }

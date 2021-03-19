@@ -20,7 +20,6 @@ object show {
         tagsinputTag,
         drawerTag,
         jsAt(s"compiled/lichess.puzzle${isProd ?? (".min")}.js"),
-        jsTag("puzzle.theme.js"),
         embedJsUnsafe(s"""
 lichess = lichess || {};
 lichess.puzzle = ${
@@ -62,9 +61,10 @@ lichess.puzzle = ${
       drawer("搜索", "主题搜索") {
         st.form(
           cls := "search_form",
-          action := s"${routes.Puzzle.themePuzzle(100000)}#results",
+          action := s"${routes.Puzzle.themePuzzle(ts.history.map(_.puzzleId) | 100000)}#results",
           method := "GET"
         )(
+            form3.hidden("next", "true"),
             ts.rnf option div(cls := "theme-rnf")("没有搜索到，换个主题吧~"),
             table(
               tr(
@@ -130,7 +130,7 @@ lichess.puzzle = ${
                 )
               )*/
             ),
-            div(cls := "themeHistory")(
+            /*            div(cls := "themeHistory")(
               h2("做题历史"),
               table(
                 tbody(
@@ -150,7 +150,7 @@ lichess.puzzle = ${
                   }
                 )
               )
-            ),
+            ),*/
             div(cls := "drawer-footer")(
               div(cls := "drawer-footer-btn")(
                 a(cls := "cancel", drawerHide := true)("取消"),

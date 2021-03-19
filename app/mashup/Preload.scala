@@ -33,7 +33,8 @@ final class Preload(
     getPlayban: User.ID => Fu[Option[TempBan]],
     lightUserApi: LightUserApi,
     roundProxyPov: (Game.ID, User) => Fu[Option[Pov]],
-    urgentGames: User => Fu[List[Pov]]
+    urgentGames: User => Fu[List[Pov]],
+    getLastThemePuzzleId: User.ID => Fu[Int]
 ) {
 
   import Preload._
@@ -70,7 +71,7 @@ final class Preload(
           }
       }
 
-  private type HomeResponse = (JsObject, Option[Game], List[User.LightPerf], List[(PuzzleRush.Mode, List[(User.ID, Int)])], List[(Contest, User.ID)], List[Study], Option[lila.puzzle.DailyPuzzle])
+  private type HomeResponse = (JsObject, Option[Game], List[User.LightPerf], List[(PuzzleRush.Mode, List[(User.ID, Int)])], List[(Contest, User.ID)], List[Study], Option[lila.puzzle.DailyPuzzle], Int)
 
   def home()(implicit ctx: Context): Fu[HomeResponse] = {
     lobbyApi.homeData(ctx) zip
@@ -79,13 +80,14 @@ final class Preload(
       rushs() zip
       contests() zip
       studys() zip
+      ctx.userId.fold(fuccess(100000)) { getLastThemePuzzleId } zip
       (ctx.noBot ?? dailyPuzzle()) flatMap {
-        case (data, povs) ~ feat ~ leaderboard ~ rushs ~ contests ~ studys ~ puzzle => {
+        case (data, povs) ~ feat ~ leaderboard ~ rushs ~ contests ~ studys ~ lastThemePuzzleId ~ puzzle => {
           lightUserApi.preloadMany {
             rushs.flatMap {
               case (_, list) => list.map(_._1)
             } ::: contests.map(_._2)
-          } inject (data, feat, leaderboard, rushs, contests, studys, puzzle)
+          } inject (data, feat, leaderboard, rushs, contests, studys, puzzle, lastThemePuzzleId)
         }
       }
   }

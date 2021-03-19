@@ -90,10 +90,10 @@ POST  /training/coordinate/color       controllers.Coordinate.color
 # Training - Theme Puzzle
 GET   /training/themeHome              controllers.Puzzle.themePuzzleHome
 GET   /training/theme/continue         controllers.Puzzle.isThemePuzzleContinue
-GET   /training/theme/:id              controllers.Puzzle.themePuzzle(id: Int, showDrawer: Boolean ?= false)
+GET   /training/theme/:id              controllers.Puzzle.themePuzzle(id: Int, showDrawer: Boolean ?= false, next: Boolean ?= false)
 GET   /training/theme/:id/new          controllers.Puzzle.newThemePuzzle(id: Int)
-GET   /training/theme/history/uri      controllers.Puzzle.themePuzzleHistoryUri(id: String)
-POST  /training/theme/history/remove   controllers.Puzzle.themePuzzleHistoryRemove(id: String)
+#GET   /training/theme/history/uri      controllers.Puzzle.themePuzzleHistoryUri(id: String)
+#POST  /training/theme/history/remove   controllers.Puzzle.themePuzzleHistoryRemove(id: String)
 
 # Training - Errors Puzzle
 GET   /training/errors/:id             controllers.Puzzle.errorPuzzle(id: Int)

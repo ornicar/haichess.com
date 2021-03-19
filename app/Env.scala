@@ -28,7 +28,8 @@ final class Env(
     getPlayban = Env.playban.api.currentBan _,
     lightUserApi = Env.user.lightUserApi,
     roundProxyPov = Env.round.proxy.pov _,
-    urgentGames = Env.round.proxy.urgentGames _
+    urgentGames = Env.round.proxy.urgentGames _,
+    getLastThemePuzzleId = Env.puzzle.puzzleThemeRecord.lastId _
   )
 
   lazy val socialInfo = mashup.UserInfo.Social(

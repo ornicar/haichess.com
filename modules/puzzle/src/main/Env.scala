@@ -185,7 +185,7 @@ final class Env(
   }
 
   system.lilaBus.subscribeFun('nextThemePuzzle) {
-    case lila.hub.actorApi.puzzle.NextThemePuzzle(puzzleId, userId, queryString) => puzzleThemeRecord.upsert(userId, puzzleId, queryString)
+    case lila.hub.actorApi.puzzle.NextThemePuzzle(puzzleId, userId) => puzzleThemeRecord.upsert(userId, puzzleId)
   }
 
 }

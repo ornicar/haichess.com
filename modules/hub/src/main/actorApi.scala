@@ -410,7 +410,7 @@ package puzzle {
 
   case class NextPuzzle(puzzleId: Int, userId: String)
 
-  case class NextThemePuzzle(puzzleId: Int, userId: String, condition: String)
+  case class NextThemePuzzle(puzzleId: Int, userId: String)
 
   case class StartPuzzleRush(rushId: String, userId: String)
 

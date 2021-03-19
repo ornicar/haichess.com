@@ -10,12 +10,17 @@ private[puzzle] final class ThemeRecordApi(coll: Coll) {
 
   def byId(id: String): Fu[Option[ThemeRecord]] = coll.byId(id)
 
+  def lastId(id: String): Fu[Int] = byId(id).map { tr =>
+    tr.fold(100000)(_.puzzleId)
+  }
+
   def upsert(
     userId: User.ID,
-    puzzleId: PuzzleId,
-    queryString: String
+    puzzleId: PuzzleId
   ): Funit = {
-    val emptys = List(
+    val record = ThemeRecord.make(userId, puzzleId)
+    coll.update($id(userId), record, upsert = true).void
+    /*    val emptys = List(
       "showDrawer=true",
       "showDrawer=false",
       "ratingMin=&ratingMax=&stepsMin=&stepsMax=",
@@ -25,7 +30,7 @@ private[puzzle] final class ThemeRecordApi(coll: Coll) {
     !emptys.contains(queryString) ?? {
       val record = ThemeRecord.make(userId, puzzleId, queryString)
       coll.update($id(record.id), record, upsert = true).void
-    }
+    }*/
   }
 
   def remove(id: String, userId: User.ID): Funit = coll.remove($doc(
