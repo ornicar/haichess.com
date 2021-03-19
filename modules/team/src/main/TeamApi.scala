@@ -398,56 +398,53 @@ final class TeamApi(
   def updateRating(game: Game, whiteOption: Option[User], blackOption: Option[User]) = {
     (whiteOption |@| blackOption).tupled ?? {
       case (white, black) => {
-        for {
+        (for {
           whiteTeamIds <- MemberRepo.teamIdsByUser(white.id)
           blackTeamIds <- MemberRepo.teamIdsByUser(black.id)
-        } yield {
-          val teamIds = whiteTeamIds & blackTeamIds
-          teamFromSecondary(teamIds.toSeq) flatMap { teams =>
-            teams.map { team =>
-              team.ratingSetting.?? { setting =>
-                funit
-              }
-            }.sequenceFu.void
+        } yield (whiteTeamIds, blackTeamIds)).flatMap {
+          case (wtis, btis) => {
+            teamFromSecondary((wtis & btis).toSeq) flatMap { teams =>
+              teams.map { team =>
+                team.ratingSetting.?? { setting =>
+                  (setting.open && game.turns > setting.turns && (game.clock.??{ c => (c.limitSeconds + c.incrementSeconds * 40) / 60 >= math.max(setting.minutes, 2) })).?? {
+                    (for {
+                      whiteMemberOption <- MemberRepo.byId(team.id, white.id)
+                      blackMemberOption <- MemberRepo.byId(team.id, black.id)
+                    } yield (whiteMemberOption |@| blackMemberOption).tupled) {
+                      case (whiteMember, blackMember) => {
+                        val whiteRating = (whiteMember.rating | EloRating(setting.defaultRating, 0))
+                        val blackRating = (blackMember.rating | EloRating(setting.defaultRating, 0))
+                        val newWhiteRating = whiteRating.calc(blackRating.rating, game.whitePlayer.isWinner)
+                        val newBlackRating = blackRating.calc(whiteRating.rating, game.blackPlayer.isWinner)
+
+                        if(game.isContest) {
+                          game.contestId.?? { contestId =>
+                            (contestActor ? GetContestBoard(contestId)).mapTo[Option[ContestBoard]] flatMap {
+                              _.?? { board =>
+                                board.teamRated.?? {
+                                  setContestRating(game, whiteMember, board, whiteRating, newWhiteRating, white.id, black.id) >>
+                                    setContestRating(game, blackMember, board, blackRating, newBlackRating, white.id, black.id)
+                                }
+                              }
+                            }
+                          }
+                        } else {
+                          game.rated.?? {
+                            setGameRating(game, whiteMember, whiteRating, newWhiteRating, white.id, black.id) >>
+                              setGameRating(game, blackMember, blackRating, newBlackRating, white.id, black.id)
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }.sequenceFu.void
+            }
           }
         }
       }
     }
   }
-
-/*  (setting.open && game.turns > setting.turns && (game.clock.??{ c => (c.limitSeconds + c.incrementSeconds * 40) / 60 >= math.max(setting.minutes, 2) }).?? {
-    for {
-      whiteMemberOption <- MemberRepo.byId(team.id, white.id)
-      blackMemberOption <- MemberRepo.byId(team.id, black.id)
-    } yield {
-      (whiteMemberOption |@| blackMemberOption).tupled ?? {
-        case (whiteMember, blackMember) => {
-          val whiteRating = (whiteMember.rating | EloRating(setting.defaultRating, 0))
-          val blackRating = (blackMember.rating | EloRating(setting.defaultRating, 0))
-          val newWhiteRating = whiteRating.calc(blackRating.rating, game.whitePlayer.isWinner)
-          val newBlackRating = blackRating.calc(whiteRating.rating, game.blackPlayer.isWinner)
-
-          if(game.isContest) {
-            game.contestId.?? { contestId =>
-              (contestActor ? GetContestBoard(contestId)).mapTo[Option[ContestBoard]] flatMap {
-                _.?? { board =>
-                  board.teamRated.?? {
-                    setContestRating(game, whiteMember, board, whiteRating, newWhiteRating, white.id, black.id) >>
-                      setContestRating(game, blackMember, board, blackRating, newBlackRating, white.id, black.id)
-                  }
-                }
-              }
-            }
-          } else {
-            game.rated.?? {
-              setGameRating(game, whiteMember, whiteRating, newWhiteRating, white.id, black.id) >>
-                setGameRating(game, blackMember, blackRating, newBlackRating, white.id, black.id)
-            }
-          }
-        }
-      }
-    }
-  }*/
 
   private def setGameRating(
     game: Game,
