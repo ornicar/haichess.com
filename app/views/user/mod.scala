@@ -122,7 +122,13 @@ object mod {
         emails.previous.map { email =>
           s"Previously $email"
         }
-      )
+      ),
+      isGranted(_.SuperAdmin) option {
+        postForm(action := routes.Mod.resetPassword(u.username))(
+          st.input(tpe := "password", name := "password", placeholder := "填写新密码"),
+          submitButton(cls := "button")("重置密码")
+        )
+      }
     )
 
   def parts(u: User, history: List[lila.mod.Modlog], charges: List[lila.plan.Charge], reports: lila.report.Report.ByAndAbout, pref: lila.pref.Pref, sitAndDcCounter: Int)(implicit ctx: Context) = frag(
