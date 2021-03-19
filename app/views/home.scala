@@ -24,11 +24,12 @@ object home {
     rushs: List[(PuzzleRush.Mode, List[(User.ID, Int)])],
     contests: List[(Contest, User.ID)],
     studys: List[Study],
-    puzzle: Option[lila.puzzle.DailyPuzzle]
+    puzzle: Option[lila.puzzle.DailyPuzzle],
+    lastThemePuzzleId: Int
   )(implicit ctx: Context) = {
     val rating = ctx.me.map(_.perfs.puzzle.intRating)
-    val minRating = rating.fold("") { r => Math.max(600, (r - 200)).toString }
-    val maxRating = rating.fold("") { r => Math.min(2800, (r + 200)).toString }
+    val minRating = "600" /*rating.fold("") { r => Math.max(600, (r - 200)).toString }*/
+    val maxRating = "2800" /*rating.fold("") { r => Math.min(2800, (r + 200)).toString }*/
     views.html.base.layout(
       title = "Home",
       moreCss = cssTag("home"),
@@ -114,40 +115,40 @@ object home {
                 div(cls := "box-body")(
                   div(cls := "container")(
                     ul(
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=QianZi&ratingMin=$minRating&ratingMax=$maxRating")("牵制")),
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=ZhuoShuang&ratingMin=$minRating&ratingMax=$maxRating")("捉双")),
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=ShuangChongGongJi&ratingMin=$minRating&ratingMax=$maxRating")("双重攻击"))
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=QianZi&ratingMin=$minRating&ratingMax=$maxRating")("牵制")),
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=ZhuoShuang&ratingMin=$minRating&ratingMax=$maxRating")("捉双")),
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=ShuangChongGongJi&ratingMin=$minRating&ratingMax=$maxRating")("双重攻击"))
                     ),
                     ul(
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=ShanJi&ratingMin=$minRating&ratingMax=$maxRating")("闪击")),
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=ChuanJi&ratingMin=$minRating&ratingMax=$maxRating")("串击"))
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=ShanJi&ratingMin=$minRating&ratingMax=$maxRating")("闪击")),
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=ChuanJi&ratingMin=$minRating&ratingMax=$maxRating")("串击"))
                     ),
                     ul(
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=ShuangJiang&ratingMin=$minRating&ratingMax=$maxRating")("双将")),
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=YinRu&ratingMin=$minRating&ratingMax=$maxRating")("引入")),
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=YinLi&ratingMin=$minRating&ratingMax=$maxRating")("引离"))
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=ShuangJiang&ratingMin=$minRating&ratingMax=$maxRating")("双将")),
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=YinRu&ratingMin=$minRating&ratingMax=$maxRating")("引入")),
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=YinLi&ratingMin=$minRating&ratingMax=$maxRating")("引离"))
                     ),
                     ul(
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=TouShi&ratingMin=$minRating&ratingMax=$maxRating")("透视")),
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=LanJie&ratingMin=$minRating&ratingMax=$maxRating")("拦截"))
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=TouShi&ratingMin=$minRating&ratingMax=$maxRating")("透视")),
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=LanJie&ratingMin=$minRating&ratingMax=$maxRating")("拦截"))
                     ),
                     ul(
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=TengNuo&ratingMin=$minRating&ratingMax=$maxRating")("腾挪")),
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=DuSe&ratingMin=$minRating&ratingMax=$maxRating")("堵塞")),
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=QuGan&ratingMin=$minRating&ratingMax=$maxRating")("驱赶"))
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=TengNuo&ratingMin=$minRating&ratingMax=$maxRating")("腾挪")),
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=DuSe&ratingMin=$minRating&ratingMax=$maxRating")("堵塞")),
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=QuGan&ratingMin=$minRating&ratingMax=$maxRating")("驱赶"))
                     ),
                     ul(
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=GuoMen&ratingMin=$minRating&ratingMax=$maxRating")("过门")),
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=XiaoChuBaoHu&ratingMin=$minRating&ratingMax=$maxRating")("消除保护"))
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=GuoMen&ratingMin=$minRating&ratingMax=$maxRating")("过门")),
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=XiaoChuBaoHu&ratingMin=$minRating&ratingMax=$maxRating")("消除保护"))
                     ),
                     ul(
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=BiZouLieZhao&ratingMin=$minRating&ratingMax=$maxRating")("逼走劣着")),
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=GuoDuZhao&ratingMin=$minRating&ratingMax=$maxRating")("过渡着")),
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=WeiKun&ratingMin=$minRating&ratingMax=$maxRating")("围困"))
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=BiZouLieZhao&ratingMin=$minRating&ratingMax=$maxRating")("逼走劣着")),
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=GuoDuZhao&ratingMin=$minRating&ratingMax=$maxRating")("过渡着")),
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=WeiKun&ratingMin=$minRating&ratingMax=$maxRating")("围困"))
                     ),
                     ul(
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=FangYu&ratingMin=$minRating&ratingMax=$maxRating")("防御")),
-                      li(a(href := s"${routes.Puzzle.themePuzzle(100000)}?subject[0]=MenSha&ratingMin=$minRating&ratingMax=$maxRating")("闷杀"))
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=FangYu&ratingMin=$minRating&ratingMax=$maxRating")("防御")),
+                      li(a(href := s"${routes.Puzzle.themePuzzle(lastThemePuzzleId, false, true)}&subject[0]=MenSha&ratingMin=$minRating&ratingMax=$maxRating")("闷杀"))
                     )
                   )
                 )

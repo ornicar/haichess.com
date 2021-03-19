@@ -137,10 +137,12 @@ object Puzzle extends LilaController {
   }
 
   def themePuzzleHome = AuthBody { implicit ctx => me =>
-    fuccess(Redirect(routes.Puzzle.themePuzzle(env.api.pmim, true)))
+    env.puzzleThemeRecord.lastId(me.id) map { last =>
+      Redirect(routes.Puzzle.themePuzzle(last, true))
+    }
   }
 
-  def themePuzzle(id: PuzzleId, showDrawer: Boolean) = AuthBody { implicit ctx => me =>
+  def themePuzzle(id: PuzzleId, showDrawer: Boolean, next: Boolean = false) = AuthBody { implicit ctx => me =>
     val searchForm = Env.resource.forms.puzzle.theme
     member.isThemePuzzleContinue(me) flatMap { continue =>
       if (continue) {
@@ -151,24 +153,27 @@ object Puzzle extends LilaController {
             for {
               tags <- env.resource.themeTags
               prevPuzzle <- env.api.puzzle find id
-              puzzle <- env.selector.nextThemePuzzle(me, env.resource.themeSearchCondition(data, equalsPuzzleId = if (id == env.api.pmim) none else id.some), ctx.body.rawQueryString)
-              history <- env.puzzleThemeRecord.list(me.id)
-              res <- puzzle.fold {
-                prevPuzzle.fold(notFound) { p =>
-                  renderShow(puzzle = p, mode = "play", rated = false, themeShow = ThemeShow(id, searchForm fill data, tags, true, history, true)) map {
+              puzzle <- next.?? { env.selector.nextThemePuzzle(me, env.resource.themeSearchCondition(data), id) }
+              history <- env.puzzleThemeRecord.byId(me.id)
+              res <- {
+                val pz = if (next) puzzle else prevPuzzle
+                pz.fold {
+                  prevPuzzle.fold(notFound) { p =>
+                    renderShow(puzzle = p, mode = "play", rated = false, themeShow = ThemeShow(id, searchForm fill data, tags, true, history, true)) map {
+                      Ok(_)
+                    }
+                  }
+                } { p =>
+                  renderShow(puzzle = p, mode = "play", rated = false, themeShow = ThemeShow(p.id, searchForm fill data, tags, false, history, showDrawer)) map {
                     Ok(_)
                   }
-                }
-              } { p =>
-                renderShow(puzzle = p, mode = "play", rated = false, themeShow = ThemeShow(p.id, searchForm fill data, tags, false, history, showDrawer)) map {
-                  Ok(_)
                 }
               }
             } yield res
           }
         )
       } else {
-        renderShow(puzzle = PuzzleModel.default, mode = "play", rated = false, themeShow = ThemeShow(0, searchForm, Set.empty, true, List.empty, true), notAccept = true) map {
+        renderShow(puzzle = PuzzleModel.default, mode = "play", rated = false, themeShow = ThemeShow(0, searchForm, Set.empty, true, none, true), notAccept = true) map {
           Ok(_)
         }
       }
@@ -183,7 +188,7 @@ object Puzzle extends LilaController {
           val searchForm = Env.resource.forms.puzzle.theme
           searchForm.bindFromRequest.fold(
             _ => fuccess(BadRequest),
-            data => env.selector.nextThemePuzzle(me, env.resource.themeSearchCondition(data, id.some), ctx.body.rawQueryString) flatMap {
+            data => env.selector.nextThemePuzzle(me, env.resource.themeSearchCondition(data, id.some), id) flatMap {
               case None => notFoundJson("Resource not found")
               case Some(p) => puzzleJson2(p, ThemeShow(id = p.id), rated = false) map { json =>
                 Ok(json) as JSON
@@ -195,7 +200,7 @@ object Puzzle extends LilaController {
     }
   }
 
-  def themePuzzleHistoryUri(id: String) = Auth { implicit ctx => me =>
+  /*  def themePuzzleHistoryUri(id: String) = Auth { implicit ctx => me =>
     OptionResult(env.puzzleThemeRecord.byId(id)) { record =>
       Ok(Json.obj(
         "minId" -> env.api.pmim,
@@ -207,7 +212,7 @@ object Puzzle extends LilaController {
 
   def themePuzzleHistoryRemove(id: String) = Auth { implicit ctx => me =>
     env.puzzleThemeRecord.remove(id, me.id) map (_ => jsonOkResult)
-  }
+  }*/
 
   def errorPuzzle(id: PuzzleId) = AuthBody { implicit ctx => me =>
     implicit val req = ctx.body

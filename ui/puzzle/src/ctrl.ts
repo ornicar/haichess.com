@@ -100,6 +100,7 @@ export default function(opts, redraw: () => void): Controller {
       let param = location.search.replace("showDrawer=true", "showDrawer=false");
       let url = '/training/theme/' + puzzle.id + param;
       history.replaceState(null, '', url);
+      $('.search_form input[name=next]').attr('action', '/training/theme/' + puzzle.id + '?showDrawer=false&next=true#results');
     } else if (pathname.indexOf('/training/errors') >= 0) {
       let u_1 = replaceParamVal(location.search,'rating', vm.puzzleErrors.rating);
       let u_2 = replaceParamVal(u_1,'time', vm.puzzleErrors.time);

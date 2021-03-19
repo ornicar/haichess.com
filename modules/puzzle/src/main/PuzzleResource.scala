@@ -88,7 +88,7 @@ private[puzzle] final class PuzzleResource(
     )
   }
 
-  def themeSearchCondition(query: ThemeData, fromPuzzleId: Option[Int] = None, equalsPuzzleId: Option[Int] = None) = {
+  def themeSearchCondition(query: ThemeData, fromPuzzleId: Option[Int] = None) = {
     var condition = $doc(F.mark $exists true) ++ enabled
 
     if (query.ratingMin.isDefined || query.ratingMax.isDefined) {
@@ -144,10 +144,6 @@ private[puzzle] final class PuzzleResource(
 
     query.comprehensive foreach { tg =>
       condition = condition ++ $doc(s"${F.mark}.comprehensive" -> $in(tg: _*))
-    }
-
-    equalsPuzzleId foreach { puzzleId =>
-      condition = condition ++ $doc(F.id -> puzzleId)
     }
 
     fromPuzzleId foreach { minPuzzleId =>
