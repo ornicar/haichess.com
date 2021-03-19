@@ -149,7 +149,7 @@ private[puzzle] final class PuzzleResource(
     fromPuzzleId foreach { minPuzzleId =>
       condition = condition ++ $doc(F.id -> $gt(minPuzzleId))
     }
-    //println(BSONDocument.pretty(condition))
+    println(BSONDocument.pretty(condition))
     condition
   }
 

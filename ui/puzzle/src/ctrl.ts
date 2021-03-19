@@ -97,10 +97,10 @@ export default function(opts, redraw: () => void): Controller {
 
     let pathname = location.pathname;
     if (pathname.indexOf('/training/theme') >= 0) {
-      let param = location.search.replace("showDrawer=true", "showDrawer=false");
+      let param = location.search.replace("showDrawer=true", "showDrawer=false").replace("next=true", "next=false");
       let url = '/training/theme/' + puzzle.id + param;
       history.replaceState(null, '', url);
-      $('.search_form input[name=next]').attr('action', '/training/theme/' + puzzle.id + '?showDrawer=false&next=true#results');
+      $('.search_form').attr('action', '/training/theme/' + puzzle.id + '#results');
     } else if (pathname.indexOf('/training/errors') >= 0) {
       let u_1 = replaceParamVal(location.search,'rating', vm.puzzleErrors.rating);
       let u_2 = replaceParamVal(u_1,'time', vm.puzzleErrors.time);

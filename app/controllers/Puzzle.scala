@@ -153,7 +153,7 @@ object Puzzle extends LilaController {
             for {
               tags <- env.resource.themeTags
               prevPuzzle <- env.api.puzzle find id
-              puzzle <- next.?? { env.selector.nextThemePuzzle(me, env.resource.themeSearchCondition(data), id) }
+              puzzle <- next.?? { env.selector.nextThemePuzzle(me, env.resource.themeSearchCondition(data, id.some), id) }
               history <- env.puzzleThemeRecord.byId(me.id)
               res <- {
                 val pz = if (next) puzzle else prevPuzzle
