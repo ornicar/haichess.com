@@ -76,6 +76,7 @@ object buy {
               td(
                 div(cls := "points")(
                   input(tpe := "number", min := 0, max := me.memberOrDefault.points, step := "1", name := "points", value := me.memberOrDefault.points),
+                  input(tpe := "hidden", name := "isPointsChange", value := false),
                   label(s"共 ${me.memberOrDefault.points} 积分（1积分=1人民币）")
                 ),
                 div(cls := "pointsError formError")

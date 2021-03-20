@@ -16,7 +16,7 @@ case class MemberPointsLogApi(coll: Coll) {
     typ: String,
     diff: Int,
     orderId: Option[String]
-  ): Funit = coll.insert(MemberPointsLog(
+  ): Funit = (diff != 0) ?? coll.insert(MemberPointsLog(
     _id = Random nextString 8,
     typ = MemberPointsLog.PointsType(typ),
     userId = userId,

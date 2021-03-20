@@ -14,6 +14,7 @@ final class DataForm {
     "itemCode" -> nonEmptyText,
     "count" -> number(1, 999),
     "points" -> optional(number(0, 10000)),
+    "isPointsChange" -> boolean,
     "coupon" -> optional(nonEmptyText),
     "inviteUser" -> optional(nonEmptyText
       .verifying("不可以填写自己哦~", user.id != _)
@@ -102,7 +103,7 @@ object CalcPriceData {
     itemCode = data.itemCode,
     count = data.count,
     points = data.points,
-    isPointsChange = false,
+    isPointsChange = data.isPointsChange,
     coupon = data.coupon,
     inviteUser = data.inviteUser
   )
@@ -114,6 +115,7 @@ case class OrderData(
     itemCode: String,
     count: Int,
     points: Option[Int],
+    isPointsChange: Boolean,
     coupon: Option[String],
     inviteUser: Option[String],
     payWay: String
