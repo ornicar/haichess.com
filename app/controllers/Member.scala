@@ -55,7 +55,7 @@ object Member extends LilaController {
       } else {
         fuccess {
           teams.map { t =>
-            t.id -> t.name
+            t.createdBy -> t.name
           }
         }
       }
