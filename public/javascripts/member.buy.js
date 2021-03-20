@@ -50,6 +50,7 @@ $(function() {
 
     $form.find('input[name=points]').blur(function() {
         if($form.find('input[name=points]').val() != vmData.points) {
+            $form.find('input[name=isPointsChange]').val(true);
             requestPrice(true);
         }
     });
