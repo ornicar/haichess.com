@@ -33,12 +33,14 @@ final class MemberApi(coll: Coll, lightUserApi: LightUserApi, bus: lila.common.B
               case None => fufail(s"can not find member buy order inviteUser $userId of ${data.orderId}")
               case Some(u2) => {
                 val pointsDiff = (data.payAmount / 2).toInt
-                coll.update(
-                  $id(userId),
-                  $set(
-                    F.member -> u2.memberOrDefault.mergePoints(pointsDiff)
-                  )
-                ).void >>- bus.publish(MemberPointsChange(u2.id, "orderPayRebate", pointsDiff, data.orderId.some), 'memberPointsChange)
+                (pointsDiff != 0).?? {
+                  coll.update(
+                    $id(userId),
+                    $set(
+                      F.member -> u2.memberOrDefault.mergePoints(pointsDiff)
+                    )
+                  ).void >>- bus.publish(MemberPointsChange(u2.id, "orderPayRebate", pointsDiff, data.orderId.some), 'memberPointsChange)
+                }
               }
             }
           } >>- bus.publish(MemberLevelChange(data.userId, "buy", data.level, oldExpireAt, newExpireAt, data.desc, data.orderId.some, none), 'memberLevelChange) >>-
