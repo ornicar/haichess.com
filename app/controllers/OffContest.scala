@@ -195,7 +195,9 @@ object OffContest extends LilaController {
           implicit val req = ctx.body
           Form(single("players" -> text)).bindFromRequest.fold(
             err => BadRequest(errorsAsJson(err)).fuccess,
-            players => api.setPlayers(contest, players.split(",").toList) inject Redirect(routes.OffContest.show(id))
+            players => players.trim.nonEmpty.?? {
+              api.setPlayers(contest, players.split(",").toList)
+            } inject Redirect(routes.OffContest.show(id))
           )
         }
       }
