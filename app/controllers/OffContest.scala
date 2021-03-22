@@ -195,9 +195,7 @@ object OffContest extends LilaController {
           implicit val req = ctx.body
           Form(single("players" -> text)).bindFromRequest.fold(
             err => BadRequest(errorsAsJson(err)).fuccess,
-            players => players.trim.nonEmpty.?? {
-              api.setPlayers(contest, players.split(",").toList)
-            } inject Redirect(routes.OffContest.show(id))
+            players => api.setPlayers(contest, split(players)) inject Redirect(routes.OffContest.show(id))
           )
         }
       }
@@ -249,7 +247,7 @@ object OffContest extends LilaController {
             "playerIds" -> nonEmptyText
           )).bindFromRequest.fold(
             err => BadRequest(errorsAsJson(err)).fuccess,
-            playerIds => api.reorderPlayer(playerIds.split(",").toList) inject jsonOkResult
+            playerIds => api.reorderPlayer(split(playerIds)) inject jsonOkResult
           )
         }
       }
@@ -379,7 +377,7 @@ object OffContest extends LilaController {
               err => BadRequest(errorsAsJson(err)).fuccess,
               data => data match {
                 case (joins, absents) => {
-                  roundApi.manualAbsent(round, joins.split(",").toList, absents.split(",").toList) inject Redirect(routes.OffContest.show(contest.id))
+                  roundApi.manualAbsent(round, split(joins), split(absents)) inject Redirect(routes.OffContest.show(contest.id))
                 }
               }
             )
@@ -567,5 +565,7 @@ object OffContest extends LilaController {
   private val rateLimited = ornicar.scalalib.Zero.instance[Fu[Result]] {
     fuccess(Redirect(routes.OffContest.home))
   }
+
+  private def split(str: String) = if (str.isEmpty) Nil else str.split(",").toList
 
 }
