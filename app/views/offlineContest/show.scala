@@ -244,7 +244,7 @@ object show {
                   td(player.no),
                   td(cls := "manual")(
                     playerWithUser.realNameOrUsername,
-                    (contest.isStarted && round.isPairing) option div(cls := "actions")(
+                    (contest.isStarted && round.isPairing && player.isBye(round.no)) option div(cls := "actions")(
                       a(cls := "button button-empty small modal-alert manual-pairing", dataIcon := "B", title := "调整对阵", href := routes.OffContest.manualPairingBeyForm(contest.id, round.id, player.id))
                     )
                   ),
