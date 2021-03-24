@@ -112,7 +112,7 @@ object modal {
           ),
           tr(
             th("等级分（选填）："),
-            td(input(tpe := "number", st.name := "teamRating", min := 0, max := 2800, value := 0))
+            td(input(tpe := "number", st.name := "teamRating", min := 0, max := 3200))
           )
         ),
         form3.actions(

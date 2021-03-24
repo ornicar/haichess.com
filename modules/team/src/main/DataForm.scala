@@ -49,6 +49,7 @@ private[team] final class DataForm(
     "ratingSetting" -> mapping(
       "open" -> boolean,
       "defaultRating" -> number(min = RatingSetting.min, max = RatingSetting.max),
+      "k" -> number(min = 10, max = 40),
       "coachSupport" -> boolean,
       "turns" -> number(min = 0, max = 500),
       "minutes" -> number(min = 0, max = 240)

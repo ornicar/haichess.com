@@ -313,6 +313,30 @@ package contest {
   case class GetContestBoard(gameId: String)
 }
 
+package offContest {
+
+  case class OffContestUser(
+      userId: String,
+      realName: String,
+      isWinner: Option[Boolean] = None
+  )
+
+  case class OffContestBoard(
+      id: String,
+      white: OffContestUser,
+      black: OffContestUser
+  )
+
+  case class OffContestRoundResult(
+      contestId: String,
+      contestFullName: String,
+      teamId: Option[String],
+      teamRated: Boolean,
+      roundNo: Int,
+      boards: List[OffContestBoard]
+  )
+}
+
 package calendar {
 
   case class CalendarCreate(

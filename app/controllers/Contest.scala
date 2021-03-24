@@ -1,7 +1,7 @@
 package controllers
 
 import lila.app._
-import lila.contest.{ BoardRepo, Invite, InviteRepo, ManualPairingSource, PlayerRepo, Request, RequestRepo, RoundRepo, ScoreSheetRepo, Contest => ContestModel, ForbiddenRepo }
+import lila.contest.{ BoardRepo, ForbiddenRepo, Invite, InviteRepo, ManualPairingSource, PlayerRepo, Request, RequestRepo, RoundRepo, ScoreSheetRepo, Contest => ContestModel }
 import lila.hub.lightClazz._
 import lila.hub.lightTeam._
 import lila.memo.UploadRateLimit
@@ -9,6 +9,7 @@ import ornicar.scalalib.Random
 import play.api.mvc.{ BodyParsers, Result }
 import play.api.data.Forms._
 import play.api.data.Form
+
 import scala.concurrent.duration._
 import play.api.libs.json.Json
 import lila.api.Context
@@ -16,6 +17,7 @@ import lila.common.Form.numberIn
 import lila.contest.DataForm.booleanChoices
 import lila.user.UserRepo
 import lila.security.Permission
+import lila.team.TeamRepo
 import org.joda.time.DateTime
 import views._
 
@@ -92,7 +94,7 @@ object Contest extends LilaController {
           forms.contest(me, None).bindFromRequest.fold(
             err => BadRequest(html.contest.form.create(err, teams, clazzs)).fuccess,
             data => CreateLimitPerUser(me.id, cost = 1) {
-              val contest = data.toContest(me, teams.map(t => (t.id -> t.name)), clazzs)
+              val contest = data.toContest(me, teams.map(t => t.id -> t.name), clazzs.map(c => c._1.id -> c._1.name))
               api.create(contest, data.roundList(contest.id)) map { c =>
                 Redirect(routes.Contest.show(c.id))
               }
@@ -127,7 +129,7 @@ object Contest extends LilaController {
             forms.contest(me, id.some).bindFromRequest.fold(
               err => BadRequest(html.contest.form.update(id, err, teams, clazzs)).fuccess,
               data => {
-                val newContest = data.toContest(me, teams.map(t => (t.id -> t.name)), clazzs)
+                val newContest = data.toContest(me, teams.map(t => t.id -> t.name), clazzs.map(c => c._1.id -> c._1.name))
                 val rounds = data.roundList(contest.id)
                 api.update(contest, newContest, rounds) inject Redirect(routes.Contest.show(id))
               }
@@ -912,7 +914,17 @@ object Contest extends LilaController {
   private[controllers] def teamList(me: lila.user.User): Fu[List[lila.team.Team]] =
     Env.team.api.mine(me).map(_.filter(twm => twm.team.enabled && twm.member.isOwner).map(t => t.team))
 
-  private[controllers] def clazzList(me: lila.user.User): Fu[List[(ClazzId, ClazzName)]] =
-    Env.clazz.api.mine(me.id).map(_.filter(c => c.isCreator(me.id))).map(list => list.map(c => c._id -> c.name))
+  private[controllers] def clazzList(me: lila.user.User): Fu[List[(lila.clazz.Clazz, Boolean)]] =
+    for {
+      clazzs <- Env.clazz.api.mine(me.id).map(_.filter(c => c.isCreator(me.id)))
+      teams <- TeamRepo.byOrderedIds(clazzs.map(_.teamOrDefault))
+    } yield {
+      val ratedList = teams.map(t => t.id -> (t.ratingSettingOrDefault.open && t.ratingSettingOrDefault.coachSupport)).toMap
+      clazzs.map { c =>
+        c -> c.team.?? { teamId =>
+          ratedList.get(teamId) | false
+        }
+      }
+    }
 
 }

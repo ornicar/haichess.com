@@ -535,6 +535,10 @@ object Team extends LilaController {
     }
   }
 
+  def ratingRule() = Auth { implicit ctx => me =>
+    Ok(views.html.team.ratingRulePage()).fuccess
+  }
+
   private def OnePerWeek[A <: Result](me: UserModel)(f: => Fu[A])(implicit ctx: Context): Fu[Result] =
     api.hasCreatedRecently(me) flatMap { did =>
       if (did && !Granter(_.ManageTeam)(me)) Forbidden(views.html.site.message.teamCreateLimit).fuccess

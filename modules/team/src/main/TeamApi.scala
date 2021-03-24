@@ -16,6 +16,7 @@ import lila.user.User.ID
 import akka.pattern.ask
 import makeTimeout.large
 import lila.hub.actorApi.contest.{ ContestBoard, GetContestBoard }
+import lila.hub.actorApi.offContest.OffContestRoundResult
 
 final class TeamApi(
     coll: Colls,
@@ -395,7 +396,7 @@ final class TeamApi(
   def removeMemberClazz(userId: ID, teamId: String, clazzId: String): Funit =
     MemberRepo.removeClazz(teamId, userId, clazzId)
 
-  def updateRating(game: Game, whiteOption: Option[User], blackOption: Option[User]) = {
+  def updateOnlineRating(game: Game, whiteOption: Option[User], blackOption: Option[User]): Funit = {
     (whiteOption |@| blackOption).tupled ?? {
       case (white, black) => {
         (for {
@@ -415,24 +416,24 @@ final class TeamApi(
                         case (whiteMember, blackMember) => {
                           val whiteRating = whiteMember.rating | EloRating(setting.defaultRating, 0)
                           val blackRating = blackMember.rating | EloRating(setting.defaultRating, 0)
-                          val newWhiteRating = whiteRating.calc(blackRating.rating, game.whitePlayer.isWinner)
-                          val newBlackRating = blackRating.calc(whiteRating.rating, game.blackPlayer.isWinner)
+                          val newWhiteRating = whiteRating.calc(blackRating.rating, game.whitePlayer.isWinner, setting.k)
+                          val newBlackRating = blackRating.calc(whiteRating.rating, game.blackPlayer.isWinner, setting.k)
 
                           if (game.isContest) {
                             game.contestId.?? { contestId =>
                               (contestActor ? GetContestBoard(contestId)).mapTo[Option[ContestBoard]] flatMap {
                                 _.?? { board =>
                                   board.teamRated.?? {
-                                    setContestRating(game, whiteMember, board, whiteRating, newWhiteRating, white.id, black.id) >>
-                                      setContestRating(game, blackMember, board, blackRating, newBlackRating, white.id, black.id)
+                                    setContestRating(game, whiteMember, board, whiteRating, newWhiteRating, realName(white, whiteMember), realName(black, blackMember)) >>
+                                      setContestRating(game, blackMember, board, blackRating, newBlackRating, realName(white, whiteMember), realName(black, blackMember))
                                   }
                                 }
                               }
                             }
                           } else {
                             game.rated.?? {
-                              setGameRating(game, whiteMember, whiteRating, newWhiteRating, white.id, black.id) >>
-                                setGameRating(game, blackMember, blackRating, newBlackRating, white.id, black.id)
+                              setGameRating(game, whiteMember, whiteRating, newWhiteRating, realName(white, whiteMember), realName(black, blackMember)) >>
+                                setGameRating(game, blackMember, blackRating, newBlackRating, realName(white, whiteMember), realName(black, blackMember))
                             }
                           }
                         }
@@ -448,15 +449,70 @@ final class TeamApi(
     }
   }
 
+  def updateOfflineRating(result: OffContestRoundResult): Funit = {
+    result.teamId.?? { teamId =>
+      TeamRepo.byId(teamId) flatMap {
+        _.?? { team =>
+          team.ratingSetting.?? { setting =>
+            setting.open.?? {
+              val userIds = result.boards.flatten { board =>
+                List(board.white.userId, board.black.userId)
+              }
+
+              MemberRepo.memberFromSecondary(teamId, userIds) flatMap { members =>
+                result.boards.map { board =>
+                  val whiteMember = members.find(_.user == board.white.userId) err s"canot find whiteMember ${board.white.userId}"
+                  val blackMember = members.find(_.user == board.black.userId) err s"canot find blackMember ${board.black.userId}"
+                  val whiteRating = whiteMember.rating | EloRating(setting.defaultRating, 0)
+                  val blackRating = blackMember.rating | EloRating(setting.defaultRating, 0)
+                  val newWhiteRating = whiteRating.calc(blackRating.rating, board.white.isWinner, setting.k)
+                  val newBlackRating = blackRating.calc(whiteRating.rating, board.black.isWinner, setting.k)
+
+                  val r = {
+                    if (board.white.isWinner | false) {
+                      "1-0"
+                    } else if (board.black.isWinner | false) {
+                      "0-1"
+                    } else "1/2-1/2 "
+                  }
+                  val note = s"${result.contestFullName} 第${result.roundNo}轮  ${board.white.realName} $r ${board.black.realName}"
+                  val link = s"/offContest/${result.contestId}#round${result.roundNo}"
+                  setRating(whiteMember, whiteRating, newWhiteRating, note, TeamRating.Typ.OffContest,
+                    TeamRatingMetaData(
+                      contestId = result.contestId.some,
+                      roundNo = result.roundNo.some,
+                      boardId = board.id.some
+                    )) >> setRating(blackMember, blackRating, newBlackRating, note, TeamRating.Typ.OffContest,
+                      TeamRatingMetaData(
+                        contestId = result.contestId.some,
+                        roundNo = result.roundNo.some,
+                        boardId = board.id.some
+                      ))
+                }.sequenceFu.void
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   private def setGameRating(
     game: Game,
     member: Member,
     oldRating: EloRating,
     newRating: EloRating,
-    whiteUserId: String,
-    blackUserId: String
+    whiteUserRealName: String,
+    blackUserRealName: String
   ): Funit = {
-    setRating(member, oldRating, newRating, gameResult(game, whiteUserId, blackUserId))
+    setRating(
+      member,
+      oldRating,
+      newRating,
+      gameResult(game, whiteUserRealName, blackUserRealName),
+      TeamRating.Typ.Game,
+      TeamRatingMetaData(gameId = game.id.some)
+    )
   }
 
   private def setContestRating(
@@ -465,37 +521,56 @@ final class TeamApi(
     board: ContestBoard,
     oldRating: EloRating,
     newRating: EloRating,
-    whiteUserId: String,
-    blackUserId: String
+    whiteUserRealName: String,
+    blackUserRealName: String
   ): Funit = {
-    val note = s"${board.contestFullName} 第${board.roundNo}轮  ${gameResult(game, whiteUserId, blackUserId)}"
-    setRating(member, oldRating, newRating, note)
+    val note = s"${board.contestFullName} 第${board.roundNo}轮  ${gameResult(game, whiteUserRealName, blackUserRealName)}"
+    setRating(
+      member,
+      oldRating,
+      newRating,
+      note,
+      TeamRating.Typ.Contest,
+      TeamRatingMetaData(
+        contestId = board.contestId.some,
+        roundNo = board.roundNo.some,
+        boardId = game.id.some
+      )
+    )
   }
 
   private def setRating(
     member: Member,
     oldRating: EloRating,
     newRating: EloRating,
-    note: String
+    note: String,
+    typ: TeamRating.Typ,
+    metaData: TeamRatingMetaData
   ): Funit = {
     TeamRatingRepo.insert(
       TeamRating.make(
         userId = member.user,
-        diff = newRating.intValue - oldRating.intValue,
+        rating = oldRating.intValue,
+        diff = newRating.rating - oldRating.rating,
         note = note,
-        typ = TeamRating.Typ.Contest
+        typ = typ,
+        metaData = metaData
       )
     ) >> MemberRepo.updateMember(member.copy(rating = newRating.some)).void
   }
 
-  private def gameResult(game: Game, whiteUserId: String, blackUserId: String): String = {
+  private def gameResult(game: Game, whiteUserRealName: String, blackUserRealName: String): String = {
     val result = {
       game.winnerColor match {
         case None => "1/2-1/2"
         case Some(c) => c.fold("1-0", "0-1")
       }
     }
-    s"$whiteUserId $result $blackUserId"
+    s"$whiteUserRealName $result $blackUserRealName"
+  }
+
+  private def realName(user: User, member: Member) = {
+    user.profile.??(_.realName).fold(member.mark | user.username)(n => n)
   }
 
 }

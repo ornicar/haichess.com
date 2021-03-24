@@ -113,7 +113,7 @@ object show {
             th("序号"),
             th("姓名"),
             th("系统账号"),
-            th(cls := "no-print")("俱乐部等级分"),
+            c.teamRated option th(cls := "no-print")("俱乐部等级分"),
             th(cls := "no-print")("操作")
           )
         ),
@@ -123,7 +123,7 @@ object show {
               td(cls := "no")(pwu.no),
               td(pwu.realNameOrUsername),
               td(if (pwu.player.external) "-" else userLink(pwu.user, withBadge = false)),
-              td(cls := "no-print")(pwu.player.teamRating | 0),
+              c.teamRated option td(cls := "no-print")(pwu.player.teamRating.map(_.toString) | "-"),
               td(cls := "action no-print")(
                 postForm(action := routes.OffContest.removeOrKickPlayer(pwu.player.id))(
                   c.playerRemoveable option button(name := "action", value := "remove", cls := "button button-empty small button-red confirm player-remove", title := "确认移除？")("移除"),

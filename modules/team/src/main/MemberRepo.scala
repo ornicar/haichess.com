@@ -22,6 +22,12 @@ object MemberRepo {
       readPreference = ReadPreference.secondaryPreferred
     )(_.id)
 
+  def memberFromSecondary(teamId: String, userIds: Seq[String]): Fu[List[Member]] =
+    coll.byOrderedIds[Member, String](
+      userIds.map(Member.makeId(teamId, _)),
+      readPreference = ReadPreference.secondaryPreferred
+    )(_.id)
+
   def memberOptionFromSecondary(teamId: String, userIds: Seq[String]): Fu[List[Option[Member]]] =
     coll.optionsByOrderedIds[Member, String](
       userIds.map(Member.makeId(teamId, _)),

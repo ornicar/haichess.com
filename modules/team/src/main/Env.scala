@@ -4,6 +4,7 @@ import akka.actor._
 import com.typesafe.config.Config
 import lila.common.MaxPerPage
 import lila.game.actorApi.FinishGame
+import lila.hub.actorApi.offContest.OffContestRoundResult
 import lila.mod.ModlogApi
 import lila.notify.NotifyApi
 
@@ -90,11 +91,14 @@ final class Env(
     case lila.hub.actorApi.mod.Shadowban(userId, true) => api deleteRequestsByUserId userId
   }
 
-  system.lilaBus.subscribeFun('finishGame) {
+  system.lilaBus.subscribeFun('finishGame, 'offContestRoundResult) {
     case FinishGame(game, white, black) =>
       if (game.nonAi && game.hasClock) {
-        api.updateRating(game, white, black)
+        api.updateOnlineRating(game, white, black)
       }
+    case result: OffContestRoundResult => if (result.teamRated) {
+      api.updateOfflineRating(result)
+    }
   }
 }
 

@@ -53,7 +53,7 @@ final class Env(
   private val pairingSystem = new OffPairingSystem(trf)
   private val pairingDirector = new OffPairingDirector(pairingSystem)
 
-  lazy val roundApi = new OffRoundApi(pairingDirector, notifyApi)
+  lazy val roundApi = new OffRoundApi(pairingDirector, notifyApi, clazzApi, hub.bus)
 
 }
 

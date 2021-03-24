@@ -10,6 +10,7 @@ case class OffContest(
     groupName: Option[String],
     logo: Option[String],
     typ: OffContest.Type,
+    teamRated: Boolean,
     organizer: String, // teamid / classid
     rule: OffContest.Rule,
     rounds: Int,
@@ -65,6 +66,7 @@ object OffContest {
     groupName: Option[String],
     logo: Option[String],
     typ: OffContest.Type,
+    teamRated: Boolean,
     organizer: String, // teamid / classid
     rule: OffContest.Rule,
     rounds: Int,
@@ -76,6 +78,7 @@ object OffContest {
     groupName = groupName,
     logo = logo,
     typ = typ,
+    teamRated = teamRated,
     organizer = organizer,
     rule = rule,
     rounds = rounds,

@@ -20,6 +20,7 @@ case class EloRating(rating: Double, games: Int) {
 
   def intValue = rating.intValue
 
+  /*
   // reference FIDE rule
   def k: Int = {
     if (games <= 30) 25
@@ -28,6 +29,7 @@ case class EloRating(rating: Double, games: Int) {
       else 10
     }
   }
+*/
 
   // Probability
   def p(opponentRating: Double): Double = {
@@ -39,9 +41,10 @@ case class EloRating(rating: Double, games: Int) {
     if (w) 1.0 else 0.0
   }
 
-  def calc(opponentRating: Double, win: Option[Boolean]): EloRating = {
+  def calc(opponentRating: Double, win: Option[Boolean], k: Int): EloRating = {
     val r = rating + k * (ac(win) - p(opponentRating))
-    EloRating(math.max(r, EloRating.min), games + 1)
+    val newRating = math.min(math.max(r, EloRating.min), EloRating.max)
+    EloRating(newRating, games + 1)
   }
 
 }
@@ -49,7 +52,8 @@ case class EloRating(rating: Double, games: Int) {
 object EloRating {
 
   val min = 600
-  val max = 2800
+  val max = 3200
+  val minDiff = 0.8
   val defaultRating = 1500
 
   def default = EloRating(defaultRating, 0)

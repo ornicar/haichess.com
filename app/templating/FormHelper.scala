@@ -119,10 +119,12 @@ trait FormHelper { self: I18nHelper =>
       labelContent: Frag,
       half: Boolean = false,
       help: Option[Frag] = None,
-      disabled: Boolean = false
+      disabled: Boolean = false,
+      klass: String = ""
     ): Frag = div(cls := List(
       "form-check form-group" -> true,
-      "form-half" -> half
+      "form-half" -> half,
+      klass -> klass.nonEmpty
     ))(
       div(
         span(cls := "form-check-input")(

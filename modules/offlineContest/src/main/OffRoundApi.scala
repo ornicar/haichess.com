@@ -1,8 +1,9 @@
 package lila.offlineContest
 
+import lila.clazz.ClazzApi
 import lila.notify.NotifyApi
 
-class OffRoundApi(pairingDirector: OffPairingDirector, notifyApi: NotifyApi) {
+class OffRoundApi(pairingDirector: OffPairingDirector, notifyApi: NotifyApi, clazzApi: ClazzApi, bus: lila.common.Bus) {
 
   def pairing(contest: OffContest, round: OffRound, finish: OffContest => Funit): Fu[Boolean] = {
     OffPlayerRepo.getByContest(contest.id) flatMap { players =>
@@ -34,18 +35,57 @@ class OffRoundApi(pairingDirector: OffPairingDirector, notifyApi: NotifyApi) {
     OffRoundRepo.setStatus(round.id, OffRound.Status.Published) >> OffBoardRepo.batchStart(round.id)
   }
 
-  def publishResult(contest: OffContest, id: OffRound.ID, no: OffRound.No, finish: OffContest => Funit): Funit = {
+  import lila.hub.actorApi.offContest._
+  def publishResult(contest: OffContest, id: OffRound.ID, no: OffRound.No, finish: OffContest => Funit, playersWithUsers: OffContest => Fu[List[OffPlayer.PlayerWithUser]]): Funit = {
     logger.info(s"Result Published：$id")
     val nextRound = no + 1
     for {
       _ <- computeScore(contest, no)
       _ <- OffRoundRepo.setStatus(id, OffRound.Status.PublishResult)
-      res <- if (nextRound > contest.rounds) {
-        finish(contest.copy(currentRound = nextRound))
-      } else {
-        OffContestRepo.setCurrentRound(contest.id, nextRound)
+      players <- playersWithUsers(contest)
+      boards <- OffBoardRepo.getByRound(id)
+      team <- belongTeam(contest)
+      res <- {
+        if (nextRound > contest.rounds) {
+          finish(contest.copy(currentRound = nextRound))
+        } else {
+          OffContestRepo.setCurrentRound(contest.id, nextRound)
+        }
       }
-    } yield res
+    } yield {
+
+      val result = OffContestRoundResult(
+        contest.id,
+        contest.fullName,
+        team,
+        contest.teamRated,
+        no,
+        boards.map { board =>
+          val white = findPlayer(board.whitePlayer.no, players)
+          val black = findPlayer(board.blackPlayer.no, players)
+          OffContestBoard(
+            board.id,
+            OffContestUser(white.userId, white.realNameOrUsername, board.whitePlayer.isWinner),
+            OffContestUser(black.userId, black.realNameOrUsername, board.blackPlayer.isWinner)
+          )
+        }
+      )
+      bus.publish(result, 'offContestRoundResult)
+    }
+  }
+
+  private def findPlayer(no: OffPlayer.No, players: List[OffPlayer.PlayerWithUser]): OffPlayer.PlayerWithUser =
+    players.find(_.player.no == no) err s"can not find player：$no"
+
+  def belongTeam(c: OffContest): Fu[Option[String]] = {
+    c.typ match {
+      case OffContest.Type.Public | OffContest.Type.TeamInner => fuccess(c.organizer.some)
+      case OffContest.Type.ClazzInner => {
+        clazzApi.byId(c.organizer).map {
+          _.??(_.team)
+        }
+      }
+    }
   }
 
   private def computeScore(contest: OffContest, no: OffRound.No): Funit = {

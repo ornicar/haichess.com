@@ -27,6 +27,7 @@ class OffContestApi(
         groupName = c.groupName,
         logo = c.logo,
         typ = c.typ,
+        teamRated = c.teamRated,
         organizer = c.organizer,
         rule = c.rule,
         rounds = c.rounds,

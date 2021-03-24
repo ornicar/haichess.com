@@ -75,7 +75,7 @@ object OffContest extends LilaController {
         forms.contest(me, None).bindFromRequest.fold(
           err => BadRequest(html.offlineContest.form.create(err, teams, clazzs)).fuccess,
           data => CreateLimitPerUser(me.id, cost = 1) {
-            val contest = data.toContest(me, teams.map(t => t.id -> t.name), clazzs)
+            val contest = data.toContest(me, teams.map(t => t.id -> t.name), clazzs.map(c => c._1.id -> c._1.name))
             api.create(contest, data.roundList(contest.id)) map { c =>
               Redirect(routes.OffContest.show(c.id))
             }
@@ -110,7 +110,7 @@ object OffContest extends LilaController {
               forms.contest(me, id.some).bindFromRequest.fold(
                 err => BadRequest(html.offlineContest.form.update(id, err, teams, clazzs)).fuccess,
                 data => {
-                  val newContest = data.toContest(me, teams.map(t => t.id -> t.name), clazzs)
+                  val newContest = data.toContest(me, teams.map(t => t.id -> t.name), clazzs.map(c => c._1.id -> c._1.name))
                   val rounds = data.roundList(contest.id)
                   api.update(contest, newContest, rounds) inject Redirect(routes.OffContest.show(id))
                 }
@@ -530,7 +530,7 @@ object OffContest extends LilaController {
             OffBoardRepo.allFinished(round.id, round.boards) flatMap { af =>
               if (!af) {
                 BadRequest(jsonError("必须录入了所有对局成绩，才能发布成绩")).fuccess
-              } else roundApi.publishResult(contest, round.id, round.no, api.finish) inject Redirect(routes.OffContest.show(contest.id))
+              } else roundApi.publishResult(contest, round.id, round.no, api.finish, api.playersWithUsers) inject Redirect(routes.OffContest.show(contest.id))
             }
           }
         }

@@ -3,6 +3,7 @@ package lila.team
 case class RatingSetting(
     open: Boolean,
     defaultRating: Int,
+    k: Int,
     coachSupport: Boolean,
     turns: Int,
     minutes: Int
@@ -17,6 +18,7 @@ object RatingSetting {
   def default = new RatingSetting(
     open = false,
     defaultRating = defaultRating,
+    k = 20,
     coachSupport = false,
     turns = 10,
     minutes = 22

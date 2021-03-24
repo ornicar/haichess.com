@@ -113,10 +113,13 @@ object forms {
                 form3.select(f, Seq(0 -> "否", 1 -> "是"))
               },
               form3.split(
-                form3.checkbox(form("ratingSetting.open"), raw("开启俱乐部内部等级分"), half = true),
+                form3.checkbox(form("ratingSetting.open"), raw("开启俱乐部内部等级分"), half = true, help = frag("点击查看", nbsp, a(target := "_blank", href := routes.Team.ratingRule)("计分规则")).some),
+                form3.checkbox(form("ratingSetting.coachSupport"), raw("允许教练创建班级比赛（含线上和线下），计算俱乐部等级分"), half = true)
+              ),
+              form3.split(
+                form3.group(form("ratingSetting.k"), raw("K值"), half = true, help = raw("用于计算等级分的参数，标识棋手的稳定性").some)(form3.select(_, List(10, 15, 20, 30, 40).map(v => v -> v.toString))),
                 form3.group(form("ratingSetting.defaultRating"), raw("默认初始等级分"), half = true)(form3.input(_, typ = "number"))
               ),
-              form3.checkbox(form("ratingSetting.coachSupport"), raw("允许教练创建班级比赛（含线上和线下），计算俱乐部等级分"), half = true),
               h3(b("满足以下条件的线上对局（俱乐部内会员间），自动计算内部等级分")),
               form3.split(
                 form3.group(form("ratingSetting.turns"), raw("回合数大于"), half = true)(f => frag(form3.input(f, typ = "number"))),

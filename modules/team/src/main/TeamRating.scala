@@ -6,9 +6,11 @@ import ornicar.scalalib.Random
 case class TeamRating(
     _id: String,
     userId: String,
-    diff: Int,
+    rating: Double,
+    diff: Double,
     note: String,
     typ: TeamRating.Typ,
+    metaData: TeamRatingMetaData,
     createAt: DateTime
 ) {
 
@@ -20,15 +22,19 @@ object TeamRating {
 
   def make(
     userId: String,
-    diff: Int,
+    rating: Int,
+    diff: Double,
     note: String,
-    typ: TeamRating.Typ
+    typ: TeamRating.Typ,
+    metaData: TeamRatingMetaData
   ) = TeamRating(
     _id = Random nextString 8,
     userId = userId,
+    rating = rating,
     diff = diff,
     note = note,
     typ = typ,
+    metaData = metaData,
     createAt = DateTime.now
   )
 
@@ -45,3 +51,5 @@ object TeamRating {
   }
 
 }
+
+case class TeamRatingMetaData(contestId: Option[String] = None, roundNo: Option[Int] = None, boardId: Option[String] = None, gameId: Option[String] = None)

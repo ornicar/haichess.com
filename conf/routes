@@ -339,6 +339,7 @@ POST  /team/:id/addTag                        controllers.Team.addTagApply(id: S
 GET   /team/editTag/:tagId                    controllers.Team.editTagModal(tagId: String)
 POST  /team/editTag/:tagId                    controllers.Team.editTagApply(tagId: String)
 POST  /team/:id/removeTag/:tagId              controllers.Team.removeTag(id: String, tagId: String)
+GET   /team/rating/rule                       controllers.Team.ratingRule()
 
 GET   /team/:id/certification                 controllers.TeamCertification.certification(id: String)
 POST  /team/:id/certificationSend             controllers.TeamCertification.certificationSend(id: String)
@@ -585,6 +586,7 @@ GET   /api/account/preferences         controllers.Pref.apiGet
 POST  /api/challenge/:user             controllers.Challenge.apiCreate(user: String)
 POST  /api/challenge/$id<\w{8}>/accept  controllers.Challenge.apiAccept(id: String)
 POST  /api/challenge/$id<\w{8}>/decline controllers.Challenge.apiDecline(id: String)
+
 
 GET   /api/games/user/:username        controllers.Game.apiExportByUser(username: String)
 

@@ -53,6 +53,7 @@ private object BSONHandlers {
     def write(x: TeamRating.Typ) = BSONString(x.id)
   }
 
+  implicit val TeamRatingMetaDataBSONHandler = Macros.handler[lila.team.TeamRatingMetaData]
   implicit val RatingSettingBSONHandler = Macros.handler[RatingSetting]
   implicit val EnvPictureHandler = lila.db.dsl.bsonArrayToListHandler[String]
   implicit val CertificationBSONHandler = Macros.handler[Certification]
