@@ -65,8 +65,8 @@ class OffRoundApi(pairingDirector: OffPairingDirector, notifyApi: NotifyApi, cla
           val black = findPlayer(board.blackPlayer.no, players)
           OffContestBoard(
             board.id,
-            OffContestUser(white.userId, white.realNameOrUsername, board.whitePlayer.isWinner),
-            OffContestUser(black.userId, black.realNameOrUsername, board.blackPlayer.isWinner)
+            OffContestUser(white.userId, white.realNameOrUsername, white.player.external, white.player.teamRating, board.whitePlayer.isWinner),
+            OffContestUser(black.userId, black.realNameOrUsername, black.player.external, black.player.teamRating, board.blackPlayer.isWinner)
           )
         }
       )

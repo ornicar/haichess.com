@@ -16,7 +16,7 @@ import lila.user.User.ID
 import akka.pattern.ask
 import makeTimeout.large
 import lila.hub.actorApi.contest.{ ContestBoard, GetContestBoard }
-import lila.hub.actorApi.offContest.OffContestRoundResult
+import lila.hub.actorApi.offContest.{ OffContestBoard, OffContestRoundResult, OffContestUser }
 
 final class TeamApi(
     coll: Colls,
@@ -456,13 +456,14 @@ final class TeamApi(
           team.ratingSetting.?? { setting =>
             setting.open.?? {
               val userIds = result.boards.flatten { board =>
-                List(board.white.userId, board.black.userId)
+                Map(board.white.userId -> board.white.external, board.black.userId -> board.black.external).filterNot(_._2).keySet
               }
 
               MemberRepo.memberFromSecondary(teamId, userIds) flatMap { members =>
                 result.boards.map { board =>
-                  val whiteMember = members.find(_.user == board.white.userId) err s"canot find whiteMember ${board.white.userId}"
-                  val blackMember = members.find(_.user == board.black.userId) err s"canot find blackMember ${board.black.userId}"
+                  def whiteMember = findMember(team, board.white, members)
+                  def blackMember = findMember(team, board.black, members)
+
                   val whiteRating = whiteMember.rating | EloRating(setting.defaultRating, 0)
                   val blackRating = blackMember.rating | EloRating(setting.defaultRating, 0)
                   val newWhiteRating = whiteRating.calc(blackRating.rating, board.white.isWinner, setting.k)
@@ -475,19 +476,10 @@ final class TeamApi(
                       "0-1"
                     } else "1/2-1/2 "
                   }
+
                   val note = s"${result.contestFullName} 第${result.roundNo}轮  ${board.white.realName} $r ${board.black.realName}"
-                  val link = s"/offContest/${result.contestId}#round${result.roundNo}"
-                  setRating(whiteMember, whiteRating, newWhiteRating, note, TeamRating.Typ.OffContest,
-                    TeamRatingMetaData(
-                      contestId = result.contestId.some,
-                      roundNo = result.roundNo.some,
-                      boardId = board.id.some
-                    )) >> setRating(blackMember, blackRating, newBlackRating, note, TeamRating.Typ.OffContest,
-                      TeamRatingMetaData(
-                        contestId = result.contestId.some,
-                        roundNo = result.roundNo.some,
-                        boardId = board.id.some
-                      ))
+                  setOffContestRating(result, board, board.white, whiteMember, whiteRating, newWhiteRating, note) >>
+                    setOffContestRating(result, board, board.black, blackMember, blackRating, newBlackRating, note)
                 }.sequenceFu.void
               }
             }
@@ -495,6 +487,31 @@ final class TeamApi(
         }
       }
     }
+  }
+
+  private def findMember(team: Team, u: OffContestUser, members: List[Member]): Member = {
+    if (u.external) {
+      Member.make(team.id, u.userId, rating = u.teamRating)
+    } else {
+      members.find(_.user == u.userId) err s"can not find member ${u.userId}"
+    }
+  }
+
+  private def setOffContestRating(
+    result: OffContestRoundResult,
+    board: OffContestBoard,
+    u: OffContestUser,
+    member: Member,
+    oldRating: EloRating,
+    newRating: EloRating,
+    note: String
+  ): Funit = if (u.external) funit else {
+    setRating(member, oldRating, newRating, note, TeamRating.Typ.OffContest,
+      TeamRatingMetaData(
+        contestId = result.contestId.some,
+        roundNo = result.roundNo.some,
+        boardId = board.id.some
+      ))
   }
 
   private def setGameRating(

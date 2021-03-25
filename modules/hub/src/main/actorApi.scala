@@ -318,6 +318,8 @@ package offContest {
   case class OffContestUser(
       userId: String,
       realName: String,
+      external: Boolean,
+      teamRating: Option[Int],
       isWinner: Option[Boolean] = None
   )
 
