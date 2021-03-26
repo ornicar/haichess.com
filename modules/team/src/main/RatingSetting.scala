@@ -21,7 +21,7 @@ object RatingSetting {
     k = 20,
     coachSupport = false,
     turns = 10,
-    minutes = 22
+    minutes = 20
   )
 
 }

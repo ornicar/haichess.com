@@ -102,13 +102,10 @@ final class Env(
   system.actorOf(Props(new Actor {
     def receive = {
       case GetContestBoard(gameId: String) => {
-        sender ! {
-          contestApi.fullBoardInfo(gameId) map {
-            _.map { c =>
-              ContestBoard(c.contest.id, c.contest.fullName, c.contest.teamRated, c.round.no)
-            }
-          }
+        val data = contestApi.fullBoardInfo(gameId).awaitSeconds(3).map { c =>
+          ContestBoard(c.contest.id, c.contest.fullName, c.contest.teamRated, c.round.no)
         }
+        sender ! data
       }
     }
   }), name = ActorName)

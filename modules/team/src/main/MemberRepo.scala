@@ -14,7 +14,9 @@ object MemberRepo {
 
   type ID = String
 
-  def byId(teamId: ID, userId: ID) = coll.byId[Member](selectId(teamId, userId))
+  def byId(teamId: ID, userId: ID) = {
+    coll.byId[Member](Member.makeId(teamId, userId))
+  }
 
   def memberFromSecondary(teamId: Seq[String], userId: String): Fu[List[Member]] =
     coll.byOrderedIds[Member, String](

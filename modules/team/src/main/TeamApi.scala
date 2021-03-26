@@ -407,7 +407,8 @@ final class TeamApi(
             teamFromSecondary((wtis & btis).toSeq) flatMap { teams =>
               teams.map { team =>
                 team.ratingSetting.?? { setting =>
-                  (setting.open && game.turns > setting.turns && game.clock.?? { c => (c.limitSeconds + c.incrementSeconds * 40) / 60 >= math.max(setting.minutes, 2) }).?? {
+                  val clockReach = game.clock.?? { c => (c.limitSeconds + c.incrementSeconds * 40) / 60 >= math.max(setting.minutes, 2) }
+                  (setting.open && game.turns > setting.turns && clockReach).?? {
                     (for {
                       whiteMemberOption <- MemberRepo.byId(team.id, white.id)
                       blackMemberOption <- MemberRepo.byId(team.id, black.id)
@@ -420,13 +421,11 @@ final class TeamApi(
                           val newBlackRating = blackRating.calc(whiteRating.rating, game.blackPlayer.isWinner, setting.k)
 
                           if (game.isContest) {
-                            game.contestId.?? { contestId =>
-                              (contestActor ? GetContestBoard(contestId)).mapTo[Option[ContestBoard]] flatMap {
-                                _.?? { board =>
-                                  board.teamRated.?? {
-                                    setContestRating(game, whiteMember, board, whiteRating, newWhiteRating, realName(white, whiteMember), realName(black, blackMember)) >>
-                                      setContestRating(game, blackMember, board, blackRating, newBlackRating, realName(white, whiteMember), realName(black, blackMember))
-                                  }
+                            contestBoard(game.id) flatMap {
+                              _.?? { board =>
+                                board.teamRated.?? {
+                                  setContestRating(game, whiteMember, board, whiteRating, newWhiteRating, realName(white, whiteMember), realName(black, blackMember)) >>
+                                    setContestRating(game, blackMember, board, blackRating, newBlackRating, realName(white, whiteMember), realName(black, blackMember))
                                 }
                               }
                             }
@@ -448,6 +447,8 @@ final class TeamApi(
       }
     }
   }
+
+  private def contestBoard(gameId: String) = (contestActor ? GetContestBoard(gameId)).mapTo[Option[ContestBoard]]
 
   def updateOfflineRating(result: OffContestRoundResult): Funit = {
     result.teamId.?? { teamId =>
