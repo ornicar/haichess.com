@@ -4,6 +4,7 @@ import reactivemongo.bson._
 import lila.db.dsl._
 import lila.user.UserRepo
 import reactivemongo.api.ReadPreference
+import reactivemongo.api.collections.bson.BSONBatchCommands.AggregationFramework.{ GroupField, Match, Project, SumValue }
 
 object MemberRepo {
 
@@ -13,6 +14,8 @@ object MemberRepo {
   import BSONHandlers._
 
   type ID = String
+
+  private type NbMembers = Int
 
   def byId(teamId: ID, userId: ID) = {
     coll.byId[Member](Member.makeId(teamId, userId))
@@ -98,7 +101,7 @@ object MemberRepo {
 
   def updateMember(member: Member) = coll.update($id(member.id), member)
 
-  def updateMembersRating(teamId: ID, defaultRating: Int): Funit =
+  def initMembersRating(teamId: ID, defaultRating: Int): Funit =
     coll.update(
       teamQuery(teamId) ++ $doc("rating" $exists false),
       $set(
@@ -132,6 +135,33 @@ object MemberRepo {
       selectId(teamId, userId),
       $pull("clazzIds" -> clazzId)
     ).void
+
+  def ratingDistribution(teamId: String, clazzId: Option[String]) = {
+    coll.aggregateList(
+      Match($doc("team" -> teamId) ++ clazzId.??(c => $doc("clazzIds" -> c))),
+      List(
+        Project($doc(
+          "_id" -> false,
+          "r" -> $doc(
+            "$subtract" -> $arr("$rating.r", $doc("$mod" -> $arr("$rating.r", EloRating.group)))
+          )
+        )),
+        GroupField("r")("nb" -> SumValue(1))
+      ),
+      maxDocs = Int.MaxValue,
+      ReadPreference.secondaryPreferred
+    ).map { res =>
+        val hash: Map[Int, NbMembers] = res.flatMap { obj =>
+          for {
+            rating <- obj.getAs[Double]("_id").map(_.toInt)
+            nb <- obj.getAs[NbMembers]("nb")
+          } yield rating -> nb
+        }(scala.collection.breakOut)
+        (EloRating.min to EloRating.max by EloRating.group).map { r =>
+          hash.getOrElse(r, 0)
+        }.toList
+      }
+  }
 
   def selectId(teamId: ID, userId: ID) = $id(Member.makeId(teamId, userId))
   def teamQuery(teamId: ID) = $doc("team" -> teamId)

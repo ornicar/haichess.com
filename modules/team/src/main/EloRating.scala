@@ -51,10 +51,11 @@ case class EloRating(rating: Double, games: Int) {
 
 object EloRating {
 
-  val min = 600
+  val min = 500
   val max = 3200
   val minDiff = 0.8
   val defaultRating = 1500
+  val group = 25
 
   def default = EloRating(defaultRating, 0)
 

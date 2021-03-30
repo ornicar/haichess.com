@@ -92,7 +92,7 @@ final class TeamApi(
       ratingSetting = s.ratingSetting.some
     ) |> { team =>
       coll.team.update($id(team.id), team).void >> s.ratingSetting.open.?? {
-        MemberRepo.updateMembersRating(team.id, s.ratingSetting.defaultRating)
+        MemberRepo.initMembersRating(team.id, s.ratingSetting.defaultRating)
       } >> {
         !team.isCreator(me.id) ?? {
           modLog.teamEdit(me.id, team.createdBy, team.name)
@@ -396,6 +396,29 @@ final class TeamApi(
   def removeMemberClazz(userId: ID, teamId: String, clazzId: String): Funit =
     MemberRepo.removeClazz(teamId, userId, clazzId)
 
+  def setMemberRating(team: Team, member: Member, rating: Int, note: Option[String]): Funit = {
+    MemberRepo.updateMember(
+      member.copy(
+        rating = {
+          member.rating.fold(EloRating(rating, 0)) { r =>
+            r.copy(
+              rating = rating
+            )
+          }
+        }.some
+      )
+    ) >> TeamRatingRepo.insert(
+        TeamRating.make(
+          userId = member.user,
+          rating = member.intRating | 0,
+          diff = rating - (member.intRating | 0),
+          note = note | "",
+          typ = TeamRating.Typ.Setting,
+          metaData = TeamRatingMetaData()
+        )
+      )
+  }
+
   def updateOnlineRating(game: Game, whiteOption: Option[User], blackOption: Option[User]): Funit = {
     (whiteOption |@| blackOption).tupled ?? {
       case (white, black) => {
@@ -565,7 +588,7 @@ final class TeamApi(
     typ: TeamRating.Typ,
     metaData: TeamRatingMetaData
   ): Funit = {
-    TeamRatingRepo.insert(
+    MemberRepo.updateMember(member.copy(rating = newRating.some)) >> TeamRatingRepo.insert(
       TeamRating.make(
         userId = member.user,
         rating = oldRating.intValue,
@@ -574,7 +597,7 @@ final class TeamApi(
         typ = typ,
         metaData = metaData
       )
-    ) >> MemberRepo.updateMember(member.copy(rating = newRating.some)).void
+    )
   }
 
   private def gameResult(game: Game, whiteUserRealName: String, blackUserRealName: String): String = {

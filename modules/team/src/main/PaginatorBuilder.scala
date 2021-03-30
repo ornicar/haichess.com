@@ -55,6 +55,8 @@ private[team] final class PaginatorBuilder(
     private def buildSelector(teamId: String, searchData: MemberSearch) = {
       TagRepo.findByTeam(teamId).map { tags =>
         var doc = $doc("team" -> teamId)
+        searchData.clazzId.foreach(c =>
+          doc = doc ++ $doc("clazzIds" -> c))
         searchData.username.foreach(u =>
           doc = doc ++ $or($doc("user" $regex (u, "i")), $doc("mark" $regex (u, "i"))))
         searchData.role.foreach(r =>

@@ -58,7 +58,9 @@ object bits {
       ),
       td(cls := "info")(
         p(trans.nbMembers.plural(t.nbMembers, t.nbMembers.localize)),
-        p(a(cls := "rating")(twm.member.intRating.map(r => s"${r}分")), nbsp, b(twm.member.role.name))
+        p(
+          twm.member.intRating.map(r => a(cls := "rating", href := routes.Team.ratingDistribution(t.id))(s"${r}分")), nbsp, b(twm.member.role.name)
+        )
       )
     )
   }

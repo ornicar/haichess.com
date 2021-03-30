@@ -6,7 +6,7 @@ import lila.common.paginator.Paginator
 import lila.common.{ HTTPRequest, MaxPerSecond }
 import lila.memo.UploadRateLimit
 import lila.security.Granter
-import lila.team.{ Invite, InviteRepo, Joined, MemberRepo, MemberSearch, Motivate, RequestRepo, TagRepo, TeamRepo, Team => TeamModel }
+import lila.team.{ Invite, InviteRepo, Joined, MemberRepo, MemberSearch, Motivate, RequestRepo, TagRepo, TeamRepo, Team => TeamModel, TeamRatingRepo, MemberWithUser }
 import lila.user.{ UserRepo, User => UserModel }
 import ornicar.scalalib.Random
 import play.api.libs.json.Json
@@ -537,6 +537,64 @@ object Team extends LilaController {
 
   def ratingRule() = Auth { implicit ctx => me =>
     Ok(views.html.team.ratingRulePage()).fuccess
+  }
+
+  def ratingDistributionChart(id: String, clazzId: String) = Auth { implicit ctx => me =>
+    OptionFuResult(api team id) { team =>
+      OwnerAndEnable(team) {
+        MemberRepo.ratingDistribution(team.id, if (clazzId.isEmpty) none else clazzId.some).map { distributionData =>
+          Ok(distributionData.mkString("[", ",", "]")) as JSON
+        }
+      }
+    }
+  }
+
+  def ratingDistribution(id: String, p: Int = 1) = AuthBody { implicit ctx => me =>
+    OptionFuResult(api team id) { team =>
+      OwnerAndEnable(team) {
+        implicit val req = ctx.body
+        val form = forms.memberSearch.bindFromRequest
+        form.fold(
+          fail => {
+            fuccess(Ok(html.team.ratingDistribution(fail, none, team, Nil, Paginator.empty[MemberWithUser], Nil)))
+          },
+          data => {
+            for {
+              member <- MemberRepo.byId(team.id, me.id)
+              clazzs <- team.clazzIds.??(Env.clazz.api.byIds)
+              pager <- paginator.teamMembers(team, p, data)
+              distributionData <- MemberRepo.ratingDistribution(team.id, none)
+            } yield Ok(html.team.ratingDistribution(form, member, team, clazzs.map(c => c.id -> c.name), pager, distributionData))
+          }
+        )
+      }
+    }
+  }
+
+  def memberRatingModal(memberId: String) = Auth { implicit ctx => me =>
+    OptionFuResult(MemberRepo.memberWithUser(memberId)) { mwu =>
+      OptionFuResult(api team mwu.team) { team =>
+        OwnerAndEnable(team) {
+          Ok(html.team.ratingDistribution.ratingEdit(mwu, forms.ratingEditOf(team, mwu))).fuccess
+        }
+      }
+    }
+  }
+
+  def memberRatingApply(memberId: String) = AuthBody { implicit ctx => me =>
+    OptionFuResult(MemberRepo.memberWithUser(memberId)) { mwu =>
+      OptionFuResult(api team mwu.team) { team =>
+        OwnerAndEnable(team) {
+          implicit val req = ctx.body
+          forms.ratingEdit.bindFromRequest.fold(
+            err => BadRequest(
+              html.team.ratingDistribution.ratingEdit(mwu, err)
+            ).fuccess,
+            data => api.setMemberRating(team, mwu.member, data.rating, data.note) inject Redirect(routes.Team.ratingDistribution(team.id, 1))
+          )
+        }
+      }
+    }
   }
 
   private def OnePerWeek[A <: Result](me: UserModel)(f: => Fu[A])(implicit ctx: Context): Fu[Result] =

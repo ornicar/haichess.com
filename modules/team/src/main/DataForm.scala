@@ -9,7 +9,7 @@ import lila.security.{ Granter, SmsCaptcher }
 import lila.user.FormSelect
 import play.api.data.validation.Constraints
 
-private[team] final class DataForm(
+class DataForm(
     teamColl: Coll,
     val captcherActor: akka.actor.ActorSelection,
     val smsCaptcherActor: akka.actor.ActorSelection
@@ -154,6 +154,7 @@ private[team] final class DataForm(
     "sex" -> optional(text.verifying(FormSelect.Sex.keySet contains _)),
     "age" -> optional(number(min = 0, max = 100)),
     "level" -> optional(text.verifying(FormSelect.Level.keySet contains _)),
+    "clazzId" -> optional(nonEmptyText),
     "fields" -> list(mapping(
       "fieldName" -> nonEmptyText,
       "fieldValue" -> optional(nonEmptyText)
@@ -207,6 +208,16 @@ private[team] final class DataForm(
   )(TagEdit.apply)(TagEdit.unapply)
     .verifying("当前类型可选值必填", _.mustHaveValue))
 
+  def ratingEditOf(team: Team, mwu: MemberWithUser) = ratingEdit fill RatingEdit(
+    rating = mwu.member.intRating | team.ratingSettingOrDefault.defaultRating,
+    note = none
+  )
+
+  def ratingEdit = Form(mapping(
+    "rating" -> number(min = EloRating.min, EloRating.max),
+    "note" -> optional(nonEmptyText(minLength = 2, maxLength = 50))
+  )(RatingEdit.apply)(RatingEdit.unapply))
+
 }
 
 private[team] case class TeamSetup(
@@ -229,7 +240,7 @@ private[team] case class TeamSetup(
   )
 }
 
-private[team] case class TeamSetting(
+case class TeamSetting(
     open: Int,
     tagTip: Int,
     ratingSetting: RatingSetting
@@ -238,6 +249,10 @@ private[team] case class TeamSetting(
   def isOpen = open == 1
   def showTagTip = tagTip == 1
 
+}
+
+object TeamSetting {
+  val kList = List(10, 15, 20, 30, 40).map(v => v -> v.toString)
 }
 
 private[team] case class TeamEdit(
@@ -302,6 +317,7 @@ case class MemberSearch(
     sex: Option[String] = None,
     age: Option[Int] = None,
     level: Option[String] = None,
+    clazzId: Option[String] = None,
     fields: List[MemberTag] = List.empty[MemberTag],
     rangeFields: List[RangeMemberTag] = List.empty[RangeMemberTag]
 ) {
@@ -325,3 +341,5 @@ private[team] case class MemberEdit(
 ) {
   def realRole = Member.Role(role)
 }
+
+private[team] case class RatingEdit(rating: Int, note: Option[String])
