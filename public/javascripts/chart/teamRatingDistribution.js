@@ -158,7 +158,7 @@ lichess.teamRatingDistributionChart = function(data) {
         $('#form3-dstClazz').change(function () {
           let teamId = $('main').data('id');
           let clazzId = $(this).val();
-          $.get({ url: `/team/rating/ratingDistributionChart?id=${teamId}&clazzId=${clazzId}` }).then(function(freg) {
+          $.get({ url: `/team/rating/distributionChart?id=${teamId}&clazzId=${clazzId}` }).then(function(freg) {
             let option = getOption(freg, data.myRating);
             chart.setOption(option);
           });

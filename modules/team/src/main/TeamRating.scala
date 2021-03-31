@@ -16,6 +16,8 @@ case class TeamRating(
 
   def id = _id
 
+  def diffFormat = "%.1f".format(diff)
+
 }
 
 object TeamRating {

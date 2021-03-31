@@ -556,7 +556,7 @@ object Team extends LilaController {
         val form = forms.memberSearch.bindFromRequest
         form.fold(
           fail => {
-            fuccess(Ok(html.team.ratingDistribution(fail, none, team, Nil, Paginator.empty[MemberWithUser], Nil)))
+            fuccess(Ok(html.team.ratingDistribution(fail, team, none, Nil, Paginator.empty[MemberWithUser], Nil)))
           },
           data => {
             for {
@@ -564,7 +564,7 @@ object Team extends LilaController {
               clazzs <- team.clazzIds.??(Env.clazz.api.byIds)
               pager <- paginator.teamMembers(team, p, data)
               distributionData <- MemberRepo.ratingDistribution(team.id, none)
-            } yield Ok(html.team.ratingDistribution(form, member, team, clazzs.map(c => c.id -> c.name), pager, distributionData))
+            } yield Ok(html.team.ratingDistribution(form, team, member, clazzs.map(c => c.id -> c.name), pager, distributionData))
           }
         )
       }
@@ -593,6 +593,19 @@ object Team extends LilaController {
             data => api.setMemberRating(team, mwu.member, data.rating, data.note) inject Redirect(routes.Team.ratingDistribution(team.id, 1))
           )
         }
+      }
+    }
+  }
+
+  def memberRatingDistribution(memberId: String, p: Int = 1) = Auth { implicit ctx => me =>
+    OptionFuResult(MemberRepo.memberWithUser(memberId)) { mwu =>
+      OptionFuResult(api team mwu.team) { team =>
+        for {
+          member <- MemberRepo.byId(team.id, me.id)
+          distributionData <- MemberRepo.ratingDistribution(team.id, none)
+          historyData <- TeamRatingRepo.historyData(mwu.user.id)
+          pager <- TeamRatingRepo.page(p, mwu.user.id)
+        } yield Ok(html.team.memberRatingDistribution(team, mwu, distributionData, historyData, pager))
       }
     }
   }

@@ -1,7 +1,7 @@
 .ratingDistribution {
 
   .distribution {
-    .list_action {
+    .distribution_action {
       @extend %flex-between-nowrap;
       h1 {
         margin-bottom: 0;
@@ -11,18 +11,58 @@
       }
     }
     #rating_distribution_chart {
-      height: 500px;
+      height: 350px;
       margin-top: 2rem;
     }
   }
 
   .members {
     margin-top: 2em;
-
     .list_action {
       margin-bottom: 1em;
       table td {
         padding-right: .5em;
+      }
+    }
+  }
+
+  .history {
+    margin-top: 2em;
+
+    .search-bar {
+      margin-top: 5px;
+      margin-bottom: 10px;
+      padding: 2px 5px;
+      font-size: .8em;
+      span {
+        padding: 2px;
+        background: #f7f7f7;
+        cursor: pointer;
+        margin-right: .2em;
+        &:hover {
+          background: #e7e7e7;
+        }
+        &.active {
+          background: #e7f0f9;
+          font-weight: bold;
+        }
+      }
+    }
+
+    #rating_history_chart {
+      height: 350px;
+    }
+  }
+
+  .ratingLogs {
+    margin-top: 2em;
+    .rating {
+      width: 150px;
+      .diff {
+        color: $c-secondary;;
+        &.minus {
+          color: $c-red;
+        }
       }
     }
   }

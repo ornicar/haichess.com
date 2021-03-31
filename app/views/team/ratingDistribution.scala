@@ -13,8 +13,8 @@ object ratingDistribution {
 
   def apply(
     form: Form[_],
-    member: Option[Member],
     team: Team,
+    member: Option[Member],
     clazzs: List[(ClazzId, ClazzName)],
     pager: Paginator[MemberWithUser],
     distributionData: List[Int]
@@ -23,6 +23,7 @@ object ratingDistribution {
       title = "俱乐部等级分",
       moreCss = cssTag("team"),
       moreJs = frag(
+        infiniteScrollTag,
         jsTag("team.ratingDistribution.js"),
         jsTag("chart/teamRatingDistribution.js"),
         embedJsUnsafe(s"""lichess.teamRatingDistributionChart({
@@ -33,7 +34,7 @@ object ratingDistribution {
     ) {
         main(cls := "ratingDistribution", dataId := team.id)(
           div(cls := "box box-pad distribution")(
-            div(cls := "list_action")(
+            div(cls := "distribution_action")(
               h1(team.name, "内部等级分分布"),
               form3.select(form("dstClazz"), clazzs, "全部".some)
             ),
@@ -74,7 +75,7 @@ object ratingDistribution {
                         td(mu.member.rating.map(_.intValue.toString) | "-"),
                         td(
                           a(cls := "button button-empty small member-rating", href := routes.Team.memberRatingModal(mu.member.id))("编辑"),
-                          a(cls := "button button-empty small")("详情")
+                          a(cls := "button button-empty small", href := routes.Team.memberRatingDistribution(mu.member.id))("详情")
                         )
                       )
                     }
@@ -94,7 +95,7 @@ object ratingDistribution {
   }
 
   def nextPageUrl(form: Form[_], team: Team, np: Int)(implicit ctx: Context) = {
-    var url: String = routes.Team.members(team.id, np).url
+    var url: String = routes.Team.ratingDistribution(team.id, np).url
     form.data.foreach {
       case (key, value) => url = url.concat("&").concat(key).concat("=").concat(value)
     }
