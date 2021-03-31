@@ -2,7 +2,7 @@ package lila.team
 
 import lila.db.dsl._
 import lila.db.BSON
-import reactivemongo.bson.{ BSONHandler, BSONString, BSONWriter, Macros, BSONDocument }
+import reactivemongo.bson.{ BSONDocument, BSONHandler, BSONInteger, BSONString, BSONWriter, Macros }
 
 private object BSONHandlers {
 
@@ -39,12 +39,14 @@ private object BSONHandlers {
 
     def reads(r: BSON.Reader): EloRating = EloRating(
       rating = r double "r",
-      games = r int "g"
+      games = r int "g",
+      k = r intO "k"
     )
 
     def writes(w: BSON.Writer, o: EloRating) = BSONDocument(
       "r" -> w.double(o.rating),
-      "g" -> w.int(o.games)
+      "g" -> w.int(o.games),
+      "k" -> o.k.map { k => BSONInteger(k) }
     )
   }
 

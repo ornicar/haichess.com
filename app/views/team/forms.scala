@@ -112,9 +112,8 @@ object forms {
               form3.group(form("tagTip"), "接受邀请时补录信息") { f =>
                 form3.select(f, Seq(0 -> "否", 1 -> "是"))
               },
-              form3.split(
-                form3.checkbox(form("ratingSetting.open"), raw("开启俱乐部内部等级分"), half = true, help = frag("点击查看", nbsp, a(target := "_blank", href := routes.Team.ratingRule)("计分规则")).some),
-                form3.checkbox(form("ratingSetting.coachSupport"), raw("允许教练创建班级比赛（含线上和线下），计算俱乐部等级分"), half = true)
+              div(cls := "ratingSetting")(
+                h2("俱乐部内部等级分设置"), nbsp, a(target := "_blank", href := routes.Team.ratingRule)("计分规则")
               ),
               form3.split(
                 form3.group(form("ratingSetting.k"), raw("发展系数K"), half = true, help = raw("标识棋手的稳定性").some)(f => form3.select(f, TeamSetting.kList)),
@@ -125,6 +124,8 @@ object forms {
                 form3.group(form("ratingSetting.turns"), raw("回合数大于"), half = true)(f => frag(form3.input(f, typ = "number"))),
                 form3.group(form("ratingSetting.minutes"), raw("单个棋手用时大于等于（分钟）"), half = true)(f => frag(form3.input(f, typ = "number")))
               ),
+              form3.checkbox(form("ratingSetting.coachSupport"), raw("允许教练创建班级比赛（含线上和线下），计算俱乐部等级分")),
+              form3.checkbox(form("ratingSetting.open"), raw("开启俱乐部内部等级分")),
               form3.actions(
                 a(href := routes.Team.show(t.id), style := "margin-left:20px")(trans.cancel()),
                 form3.submit(trans.apply())

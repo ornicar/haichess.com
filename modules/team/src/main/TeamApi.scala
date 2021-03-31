@@ -18,6 +18,8 @@ import makeTimeout.large
 import lila.hub.actorApi.contest.{ ContestBoard, GetContestBoard }
 import lila.hub.actorApi.offContest.{ OffContestBoard, OffContestRoundResult, OffContestUser }
 
+import scala.math.BigDecimal.RoundingMode
+
 final class TeamApi(
     coll: Colls,
     cached: Cached,
@@ -396,27 +398,30 @@ final class TeamApi(
   def removeMemberClazz(userId: ID, teamId: String, clazzId: String): Funit =
     MemberRepo.removeClazz(teamId, userId, clazzId)
 
-  def setMemberRating(team: Team, member: Member, rating: Int, note: Option[String]): Funit = {
+  def setMemberRating(team: Team, member: Member, k: Int, rating: Double, note: Option[String]): Funit = {
     MemberRepo.updateMember(
       member.copy(
         rating = {
           member.rating.fold(EloRating(rating, 0)) { r =>
             r.copy(
-              rating = rating
+              rating = rating,
+              k = if (team.ratingSettingOrDefault.k == k) none else k.some
             )
           }
         }.some
       )
-    ) >> TeamRatingRepo.insert(
-        TeamRating.make(
-          userId = member.user,
-          rating = member.intRating | 0,
-          diff = rating - (member.intRating | 0),
-          note = note | "",
-          typ = TeamRating.Typ.Setting,
-          metaData = TeamRatingMetaData()
+    ) >> (!member.rating.??(_.rating == rating)).?? {
+        TeamRatingRepo.insert(
+          TeamRating.make(
+            userId = member.user,
+            rating = member.rating.map(_.rating) | 0,
+            diff = BigDecimal(rating - (member.rating.map(_.rating) | 0)).setScale(1, RoundingMode.DOWN).doubleValue(),
+            note = note | "",
+            typ = TeamRating.Typ.Setting,
+            metaData = TeamRatingMetaData()
+          )
         )
-      )
+      }
   }
 
   def updateOnlineRating(game: Game, whiteOption: Option[User], blackOption: Option[User]): Funit = {
@@ -591,8 +596,8 @@ final class TeamApi(
     MemberRepo.updateMember(member.copy(rating = newRating.some)) >> TeamRatingRepo.insert(
       TeamRating.make(
         userId = member.user,
-        rating = oldRating.intValue,
-        diff = newRating.rating - oldRating.rating,
+        rating = oldRating.rating,
+        diff = BigDecimal(newRating.rating - oldRating.rating).setScale(1, RoundingMode.DOWN).doubleValue(),
         note = note,
         typ = typ,
         metaData = metaData

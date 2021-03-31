@@ -3,7 +3,8 @@ package views.html.contest
 import lila.api.Context
 import lila.app.templating.Environment._
 import lila.app.ui.ScalatagsTemplate._
-import lila.contest.{ Board, Contest, Invite, InviteWithUser, Player, PlayerWithUser, Request, RequestWithUser, Round, ScoreSheet, Forbidden }
+import lila.contest.{ Board, Contest, Forbidden, Invite, InviteWithUser, Player, PlayerWithUser, Request, RequestWithUser, Round, ScoreSheet }
+import lila.user.User
 import controllers.routes
 
 object show {
@@ -17,6 +18,7 @@ object show {
     requests: List[RequestWithUser],
     invites: List[InviteWithUser],
     forbiddens: List[Forbidden],
+    teamRating: Map[User.ID, Double],
     scoreSheets: List[ScoreSheet],
     myRequest: Option[Request],
     myInvite: Option[Invite]
@@ -128,7 +130,7 @@ object show {
           div(cls := "panels")(
             div(cls := List("panel rule" -> true, "active" -> isRuleTabActive(c)))(rule(c, rounds)),
             isCreator(c) option div(cls := List("panel enter" -> true, "active" -> isEnterTabActive(c)))(
-              enter(c, rounds, players, requests, invites)
+              enter(c, rounds, players, requests, invites, teamRating)
             ),
             isCreator(c) option div(cls := List("panel forbidden" -> true))(forbiddenTab(c, forbiddens, players)),
             c.roundList.map { rno =>
@@ -298,7 +300,14 @@ object show {
     )
   )
 
-  private def enter(c: Contest, rounds: List[Round], players: List[PlayerWithUser], requests: List[RequestWithUser], invites: List[InviteWithUser])(implicit ctx: Context) =
+  private def enter(
+    c: Contest,
+    rounds: List[Round],
+    players: List[PlayerWithUser],
+    requests: List[RequestWithUser],
+    invites: List[InviteWithUser],
+    teamRating: Map[User.ID, Double]
+  )(implicit ctx: Context) =
     frag(
       !invites.forall(_.processed) option table(cls := "slist invites")(
         tbody(
@@ -352,6 +361,7 @@ object show {
             th("账号"),
             th("姓名"),
             th("等级分"),
+            c.teamRated option th("俱乐部等级分"),
             th("性别"),
             th("年龄"),
             th("级别"),
@@ -365,6 +375,10 @@ object show {
               td(userLink(player.user, withBadge = false)),
               td(player.profile.realName | "-"),
               td(c.perfLens(player.user.perfs).intRating),
+              c.teamRated option td(
+                player.player.teamRating.map(_.toString) | "-",
+                teamRating.get(player.player.userId).map { diff => frag("（", span(cls := List("diff" -> true, "minus" -> (diff < 0)))(if (diff < 0) { diff } else { "+" + diff }), "）") }
+              ),
               td(player.profile.ofSex.fold("-")(_.name)),
               td(player.profile.age.fold("-")(_.toString)),
               td(player.profile.ofLevel.name),

@@ -5,6 +5,7 @@ import lila.app.templating.Environment._
 import lila.app.ui.ScalatagsTemplate._
 import lila.offlineContest.{ OffBoard, OffContest, OffForbidden, OffPlayer, OffRound, OffScoreSheet }
 import controllers.routes
+import lila.user.User
 
 object show {
 
@@ -15,6 +16,7 @@ object show {
     players: List[OffPlayer.PlayerWithUser],
     boards: List[OffBoard],
     forbiddens: List[OffForbidden],
+    teamRating: Map[User.ID, Double],
     scoreSheets: List[OffScoreSheet]
   )(implicit ctx: Context) = views.html.base.layout(
     title = s"比赛 ${c.name}",
@@ -59,7 +61,7 @@ object show {
             div(dataTab := "score", cls := List("active running" -> isScoreTabActive(c), "disabled" -> isScoreTabDisabled(c)))("成绩册")
           ),
           div(cls := "panels")(
-            div(cls := List("panel enter" -> true, "active" -> isEnterTabActive(c)))(enterTab(c, players)),
+            div(cls := List("panel enter" -> true, "active" -> isEnterTabActive(c)))(enterTab(c, players, teamRating)),
             div(cls := List("panel forbidden" -> true))(forbiddenTab(c, forbiddens, players)),
             rounds.map { round =>
               div(cls := List(s"panel round round${round.no}" -> true, "active" -> isRoundTabActive(c, round.no)))(roundTab(c, round, players, boards))
@@ -98,7 +100,7 @@ object show {
       )
     )
 
-  private def enterTab(c: OffContest, players: List[OffPlayer.PlayerWithUser])(implicit ctx: Context) = frag(
+  private def enterTab(c: OffContest, players: List[OffPlayer.PlayerWithUser], teamRating: Map[User.ID, Double])(implicit ctx: Context) = frag(
     div(cls := "enter-actions")(
       (c.isCreated || c.isStarted) option a(cls := "button small modal-alert player-choose", href := routes.OffContest.playerChooseForm(c.id))("选择棋手"),
       (c.isCreated || c.isStarted) option a(cls := "button small modal-alert player-external", href := routes.OffContest.externalPlayerForm(c.id))("增加临时棋手"),
@@ -123,7 +125,10 @@ object show {
               td(cls := "no")(pwu.no),
               td(pwu.realNameOrUsername),
               td(if (pwu.player.external) "-" else userLink(pwu.user, withBadge = false)),
-              c.teamRated option td(cls := "no-print")(pwu.player.teamRating.map(_.toString) | "-"),
+              c.teamRated option td(cls := "no-print")(
+                pwu.player.teamRating.map(_.toString) | "-",
+                teamRating.get(pwu.player.userId).map { diff => frag("（", span(cls := List("diff" -> true, "minus" -> (diff < 0)))(if (diff < 0) { diff } else { "+" + diff }), "）") }
+              ),
               td(cls := "action no-print")(
                 postForm(action := routes.OffContest.removeOrKickPlayer(pwu.player.id))(
                   c.playerRemoveable option button(name := "action", value := "remove", cls := "button button-empty small button-red confirm player-remove", title := "确认移除？")("移除"),

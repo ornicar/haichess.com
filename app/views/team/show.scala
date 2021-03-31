@@ -5,12 +5,12 @@ import lila.app.templating.Environment._
 import lila.app.ui.ScalatagsTemplate._
 import lila.common.paginator.Paginator
 import lila.common.String.html.richText
-import lila.team.Team
+import lila.team.{ Member, Team }
 import controllers.routes
 
 object show {
 
-  def apply(t: Team, members: Paginator[lila.team.MemberWithUser], info: lila.app.mashup.TeamInfo, error: Option[String] = None)(implicit ctx: Context) =
+  def apply(t: Team, member: Option[Member], members: Paginator[lila.team.MemberWithUser], info: lila.app.mashup.TeamInfo, error: Option[String] = None)(implicit ctx: Context) =
     bits.layout(
       title = t.name,
       evenMoreJs = frag(
@@ -40,7 +40,11 @@ object show {
               st.section(cls := "team-show__meta")(
                 div("编号", "：", strong(t.id)),
                 div("地址", "：", strong(cls := "location")(t.location)),
-                div(trans.teamLeader(), "：", userIdLink(t.createdBy.some))
+                div(trans.teamLeader(), "：", userIdLink(t.createdBy.some, withBadge = false)),
+                member.map { m =>
+                  val link = if (ctx.userId.??(t.isCreator)) routes.Team.ratingDistribution(t.id) else routes.Team.memberRatingDistribution(m.id)
+                  t.ratingSettingOrDefault.open option div("等级分：", a(href := link)(strong(m.intRating.map(_.toString) | "暂无")))
+                }
               ),
               div(cls := "team-show__members")(
                 !info.bestUserIds.isEmpty option st.section(cls := "best-members")(

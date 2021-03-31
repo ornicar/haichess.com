@@ -17,7 +17,7 @@ import lila.common.Form.numberIn
 import lila.contest.DataForm.booleanChoices
 import lila.user.UserRepo
 import lila.security.Permission
-import lila.team.TeamRepo
+import lila.team.{ TeamRatingRepo, TeamRepo }
 import org.joda.time.DateTime
 import views._
 
@@ -151,12 +151,13 @@ object Contest extends LilaController {
         myRequest <- RequestRepo.find(id, me.id)
         myInvite <- InviteRepo.find(id, me.id)
         forbiddens <- ForbiddenRepo.getByContest(id)
+        teamRating <- contest.teamRated.?? { TeamRatingRepo.findByContest(id) }
         scoreSheets <- contest.isOverStarted.?? {
           val round = rounds.find { r => r.no == contest.currentRound } err s"can not find round $id-${contest.currentRound}"
           val roundNo = if (round.isPublishResult) round.no else round.no - 1
           ScoreSheetRepo.getByRound(id, Math.max(roundNo, 1))
         }
-      } yield html.contest.show(contest, rounds, players, boards, requests, invites, forbiddens, scoreSheets, myRequest, myInvite)
+      } yield html.contest.show(contest, rounds, players, boards, requests, invites, forbiddens, teamRating, scoreSheets, myRequest, myInvite)
     }
   }
 

@@ -1,5 +1,7 @@
 package lila.team
 
+import scala.math.BigDecimal.RoundingMode
+
 /**
  * Approach:
  * P1: Probability of winning of player with rating2
@@ -16,7 +18,7 @@ package lila.team
  * https://blog.csdn.net/destruction666/article/details/7597348
  * https://www.geeksforgeeks.org/elo-rating-algorithm
  */
-case class EloRating(rating: Double, games: Int) {
+case class EloRating(rating: Double, games: Int, k: Option[Int] = None) {
 
   def intValue = rating.intValue
 
@@ -41,10 +43,23 @@ case class EloRating(rating: Double, games: Int) {
     if (w) 1.0 else 0.0
   }
 
-  def calc(opponentRating: Double, win: Option[Boolean], k: Int): EloRating = {
-    val r = rating + k * (ac(win) - p(opponentRating))
-    val newRating = math.min(math.max(r, EloRating.min), EloRating.max)
-    EloRating(newRating, games + 1)
+  def calc(opponentRating: Double, win: Option[Boolean], teamK: Int): EloRating = {
+    val r = rating + (k | teamK) * (ac(win) - p(opponentRating))
+    var newRating = rating
+    if (win.isDefined || rating != opponentRating) {
+      newRating = math.min(math.max(r, EloRating.min), EloRating.max)
+      newRating = BigDecimal(newRating).setScale(1, RoundingMode.DOWN).doubleValue()
+      newRating = {
+        if (math.abs(newRating - rating) < EloRating.minDiff) {
+          if (newRating < rating) {
+            rating - EloRating.minDiff
+          } else {
+            rating + EloRating.minDiff
+          }
+        } else newRating
+      }
+    }
+    copy(rating = newRating, games = games + 1)
   }
 
 }

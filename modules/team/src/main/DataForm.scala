@@ -9,6 +9,8 @@ import lila.security.{ Granter, SmsCaptcher }
 import lila.user.FormSelect
 import play.api.data.validation.Constraints
 
+import scala.math.BigDecimal.RoundingMode
+
 class DataForm(
     teamColl: Coll,
     val captcherActor: akka.actor.ActorSelection,
@@ -209,12 +211,14 @@ class DataForm(
     .verifying("当前类型可选值必填", _.mustHaveValue))
 
   def ratingEditOf(team: Team, mwu: MemberWithUser) = ratingEdit fill RatingEdit(
-    rating = mwu.member.intRating | team.ratingSettingOrDefault.defaultRating,
+    k = mwu.member.rating.fold(team.ratingSettingOrDefault.k) { _.k | team.ratingSettingOrDefault.k },
+    rating = BigDecimal(mwu.member.rating.map(_.rating) | team.ratingSettingOrDefault.defaultRating.toDouble).setScale(1, RoundingMode.DOWN),
     note = none
   )
 
   def ratingEdit = Form(mapping(
-    "rating" -> number(min = EloRating.min, EloRating.max),
+    "k" -> number(min = 10, max = 40),
+    "rating" -> bigDecimal(precision = 5, scale = 1),
     "note" -> optional(nonEmptyText(minLength = 2, maxLength = 50))
   )(RatingEdit.apply)(RatingEdit.unapply))
 
@@ -342,4 +346,4 @@ private[team] case class MemberEdit(
   def realRole = Member.Role(role)
 }
 
-private[team] case class RatingEdit(rating: Int, note: Option[String])
+private[team] case class RatingEdit(k: Int, rating: BigDecimal, note: Option[String])

@@ -35,7 +35,7 @@ object ratingDistribution {
         main(cls := "ratingDistribution", dataId := team.id)(
           div(cls := "box box-pad distribution")(
             div(cls := "distribution_action")(
-              h1(team.name, "内部等级分分布"),
+              h1(a(href := routes.Team.show(team.id))(team.name), nbsp, "内部等级分分布"),
               form3.select(form("dstClazz"), clazzs, "全部".some)
             ),
             div(cls := "chart_area")(
@@ -106,7 +106,8 @@ object ratingDistribution {
     div(cls := "modal-content none")(
       h2(mu.user.username, "（", mu.viewName, "）"),
       postForm(cls := "form3 member-rating-modal", action := routes.Team.memberRatingApply(mu.member.id))(
-        form3.group(form("rating"), "等级分", help = frag("水平越高对应的等级分越高，取值范围：500~3200").some)(form3.input(_, typ = "number")),
+        form3.group(form("k"), raw("发展系数K"), half = true, help = raw("标识棋手的稳定性").some)(f => form3.select(f, TeamSetting.kList)),
+        form3.group(form("rating"), "等级分", help = frag("水平越高对应的等级分越高，取值范围：500~3200").some)(form3.input(_, typ = "number")(step := ".1")),
         form3.group(form("note"), "原因说明")(form3.textarea(_)()),
         form3.globalError(form),
         form3.actions(

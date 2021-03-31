@@ -169,6 +169,12 @@ $mq-col2: $mq-col2-uniboard;
           margin: -10px 0;
         }
       }
+      .diff {
+        color: $c-secondary;;
+        &.minus {
+          color: $c-red;
+        }
+      }
     }
 
     .round {

@@ -84,7 +84,8 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
     withTitle: Boolean = true,
     truncate: Option[Int] = None,
     params: String = "",
-    modIcon: Boolean = false
+    modIcon: Boolean = false,
+    withBadge: Boolean = true
   ): Frag =
     userIdOption.flatMap(lightUser).fold[Frag](User.anonymous) { user =>
       //println(user.id, user.isSilver, user.isGold, user.isCoach, user.isTeam)
@@ -102,7 +103,8 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
         silver = user.isSilver,
         gold = user.isGold,
         coach = user.isCoach,
-        team = user.isTeam
+        team = user.isTeam,
+        withBadge = withBadge
       )
     }
 
@@ -160,7 +162,8 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
     silver: Boolean,
     gold: Boolean,
     coach: Boolean,
-    team: Boolean
+    team: Boolean,
+    withBadge: Boolean = true
   ): Frag = a(
     cls := userClass(userId, cssClass, withOnline),
     href := userUrl(username, params = params)
@@ -168,7 +171,7 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
       withOnline ?? headWithLine(head),
       titleTag(title),
       span(cls := "u_name")(truncate.fold(username)(username.take)),
-      badge(isPatron, modIcon, silver, gold, coach, team)
+      withBadge option badge(isPatron, modIcon, silver, gold, coach, team)
     )
 
   def userLink(

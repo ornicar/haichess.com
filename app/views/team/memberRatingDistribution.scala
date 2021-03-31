@@ -34,7 +34,7 @@ object memberRatingDistribution {
         main(cls := "ratingDistribution", dataId := team.id)(
           div(cls := "box box-pad distribution")(
             div(cls := "distribution_action")(
-              h1(a(href := routes.Team.ratingDistribution(team.id))(team.name), nbsp, "俱乐部等级分"),
+              h1(a(href := (if (ctx.userId.??(team.isCreator)) routes.Team.ratingDistribution(team.id) else routes.Team.show(team.id)))(team.name), nbsp, "俱乐部等级分"),
               h2(mwu.viewName, mwu.member.intRating.map(r => s"（$r）"))
             ),
             div(cls := "chart_area")(
@@ -80,7 +80,7 @@ object memberRatingDistribution {
                           }
                         ),
                         td(cls := "rating")(
-                          teamRating.rating.toInt, "（", span(cls := List("diff" -> true, "minus" -> (teamRating.diff < 0)))(if (teamRating.diff < 0) { teamRating.diffFormat } else { "+" + teamRating.diffFormat }), "）"
+                          teamRating.rating.toInt, "（", span(cls := List("diff" -> true, "minus" -> (teamRating.diff < 0)))(if (teamRating.diff < 0) { teamRating.diff } else { "+" + teamRating.diff }), "）"
                         ),
                         td(teamRating.typ.name)
                       )

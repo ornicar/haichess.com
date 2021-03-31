@@ -59,7 +59,10 @@ object bits {
       td(cls := "info")(
         p(trans.nbMembers.plural(t.nbMembers, t.nbMembers.localize)),
         p(
-          twm.member.intRating.map(r => a(cls := "rating", href := routes.Team.ratingDistribution(t.id))(s"${r}分")), nbsp, b(twm.member.role.name)
+          t.ratingSettingOrDefault.open option {
+            val link = if (ctx.userId.??(t.isCreator)) routes.Team.ratingDistribution(t.id) else routes.Team.memberRatingDistribution(twm.member.id)
+            frag("等级分：", a(cls := "rating", href := link)(twm.member.intRating.map(_.toString) | "暂无"))
+          }, nbsp, b(twm.member.role.name)
         )
       )
     )

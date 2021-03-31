@@ -10,6 +10,7 @@ import lila.api.Context
 import play.api.data.Form
 import play.api.data.Forms._
 import lila.offlineContest.{ OffBoardRepo, OffForbiddenRepo, OffPlayerRepo, OffRoundRepo, OffScoreSheetRepo, OffContest => ContestModel, OffManualPairingSource }
+import lila.team.TeamRatingRepo
 import views._
 
 object OffContest extends LilaController {
@@ -47,12 +48,13 @@ object OffContest extends LilaController {
           players <- api.playersWithUsers(contest)
           boards <- OffBoardRepo.getByContest(id)
           forbiddens <- OffForbiddenRepo.getByContest(id)
+          teamRating <- contest.teamRated.?? { TeamRatingRepo.findByContest(id) }
           scoreSheets <- contest.isOverStarted.?? {
             val round = rounds.find { r => r.no == contest.currentRound } err s"can not find round $id-${contest.currentRound}"
             val roundNo = if (round.isPublishResult) round.no else round.no - 1
             OffScoreSheetRepo.getByRound(id, Math.max(roundNo, 1))
           }
-        } yield Ok(html.offlineContest.show(contest, rounds, players, boards, forbiddens, scoreSheets))
+        } yield Ok(html.offlineContest.show(contest, rounds, players, boards, forbiddens, teamRating, scoreSheets))
       }
     }
   }

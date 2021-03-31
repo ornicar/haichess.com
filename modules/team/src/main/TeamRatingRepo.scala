@@ -5,6 +5,9 @@ import lila.db.paginator.Adapter
 import lila.common.paginator.Paginator
 import play.api.libs.json.JsArray
 import play.api.libs.json.Json
+import lila.user.User
+
+import scala.math.BigDecimal.RoundingMode
 
 object TeamRatingRepo {
 
@@ -16,17 +19,30 @@ object TeamRatingRepo {
   def findByUser(userId: String): Fu[List[TeamRating]] =
     coll.find(userQuery(userId)).sort($doc("createAt" -> -1)).list[TeamRating]()
 
+  def findByContest(contestId: String): Fu[Map[User.ID, Double]] =
+    coll.find($doc("metaData.contestId" -> contestId)).sort($doc("createAt" -> -1)).list[TeamRating]().map { list =>
+      list.groupBy(_.userId).map {
+        case (userId, list) => {
+          userId -> {
+            val diff = list.foldLeft(0.0d) {
+              case (num, tr) => num + tr.diff
+            }
+            BigDecimal(diff).setScale(1, RoundingMode.DOWN).doubleValue()
+          }
+        }
+      }
+    }
+
   def historyData(userId: String): Fu[JsArray] = findByUser(userId).map { list =>
     JsArray(
       list.groupBy { tr =>
         tr.createAt.getYear + "/" + tr.createAt.getMonthOfYear + "/" + tr.createAt.getDayOfMonth
       }.map {
         case (date, list) => date -> {
-          list.foldLeft(0) {
-            case (total, tr) => total + (tr.rating + tr.diff).toInt
-          } / list.size
+          val last = list.maxBy(_.createAt)
+          (last.rating + last.diff).toInt
         }
-      }.map(d => Json.obj("date" -> d._1, "rating" -> d._2)).toSeq
+      }.toSeq.sortBy(_._1).map(d => Json.obj("date" -> d._1, "rating" -> d._2))
     )
   }
 

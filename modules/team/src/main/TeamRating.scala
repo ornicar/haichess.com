@@ -16,15 +16,14 @@ case class TeamRating(
 
   def id = _id
 
-  def diffFormat = "%.1f".format(diff)
-
+  def intRating = rating.toInt
 }
 
 object TeamRating {
 
   def make(
     userId: String,
-    rating: Int,
+    rating: Double,
     diff: Double,
     note: String,
     typ: TeamRating.Typ,

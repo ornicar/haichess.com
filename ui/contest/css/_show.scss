@@ -197,6 +197,13 @@ $mq-col2: $mq-col2-uniboard;
         padding: 50px;
         text-align: center;
       }
+
+      .diff {
+        color: $c-secondary;;
+        &.minus {
+          color: $c-red;
+        }
+      }
     }
 
     .forbidden {

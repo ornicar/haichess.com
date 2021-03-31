@@ -54,9 +54,10 @@ object Team extends LilaController {
 
   private def renderTeam(team: TeamModel, page: Int = 1, error: Option[String] = None)(implicit ctx: Context) = for {
     info <- teamInfo(team, ctx.me)
+    member <- ctx.userId.??(userId => MemberRepo.byId(team.id, userId))
     members <- paginator.teamMembers(team, page, MemberSearch(role = lila.team.Member.Role.Trainee.id.some))
     _ <- Env.user.lightUserApi preloadMany info.userIds
-  } yield html.team.show(team, members, info, error)
+  } yield html.team.show(team, member, members, info, error)
 
   def users(teamId: String) = Action.async { req =>
     import Api.limitedDefault
@@ -590,7 +591,7 @@ object Team extends LilaController {
             err => BadRequest(
               html.team.ratingDistribution.ratingEdit(mwu, err)
             ).fuccess,
-            data => api.setMemberRating(team, mwu.member, data.rating, data.note) inject Redirect(routes.Team.ratingDistribution(team.id, 1))
+            data => api.setMemberRating(team, mwu.member, data.k, data.rating.doubleValue(), data.note) inject Redirect(routes.Team.ratingDistribution(team.id, 1))
           )
         }
       }
