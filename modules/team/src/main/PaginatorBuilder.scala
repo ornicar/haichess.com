@@ -44,12 +44,12 @@ private[team] final class PaginatorBuilder(
 
     def slice(offset: Int, length: Int): Fu[Seq[MemberWithUser]] = for {
       docs ← buildSelector(team.id, searchData)
-      members ← coll.member.find(docs).list[Member]()
-      users ← UserRepo.find(buildUserSelector(searchData, members.map(_.user))).sort($sort asc "_id").skip(offset).cursor[lila.user.User]().gather[List](length)
+      members ← coll.member.find(docs).sort($doc("role" -> 1, "_id" -> 1)).list[Member]()
+      users ← UserRepo.find(buildUserSelector(searchData, members.map(_.user))).sort($doc("_id" -> 1)).list[lila.user.User]()
     } yield {
       users.map { u =>
         MemberWithUser(members.find(m => m.user == u.id) err s"can not find member ${u.id}", u)
-      }.sortBy(_.member.role.sort)
+      }.sortBy(_.member.role.sort).slice(offset, offset + length)
     }
 
     private def buildSelector(teamId: String, searchData: MemberSearch) = {
