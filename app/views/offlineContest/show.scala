@@ -66,7 +66,7 @@ object show {
             rounds.map { round =>
               div(cls := List(s"panel round round${round.no}" -> true, "active" -> isRoundTabActive(c, round.no)))(roundTab(c, round, players, boards))
             },
-            div(cls := List("panel score" -> true, "active" -> isScoreTabActive(c)))(scoreTab(c, players, scoreSheets))
+            div(cls := List("panel score" -> true, "active" -> isScoreTabActive(c)))(scoreTab(c, players, scoreSheets, teamRating))
           )
         )
       )
@@ -125,10 +125,7 @@ object show {
               td(cls := "no")(pwu.no),
               td(pwu.realNameOrUsername),
               td(if (pwu.player.external) "-" else userLink(pwu.user, withBadge = false)),
-              c.teamRated option td(cls := "no-print")(
-                pwu.player.teamRating.map(_.toString) | "-",
-                teamRating.get(pwu.player.userId).map { diff => frag("（", span(cls := List("diff" -> true, "minus" -> (diff < 0)))(if (diff < 0) { diff } else { "+" + diff }), "）") }
-              ),
+              c.teamRated option td(cls := "no-print")(pwu.player.teamRating.map(_.toString) | "-"),
               td(cls := "action no-print")(
                 postForm(action := routes.OffContest.removeOrKickPlayer(pwu.player.id))(
                   c.playerRemoveable option button(name := "action", value := "remove", cls := "button button-empty small button-red confirm player-remove", title := "确认移除？")("移除"),
@@ -263,7 +260,7 @@ object show {
     )
   }
 
-  private def scoreTab(c: OffContest, players: List[OffPlayer.PlayerWithUser], scoreSheets: List[OffScoreSheet])(implicit ctx: Context) = frag(
+  private def scoreTab(c: OffContest, players: List[OffPlayer.PlayerWithUser], scoreSheets: List[OffScoreSheet], teamRating: Map[User.ID, Double])(implicit ctx: Context) = frag(
     div(cls := "score-actions")(
       c.isOverStarted option a(cls := "button small print-score")("打印成绩册")
     ),
@@ -274,6 +271,7 @@ object show {
           tr(
             th("名次"),
             th("（序号）棋手"),
+            c.teamRated option th("俱乐部等级分"),
             th("积分"),
             c.btsss.filterNot(_.id == "no").map(btss => th(btss.name))
           )
@@ -285,6 +283,10 @@ object show {
               tr(
                 td(scoreSheet.rank),
                 td(s"（${scoreSheet.playerNo}）", playerWithUser.realNameOrUsername),
+                c.teamRated option td(
+                  playerWithUser.player.teamRating.map(_.toString) | "-",
+                  teamRating.get(playerWithUser.player.userId).map { diff => frag("（", span(cls := List("diff" -> true, "minus" -> (diff < 0)))(if (diff < 0) { diff } else { "+" + diff }), "）") }
+                ),
                 td(b(scoreSheet.score)),
                 scoreSheet.btssScores.filterNot(_.btss.id == "no").map(btss => td(btss.score))
               )

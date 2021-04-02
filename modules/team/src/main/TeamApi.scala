@@ -183,7 +183,9 @@ final class TeamApi(
   ): Funit =
     !belongsTo(team.id, user.id) flatMap {
       _ ?? {
-        MemberRepo.add(team.id, user.id, role, tags, mark, rating, clazzIds.some) >>
+        val mk = if (team.tagTip) mark else mark.fold(user.profileOrDefault.realName) { m => m.some }
+        val rating = if (team.ratingSettingOrDefault.open) team.ratingSettingOrDefault.defaultRating.some else none
+        MemberRepo.add(team.id, user.id, role, tags, mk, rating, clazzIds.some) >>
           TeamRepo.incMembers(team.id, +1) >>- {
             cached invalidateTeamIds user.id
             timeline ! Propagate(TeamJoin(user.id, team.id)).toFollowersOf(user.id)
@@ -227,12 +229,12 @@ final class TeamApi(
       }
     }
 
-  def acceptRequest(team: Team, request: Request, tags: MemberTags, mark: Option[String], rating: Option[Int], clazzIds: List[String]): Funit = for {
+  def acceptRequest(team: Team, request: Request, tags: MemberTags, mark: Option[String], clazzIds: List[String]): Funit = for {
     _ ← coll.request.remove(request)
     _ = cached.nbRequests invalidate team.createdBy
     userOption ← UserRepo byId request.user
     _ ← userOption.??(user =>
-      doJoin(team, user, tags = tags.some, mark = mark, rating = rating, clazzIds = clazzIds) >>- notifier.acceptRequest(team, request))
+      doJoin(team, user, tags = tags.some, mark = mark, clazzIds = clazzIds) >>- notifier.acceptRequest(team, request))
   } yield ()
 
   def processRequest(team: Team, request: Request, accept: Boolean, clazzIds: List[String]): Funit = for {
@@ -435,29 +437,29 @@ final class TeamApi(
             teamFromSecondary((wtis & btis).toSeq) flatMap { teams =>
               teams.map { team =>
                 team.ratingSetting.?? { setting =>
-                  val clockReach = game.clock.?? { c => (c.limitSeconds + c.incrementSeconds * 40) / 60 >= math.max(setting.minutes, 2) }
-                  (setting.open && game.turns > setting.turns && clockReach).?? {
-                    (for {
-                      whiteMemberOption <- MemberRepo.byId(team.id, white.id)
-                      blackMemberOption <- MemberRepo.byId(team.id, black.id)
-                    } yield (whiteMemberOption |@| blackMemberOption).tupled) flatMap {
-                      _.?? {
-                        case (whiteMember, blackMember) => {
-                          val whiteRating = whiteMember.rating | EloRating(setting.defaultRating, 0)
-                          val blackRating = blackMember.rating | EloRating(setting.defaultRating, 0)
-                          val newWhiteRating = whiteRating.calc(blackRating.rating, game.whitePlayer.isWinner, setting.k)
-                          val newBlackRating = blackRating.calc(whiteRating.rating, game.blackPlayer.isWinner, setting.k)
+                  (for {
+                    whiteMemberOption <- MemberRepo.byId(team.id, white.id)
+                    blackMemberOption <- MemberRepo.byId(team.id, black.id)
+                  } yield (whiteMemberOption |@| blackMemberOption).tupled) flatMap {
+                    _.?? {
+                      case (whiteMember, blackMember) => {
+                        val whiteRating = whiteMember.rating | EloRating(setting.defaultRating, 0)
+                        val blackRating = blackMember.rating | EloRating(setting.defaultRating, 0)
+                        val newWhiteRating = whiteRating.calc(blackRating.rating, game.whitePlayer.isWinner, setting.k)
+                        val newBlackRating = blackRating.calc(whiteRating.rating, game.blackPlayer.isWinner, setting.k)
 
-                          if (game.isContest) {
-                            contestBoard(game.id) flatMap {
-                              _.?? { board =>
-                                board.teamRated.?? {
-                                  setContestRating(game, whiteMember, board, whiteRating, newWhiteRating, realName(white, whiteMember), realName(black, blackMember)) >>
-                                    setContestRating(game, blackMember, board, blackRating, newBlackRating, realName(white, whiteMember), realName(black, blackMember))
-                                }
+                        if (game.isContest) {
+                          contestBoard(game.id) flatMap {
+                            _.?? { board =>
+                              board.teamRated.?? {
+                                setContestRating(game, whiteMember, board, whiteRating, newWhiteRating, realName(white, whiteMember), realName(black, blackMember)) >>
+                                  setContestRating(game, blackMember, board, blackRating, newBlackRating, realName(white, whiteMember), realName(black, blackMember))
                               }
                             }
-                          } else {
+                          }
+                        } else {
+                          val clockReach = game.clock.?? { c => (c.limitSeconds + c.incrementSeconds * 40) / 60 >= math.max(setting.minutes, 2) }
+                          (setting.open && game.turns > setting.turns && clockReach).?? {
                             game.rated.?? {
                               setGameRating(game, whiteMember, whiteRating, newWhiteRating, realName(white, whiteMember), realName(black, blackMember)) >>
                                 setGameRating(game, blackMember, blackRating, newBlackRating, realName(white, whiteMember), realName(black, blackMember))

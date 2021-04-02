@@ -130,38 +130,42 @@ lichess.teamRatingDistributionChart = function(data) {
                   shadowColor: 'rgba(0, 0, 0, 0.5)',
                   shadowBlur: 8
                 },
-                data: cumul,
-                markLine: {
-                  animation: false,
-                  silent: true,
-                  symbol: ['none', 'none'],
-                  label: {
-                    fontSize: 12,
-                    formatter: '您的积分：{c}'
-                  },
-                  lineStyle: {
-                    width: 3,
-                    color: '#55bf3b'
-                  },
-                  data: [
-                    { xAxis: data.myRating }
-                  ]
-                }
+                data: cumul
               }
             ]
           };
+
+          if(data.showMyRating) {
+            option.series[1].markLine = {
+              animation: false,
+              silent: true,
+              symbol: ['none', 'none'],
+              label: {
+                fontSize: 12,
+                formatter: '您的积分：{c}'
+              },
+              lineStyle: {
+                width: 3,
+                color: '#55bf3b'
+              },
+              data: [
+                { xAxis: data.myRating }
+              ]
+            }
+          }
           return option;
         };
 
         chart.setOption(getOption(data.freq, ));
         
-        $('#form3-dstClazz').change(function () {
-          let teamId = $('main').data('id');
-          let clazzId = $(this).val();
-          $.get({ url: `/team/rating/distributionChart?id=${teamId}&clazzId=${clazzId}` }).then(function(freg) {
-            let option = getOption(freg, data.myRating);
-            chart.setOption(option);
-          });
+        $('#form3-clazzId1').change(function () {
+          $('#form3-clazzId').val($(this).val());
+          $('.search_form').submit();
+        });
+
+        $('#form3-clazzId2').change(function () {
+          $('#form3-clazzId').val($(this).val());
+          $('.search_form').submit();
         });
 
         window.addEventListener("resize", () => {

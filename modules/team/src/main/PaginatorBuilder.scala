@@ -6,7 +6,6 @@ import lila.db.dsl._
 import lila.db.paginator._
 import lila.user.UserRepo
 import org.joda.time.DateTime
-import reactivemongo.bson.BSONDocument
 
 private[team] final class PaginatorBuilder(
     coll: Colls,
@@ -84,9 +83,6 @@ private[team] final class PaginatorBuilder(
 
     private def buildUserSelector(searchData: MemberSearch, userIds: List[lila.user.User.ID]) = {
       var doc = $doc("_id" $in userIds)
-      searchData.name.foreach { u =>
-        doc = doc ++ $doc("profile.realName" $regex (u, "i"))
-      }
       searchData.age.foreach { a =>
         doc = doc ++ $doc("profile.birthyear" -> (DateTime.now.getYear - a))
       }

@@ -33,8 +33,8 @@ object member {
                   tr(
                     td(label("账号/备注")),
                     td(form3.input(form("username"))),
-                    td(label("姓名")),
-                    td(form3.input(form("name")))
+                    td,
+                    td
                   ),
                   tr(
                     td(label("角色")),
@@ -66,8 +66,8 @@ object member {
               thead(
                 tr(
                   th("账号"),
+                  th("备注"),
                   th("角色"),
-                  th("姓名（备注）"),
                   th("等级分"),
                   th("性别"),
                   th("年龄"),
@@ -84,8 +84,8 @@ object member {
                   pager.currentPageResults.map { mu =>
                     tr(cls := "paginated")(
                       td(userLink(mu.user)),
+                      td(mu.member.mark | "-"),
                       td(mu.member.role.name),
-                      td(mu.viewName),
                       td(mu.member.rating.map(_.intValue.toString) | "-"),
                       td(mu.profile.ofSex.map(_.name) | "-"),
                       td(mu.profile.age.map(_.toString) | "-"),
@@ -172,9 +172,9 @@ object member {
 
   def edit(mu: MemberWithUser, tags: List[lila.team.Tag], form: Form[_])(implicit ctx: Context) = frag(
     div(cls := "modal-content none")(
-      h2(mu.user.username),
+      h2(mu.member.mark | mu.user.username),
       postForm(cls := "form3 member-editform", style := "text-align:left;", action := routes.Team.editMemberApply(mu.member.id))(
-        form3.group(form("role"), "角色", klass = mu.member.isOwner ?? "none")(form3.radio(_, if (mu.member.isOwner) Member.Role.list else Member.Role.list.filterNot(_._1 == "owner"))),
+        form3.group(form("role"), "角色", klass = (mu.member.isOwner || !isGranted(_.Coach, mu.user)) ?? "none")(form3.radio(_, if (mu.member.isOwner) Member.Role.list else Member.Role.list.filterNot(_._1 == "owner"))),
         form3.group(form("mark"), "备注")(form3.input(_)),
         tags.zipWithIndex.map {
           case (t, i) => buildEditField(mu.member, t, form(s"fields[$i]"))

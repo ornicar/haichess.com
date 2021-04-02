@@ -75,8 +75,8 @@ object form {
           postForm(cls := "form3", action := url)(
             div(cls := "tabs")(
               div(dataTab := "basics", cls := List("active" -> (form.errors.isEmpty || form.errors.headOption ?? (_.key.isEmpty) || errorTabActive(form, "basics"))))("1.基本信息"),
-              div(dataTab := "rounds", cls := List("active" -> errorTabActive(form, "rounds")))("2.轮次配置"),
-              div(dataTab := "conditions", cls := List("active" -> errorTabActive(form, "conditions")))("3.报名配置"),
+              div(dataTab := "rounds", cls := List("active" -> errorTabActive(form, "rounds")))("2.轮次设置"),
+              div(dataTab := "conditions", cls := List("active" -> errorTabActive(form, "conditions")))("3.报名设置"),
               div(dataTab := "others", cls := List("active" -> errorTabActive(form, "others")))("4.其他")
             ),
             div(cls := "panels")(

@@ -71,7 +71,7 @@ case class MemberWithUser(member: Member, user: User) {
   def team = member.team
   def date = member.date
   def profile = user.profileOrDefault
-  def viewName = user.profileOrDefault.realName.fold(member.mark | user.username)(n => n)
+  def viewName = member.mark | user.realNameOrUsername
 }
 
 case class RangeMemberTag(field: String, min: Option[String], max: Option[String])

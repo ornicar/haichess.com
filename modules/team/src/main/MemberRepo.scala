@@ -1,8 +1,10 @@
 package lila.team
 
+import lila.common.paginator.Paginator
 import reactivemongo.bson._
 import lila.db.dsl._
-import lila.user.UserRepo
+import lila.db.paginator.Adapter
+import lila.user.{ User, UserRepo }
 import reactivemongo.api.ReadPreference
 import reactivemongo.api.collections.bson.BSONBatchCommands.AggregationFramework.{ GroupField, Match, Project, SumValue }
 
@@ -135,6 +137,35 @@ object MemberRepo {
       selectId(teamId, userId),
       $pull("clazzIds" -> clazzId)
     ).void
+
+  def ratingPage(teamId: String, page: Int, q: Option[String], clazzId: Option[String]): Fu[Paginator[MemberWithUser]] = {
+    var doc = $doc("team" -> teamId)
+    clazzId.foreach(c =>
+      doc = doc ++ $doc("clazzIds" -> c))
+    q.foreach(q =>
+      doc = doc ++ $or($doc("user" $regex (q, "i")), $doc("mark" $regex (q, "i"))))
+
+    val adapter = new Adapter[Member](
+      collection = coll,
+      selector = doc,
+      projection = $empty,
+      sort = $doc("rating.r" -> -1)
+    ) mapFutureList withUsers
+    Paginator(
+      adapter = adapter,
+      currentPage = page,
+      maxPerPage = lila.common.MaxPerPage(30)
+    )
+  }
+
+  private def withUsers(members: Seq[Member]): Fu[Seq[MemberWithUser]] =
+    UserRepo.withColl {
+      _.byOrderedIds[User, User.ID](members.map(_.user))(_.id)
+    } map { users =>
+      members zip users collect {
+        case (coach, user) => MemberWithUser(coach, user)
+      }
+    }
 
   def ratingDistribution(teamId: String, clazzId: Option[String]) = {
     coll.aggregateList(

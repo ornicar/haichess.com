@@ -3,8 +3,8 @@ package views.html.base
 import lila.api.Context
 import lila.app.templating.Environment._
 import lila.app.ui.ScalatagsTemplate._
-
 import controllers.routes
+import lila.team.TeamRepo
 
 object topnav {
 
@@ -126,6 +126,7 @@ object topnav {
         div(role := "group")(
           NotForKids(frag(
             a(href := routes.Team.members(me.teamIdValue, 1))("成员"),
+            TeamRepo.byId(me.teamIdValue).awaitSeconds(3) map { team => team.ratingSettingOrDefault.open option a(href := routes.Team.ratingDistribution(team.id))("等级分") },
             a(href := teamForumUrl(me.teamIdValue))("讨论区"),
             a(href := routes.Team.edit(me.teamIdValue))("资料"),
             a(href := routes.TeamCertification.certification(me.teamIdValue))("认证"),

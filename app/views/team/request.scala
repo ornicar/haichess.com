@@ -85,12 +85,12 @@ object request {
     )
   }
 
-  def accept(team: Team, requestId: String, referrer: String, tags: List[lila.team.Tag], form: Form[_])(implicit ctx: Context) = frag(
+  def accept(team: Team, requestId: String, requestUser: Option[lila.user.User], referrer: String, tags: List[lila.team.Tag], form: Form[_])(implicit ctx: Context) = frag(
     div(cls := "modal-content none")(
       h2("接受请求"),
       p("如果不想默认添加标签，您可以", a(href := routes.Team.setting(team.id))("设置")),
       postForm(cls := "form3 member-editform", style := "text-align:left;", action := routes.Team.acceptMemberApply(requestId, referrer))(
-        form3.group(form("mark"), "备注")(form3.input(_)),
+        form3.group(form("mark"), "备注")(form3.input2(_, vl = requestUser.fold(none[String]) { u => u.profileOrDefault.realName })),
         form3.group(form("rating"), "初始等级分")(form3.input2(_, typ = "number", vl = team.ratingSettingOrDefault.toString.some)),
         tags.zipWithIndex.map {
           case (t, i) => buildAcceptField(t, form(s"fields[$i]"))

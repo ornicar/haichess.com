@@ -139,7 +139,7 @@ object show {
               )
             },
             div(cls := List("panel score" -> true, "active" -> isScoreTabActive(c)))(
-              score(c, rounds, players, scoreSheets)
+              score(c, rounds, players, scoreSheets, teamRating)
             )
           )
         )
@@ -360,8 +360,8 @@ object show {
             th("序号"),
             th("账号"),
             th("姓名"),
-            th("等级分"),
             c.teamRated option th("俱乐部等级分"),
+            th("等级分"),
             th("性别"),
             th("年龄"),
             th("级别"),
@@ -374,11 +374,8 @@ object show {
               td(player.no),
               td(userLink(player.user, withBadge = false)),
               td(player.profile.realName | "-"),
+              c.teamRated option td(player.player.teamRating.map(_.toString) | "-"),
               td(c.perfLens(player.user.perfs).intRating),
-              c.teamRated option td(
-                player.player.teamRating.map(_.toString) | "-",
-                teamRating.get(player.player.userId).map { diff => frag("（", span(cls := List("diff" -> true, "minus" -> (diff < 0)))(if (diff < 0) { diff } else { "+" + diff }), "）") }
-              ),
               td(player.profile.ofSex.fold("-")(_.name)),
               td(player.profile.age.fold("-")(_.toString)),
               td(player.profile.ofLevel.name),
@@ -546,7 +543,7 @@ object show {
     )
   }
 
-  private def score(c: Contest, rounds: List[Round], players: List[PlayerWithUser], scoreSheets: List[ScoreSheet])(implicit ctx: Context) = frag(
+  private def score(c: Contest, rounds: List[Round], players: List[PlayerWithUser], scoreSheets: List[ScoreSheet], teamRating: Map[User.ID, Double])(implicit ctx: Context) = frag(
     (isCreator(c) && !c.autoPairing) option div(cls := "score-actions")(
       (c.isStarted && c.allRoundFinished) option postForm(st.action := routes.Contest.publishScoreAndFinish(c.id))(
         submitButton(cls := "button small publish-result confirm", title := "是否确认发布成绩？")("发布成绩")
@@ -558,6 +555,7 @@ object show {
           th("名次"),
           th("序号"),
           th("棋手"),
+          c.teamRated option th("俱乐部等级分"),
           th("积分"),
           c.btsss.filterNot(_.id == "no").map(btss => th(btss.name)),
           th("操作")
@@ -571,6 +569,10 @@ object show {
               td(if ((isCreator(c) || c.isFinishedOrCanceled) && scoreSheet.cancelled) "-" else scoreSheet.rank),
               td(scoreSheet.playerNo),
               td(userLink(playerWithUser.user, withBadge = false)),
+              c.teamRated option td(
+                playerWithUser.player.teamRating.map(_.toString) | "-",
+                teamRating.get(playerWithUser.player.userId).map { diff => frag("（", span(cls := List("diff" -> true, "minus" -> (diff < 0)))(if (diff < 0) { diff } else { "+" + diff }), "）") }
+              ),
               td(strong(scoreSheet.score)),
               scoreSheet.btssScores.filterNot(_.btss.id == "no").map(btss => td(btss.score)),
               td(style := "display: flex;")(

@@ -222,6 +222,13 @@ $mq-col2: $mq-col2-uniboard;
         }
       }
     }
+
+    .diff {
+      color: $c-secondary;;
+      &.minus {
+        color: $c-red;
+      }
+    }
   }
 
   .dragClass {

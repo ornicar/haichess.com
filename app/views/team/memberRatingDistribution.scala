@@ -26,6 +26,7 @@ object memberRatingDistribution {
         jsTag("chart/teamRatingHistory.js"),
         embedJsUnsafe(s"""lichess.teamRatingDistributionChart({
   freq: ${distributionData.mkString("[", ",", "]")},
+  showMyRating: true,
   myRating: ${mwu.member.intRating.fold("null")(r => r.toString)}
   });"""),
         embedJsUnsafe(s"""lichess.teamRatingHistoryChart(${historyData.toString});""")
@@ -35,7 +36,7 @@ object memberRatingDistribution {
           div(cls := "box box-pad distribution")(
             div(cls := "distribution_action")(
               h1(a(href := (if (ctx.userId.??(team.isCreator)) routes.Team.ratingDistribution(team.id) else routes.Team.show(team.id)))(team.name), nbsp, "俱乐部等级分"),
-              h2(mwu.viewName, mwu.member.intRating.map(r => s"（$r）"))
+              h2(mwu.member.mark | mwu.user.username, mwu.member.intRating.map(r => s"（$r）"))
             ),
             div(cls := "chart_area")(
               div(id := "rating_distribution_chart")(spinner)

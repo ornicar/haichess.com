@@ -146,10 +146,10 @@ object OffPlayer {
     def realNameOrUsername = if (player.external) (realName | user.username) + "（临）" else realName | user.username
 
     def realName = {
-      if (user.profileOrDefault.nonEmptyRealName.isDefined) {
-        user.profileOrDefault.nonEmptyRealName
-      } else if (member.??(_.mark).isDefined) {
+      if (member.??(_.mark).isDefined) {
         member.??(_.mark)
+      } else if (user.profileOrDefault.nonEmptyRealName.isDefined) {
+        user.profileOrDefault.realName
       } else None
     }
 
@@ -179,10 +179,10 @@ object OffPlayer {
 
     def realNameOrUsername = realName | user.username
     def realName = {
-      if (user.profileOrDefault.nonEmptyRealName.isDefined) {
-        user.profileOrDefault.nonEmptyRealName
-      } else if (member.??(_.mark).isDefined) {
+      if (member.??(_.mark).isDefined) {
         member.??(_.mark)
+      } else if (user.profileOrDefault.nonEmptyRealName.isDefined) {
+        user.profileOrDefault.realName
       } else None
     }
 

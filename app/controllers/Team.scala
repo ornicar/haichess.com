@@ -339,9 +339,11 @@ object Team extends LilaController {
   def acceptMemberModal(requestId: String, referrer: String) = Auth { implicit ctx => me =>
     OptionFuResult(api request requestId) { request =>
       OptionFuResult(api team request.team) { team =>
-        TagRepo.findByTeam(request.team) flatMap { tags =>
-          OwnerAndEnable(team) {
-            Ok(html.team.request.accept(team, requestId, referrer, tags, forms.memberAdd)).fuccess
+        OwnerAndEnable(team) {
+          TagRepo.findByTeam(request.team) flatMap { tags =>
+            UserRepo.byId(request.user) map { requestUser =>
+              Ok(html.team.request.accept(team, requestId, requestUser, referrer, tags, forms.memberAdd))
+            }
           }
         }
       }
@@ -355,13 +357,15 @@ object Team extends LilaController {
     } yield (teamOption |@| requestOption).tupled) {
       case (team, request) => {
         TagRepo.findByTeam(team.id) flatMap { tags =>
-          implicit val req = ctx.body
-          forms.memberAdd.bindFromRequest.fold(
-            err => fuccess(BadRequest(html.team.request.accept(team, requestId, referrer, tags, err))),
-            data => Env.clazz.api.myTeamClazz(request.user, team.id) flatMap { clazzIds =>
-              api.acceptRequest(team, request, lila.team.MemberTags.byTagList(data.fields), data.mark, data.rating, clazzIds) inject Redirect(referrer)
-            }
-          )
+          UserRepo.byId(request.user) flatMap { requestUser =>
+            implicit val req = ctx.body
+            forms.memberAdd.bindFromRequest.fold(
+              err => fuccess(BadRequest(html.team.request.accept(team, requestId, requestUser, referrer, tags, err))),
+              data => Env.clazz.api.myTeamClazz(request.user, team.id) flatMap { clazzIds =>
+                api.acceptRequest(team, request, lila.team.MemberTags.byTagList(data.fields), data.mark, clazzIds) inject Redirect(referrer)
+              }
+            )
+          }
         }
       }
     }
@@ -554,18 +558,22 @@ object Team extends LilaController {
     OptionFuResult(api team id) { team =>
       OwnerAndEnable(team) {
         implicit val req = ctx.body
-        val form = forms.memberSearch.bindFromRequest
+        val form = Form(tuple(
+          "q" -> optional(lila.user.DataForm.historicalUsernameField),
+          "clazzId" -> optional(nonEmptyText)
+        )).bindFromRequest
         form.fold(
           fail => {
-            fuccess(Ok(html.team.ratingDistribution(fail, team, none, Nil, Paginator.empty[MemberWithUser], Nil)))
+            fuccess(Ok(html.team.ratingDistribution(fail, team, Nil, Paginator.empty[MemberWithUser], Nil)))
           },
-          data => {
-            for {
-              member <- MemberRepo.byId(team.id, me.id)
-              clazzs <- team.clazzIds.??(Env.clazz.api.byIds)
-              pager <- paginator.teamMembers(team, p, data)
-              distributionData <- MemberRepo.ratingDistribution(team.id, none)
-            } yield Ok(html.team.ratingDistribution(form, team, member, clazzs.map(c => c.id -> c.name), pager, distributionData))
+          data => data match {
+            case (q, clazzId) => {
+              for {
+                clazzs <- team.clazzIds.??(Env.clazz.api.byIds)
+                pager <- MemberRepo.ratingPage(team.id, p, q, clazzId)
+                distributionData <- MemberRepo.ratingDistribution(team.id, clazzId)
+              } yield Ok(html.team.ratingDistribution(form, team, clazzs.map(c => c.id -> c.name), pager, distributionData))
+            }
           }
         )
       }

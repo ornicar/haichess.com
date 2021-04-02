@@ -198,12 +198,6 @@ $mq-col2: $mq-col2-uniboard;
         text-align: center;
       }
 
-      .diff {
-        color: $c-secondary;;
-        &.minus {
-          color: $c-red;
-        }
-      }
     }
 
     .forbidden {
@@ -250,6 +244,13 @@ $mq-col2: $mq-col2-uniboard;
     .score {
       .score-actions {
         margin-bottom: 1em;
+      }
+
+      .diff {
+        color: $c-secondary;;
+        &.minus {
+          color: $c-red;
+        }
       }
     }
   }
