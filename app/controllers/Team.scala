@@ -572,7 +572,10 @@ object Team extends LilaController {
                 clazzs <- team.clazzIds.??(Env.clazz.api.byIds)
                 pager <- MemberRepo.ratingPage(team.id, p, q, clazzId)
                 distributionData <- MemberRepo.ratingDistribution(team.id, clazzId)
-              } yield Ok(html.team.ratingDistribution(form, team, clazzs.map(c => c.id -> c.name), pager, distributionData))
+              } yield {
+                val cls = clazzs.sortBy(_.name).map(c => c.id -> c.name)
+                Ok(html.team.ratingDistribution(form, team, cls, pager, distributionData))
+              }
             }
           }
         )
