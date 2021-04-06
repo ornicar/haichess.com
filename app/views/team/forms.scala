@@ -116,8 +116,8 @@ object forms {
                 h2("俱乐部内部等级分设置"), nbsp, a(target := "_blank", href := routes.Team.ratingRule)("计分规则"), nbsp, a(target := "_blank", href := routes.Team.ratingAdvise)("使用建议")
               ),
               form3.split(
-                form3.group(form("ratingSetting.k"), raw("发展系数K"), half = true, help = raw("标识棋手的稳定性").some)(f => form3.select(f, TeamSetting.kList)),
-                form3.group(form("ratingSetting.defaultRating"), raw("默认初始等级分"), half = true)(form3.input(_, typ = "number"))
+                form3.group(form("ratingSetting.defaultRating"), raw("默认初始等级分"), half = true)(form3.input(_, typ = "number")),
+                form3.group(form("ratingSetting.k"), raw("发展系数K"), half = true, help = raw("表示棋手的稳定性").some)(f => form3.select(f, TeamSetting.kList))
               ),
               h3(b("满足以下条件的线上对局（俱乐部内会员间），自动计算内部等级分")),
               form3.split(

@@ -107,7 +107,7 @@ object ratingDistribution {
     div(cls := "modal-content none")(
       h2(mu.member.mark | mu.user.username),
       postForm(cls := "form3 member-rating-modal", action := routes.Team.memberRatingApply(mu.member.id))(
-        form3.group(form("k"), raw("发展系数K"), half = true, help = raw("标识棋手的稳定性").some)(f => form3.select(f, TeamSetting.kList)),
+        form3.group(form("k"), raw("发展系数K"), half = true, help = raw("表示棋手的稳定性").some)(f => form3.select(f, TeamSetting.kList)),
         form3.group(form("rating"), "等级分", help = frag("水平越高对应的等级分越高，取值范围：500~3200").some)(form3.input(_, typ = "number")(step := ".1")),
         form3.group(form("note"), "原因说明")(form3.textarea(_)()),
         form3.globalError(form),
