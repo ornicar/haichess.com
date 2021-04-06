@@ -91,6 +91,17 @@ private[puzzle] final class PuzzleResource(
   def themeSearchCondition(query: ThemeData, fromPuzzleId: Option[Int] = None) = {
     var condition = $doc(F.mark $exists true) ++ enabled
 
+    if (query.idMin.isDefined || query.idMax.isDefined) {
+      var idRange = $doc()
+      query.idMin foreach { idMin =>
+        idRange = idRange ++ $gte(idMin)
+      }
+      query.idMax foreach { idMax =>
+        idRange = idRange ++ $lte(idMax)
+      }
+      condition = condition ++ $doc(F.id -> idRange)
+    }
+
     if (query.ratingMin.isDefined || query.ratingMax.isDefined) {
       var ratingRange = $doc()
       query.ratingMin foreach { ratingMin =>
@@ -149,7 +160,7 @@ private[puzzle] final class PuzzleResource(
     fromPuzzleId foreach { minPuzzleId =>
       condition = condition ++ $doc(F.id -> $gt(minPuzzleId))
     }
-    println(BSONDocument.pretty(condition))
+    //println(BSONDocument.pretty(condition))
     condition
   }
 

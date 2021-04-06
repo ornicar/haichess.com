@@ -60,7 +60,7 @@ object ratingDistribution {
                   thead(
                     tr(
                       th("账号"),
-                      th("备注"),
+                      th("备注姓名"),
                       th("等级分"),
                       th("操作")
                     )
@@ -71,7 +71,7 @@ object ratingDistribution {
                       pager.currentPageResults.map { mu =>
                         tr(cls := "paginated")(
                           td(userLink(mu.user)),
-                          td(mu.member.mark | "-"),
+                          td(mu.viewName),
                           td(mu.member.rating.map(_.intValue.toString) | "-"),
                           td(
                             a(cls := "button button-empty small member-rating", href := routes.Team.memberRatingModal(mu.member.id))("编辑"),

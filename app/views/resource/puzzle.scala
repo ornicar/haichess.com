@@ -80,6 +80,13 @@ object puzzle {
       )(
           table(
             tr(
+              th(label("题号范围")),
+              td(
+                div(cls := "half")("从 ", form3.input(form("idMin"), "number")),
+                div(cls := "half")("到 ", form3.input(form("idMax"), "number"))
+              )
+            ),
+            tr(
               th(label("难度范围")),
               td(
                 div(cls := "half")("从 ", form3.input(form("ratingMin"), "number")),

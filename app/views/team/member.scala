@@ -66,7 +66,7 @@ object member {
               thead(
                 tr(
                   th("账号"),
-                  th("备注"),
+                  th("备注姓名"),
                   th("角色"),
                   th("等级分"),
                   th("性别"),
@@ -84,7 +84,7 @@ object member {
                   pager.currentPageResults.map { mu =>
                     tr(cls := "paginated")(
                       td(userLink(mu.user)),
-                      td(mu.member.mark | "-"),
+                      td(mu.viewName),
                       td(mu.member.role.name),
                       td(mu.member.rating.map(_.intValue.toString) | "-"),
                       td(mu.profile.ofSex.map(_.name) | "-"),

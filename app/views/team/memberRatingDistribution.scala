@@ -75,7 +75,7 @@ object memberRatingDistribution {
                         td(
                           teamRating.typ match {
                             case TeamRating.Typ.Game => teamRating.metaData.gameId.fold(frag(teamRating.note)) { gameId => a(href := routes.Round.watcher(gameId, "white"))(teamRating.note) }
-                            case TeamRating.Typ.Contest => teamRating.metaData.contestId.fold(frag(teamRating.note)) { contestId => a(href := s"${routes.Contest.show(contestId)}#round${teamRating.metaData.roundNo | 1}")(teamRating.note) }
+                            case TeamRating.Typ.Contest => teamRating.metaData.contestId.fold(frag(teamRating.note)) { contestId => a(href := routes.Round.watcher(teamRating.metaData.boardId | "", "white"))(teamRating.note) }
                             case TeamRating.Typ.OffContest => teamRating.metaData.contestId.fold(frag(teamRating.note)) { contestId => a(href := s"${routes.OffContest.show(contestId)}#round${teamRating.metaData.roundNo | 1}")(teamRating.note) }
                             case _ => frag(teamRating.note)
                           }

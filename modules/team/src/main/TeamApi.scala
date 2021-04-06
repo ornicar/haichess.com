@@ -184,8 +184,8 @@ final class TeamApi(
     !belongsTo(team.id, user.id) flatMap {
       _ ?? {
         val mk = if (team.tagTip) mark else mark.fold(user.profileOrDefault.realName) { m => m.some }
-        val rating = if (team.ratingSettingOrDefault.open) team.ratingSettingOrDefault.defaultRating.some else none
-        MemberRepo.add(team.id, user.id, role, tags, mk, rating, clazzIds.some) >>
+        val rt = if (team.tagTip) rating else if (team.ratingSettingOrDefault.open) team.ratingSettingOrDefault.defaultRating.some else none
+        MemberRepo.add(team.id, user.id, role, tags, mk, rt, clazzIds.some) >>
           TeamRepo.incMembers(team.id, +1) >>- {
             cached invalidateTeamIds user.id
             timeline ! Propagate(TeamJoin(user.id, team.id)).toFollowersOf(user.id)
@@ -229,12 +229,12 @@ final class TeamApi(
       }
     }
 
-  def acceptRequest(team: Team, request: Request, tags: MemberTags, mark: Option[String], clazzIds: List[String]): Funit = for {
+  def acceptRequest(team: Team, request: Request, tags: MemberTags, mark: Option[String], rating: Option[Int] = None, clazzIds: List[String]): Funit = for {
     _ ← coll.request.remove(request)
     _ = cached.nbRequests invalidate team.createdBy
     userOption ← UserRepo byId request.user
     _ ← userOption.??(user =>
-      doJoin(team, user, tags = tags.some, mark = mark, clazzIds = clazzIds) >>- notifier.acceptRequest(team, request))
+      doJoin(team, user, tags = tags.some, mark = mark, rating = rating, clazzIds = clazzIds) >>- notifier.acceptRequest(team, request))
   } yield ()
 
   def processRequest(team: Team, request: Request, accept: Boolean, clazzIds: List[String]): Funit = for {

@@ -362,7 +362,7 @@ object Team extends LilaController {
             forms.memberAdd.bindFromRequest.fold(
               err => fuccess(BadRequest(html.team.request.accept(team, requestId, requestUser, referrer, tags, err))),
               data => Env.clazz.api.myTeamClazz(request.user, team.id) flatMap { clazzIds =>
-                api.acceptRequest(team, request, lila.team.MemberTags.byTagList(data.fields), data.mark, clazzIds) inject Redirect(referrer)
+                api.acceptRequest(team, request, lila.team.MemberTags.byTagList(data.fields), data.mark, data.rating, clazzIds) inject Redirect(referrer)
               }
             )
           }
@@ -542,6 +542,10 @@ object Team extends LilaController {
 
   def ratingRule() = Auth { implicit ctx => me =>
     Ok(views.html.team.ratingRulePage()).fuccess
+  }
+
+  def ratingAdvise() = Auth { implicit ctx => me =>
+    Ok(views.html.team.ratingAdvisePage()).fuccess
   }
 
   def ratingDistributionChart(id: String, clazzId: String) = Auth { implicit ctx => me =>

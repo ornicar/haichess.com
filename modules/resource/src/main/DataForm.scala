@@ -19,6 +19,8 @@ object DataForm {
     )(ImportedData.apply)(ImportedData.unapply)) fill ImportedData()
 
     val theme = Form(mapping(
+      "idMin" -> optional(number),
+      "idMax" -> optional(number),
       "ratingMin" -> optional(number(min = 600, max = 2800)),
       "ratingMax" -> optional(number(min = 600, max = 2800)),
       "stepsMin" -> optional(number(min = 1, max = 100)),
@@ -51,6 +53,8 @@ object DataForm {
     }
 
     case class ThemeData(
+        idMin: Option[Int] = None,
+        idMax: Option[Int] = None,
         ratingMin: Option[Int] = None,
         ratingMax: Option[Int] = None,
         stepsMin: Option[Int] = None,

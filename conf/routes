@@ -342,6 +342,7 @@ GET   /team/editTag/:tagId                    controllers.Team.editTagModal(tagI
 POST  /team/editTag/:tagId                    controllers.Team.editTagApply(tagId: String)
 POST  /team/:id/removeTag/:tagId              controllers.Team.removeTag(id: String, tagId: String)
 GET   /team/rating/rule                       controllers.Team.ratingRule()
+GET   /team/rating/advise                     controllers.Team.ratingAdvise()
 GET   /team/rating/distribution               controllers.Team.ratingDistribution(id: String, p: Int ?= 1)
 GET   /team/rating/distributionChart          controllers.Team.ratingDistributionChart(id: String, clazzId: String)
 GET   /team/rating/member/edit                controllers.Team.memberRatingModal(memberId: String)
