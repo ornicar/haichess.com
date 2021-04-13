@@ -270,7 +270,9 @@ object report {
                                   span("回合数：", recallGame.turns.map(_.toString) | "所有")
                                 ),
                                 div(cls := "pgn")(
-                                  lila.common.String.html.richText(recallGame.pgn)
+                                  strong(
+                                    recallGame.pgn.split("\r\n\r\n")(1)
+                                  )
                                 )
                               )
                             )

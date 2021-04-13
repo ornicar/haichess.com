@@ -83,7 +83,7 @@ object puzzle {
               th(label("题号范围")),
               td(
                 div(cls := "half")("从 ", form3.input3(form("idMin"), vl = "100000".some, "number")),
-                div(cls := "half")("到 ", form3.input3(form("idMax"), vl = "999999".some, "number"))
+                div(cls := "half")("到 ", form3.input3(form("idMax"), vl = "306216".some, "number"))
               )
             ),
             tr(

@@ -518,7 +518,10 @@ $(function () {
             };
 
             let richPgn = function () {
-               return pgn.replace(new RegExp('\n',"gm"), '<br/>');
+                if(pgn) {
+                    return pgn.split('\n\n')[1].replace(new RegExp('\n',"gm"), '<br/>');
+                }
+                return '';
             };
 
             return `<tr>
@@ -531,7 +534,7 @@ $(function () {
                                 &nbsp;&nbsp;
                                 <span>回合数：${turnsName()}</span>
                             </div>
-                            <div class="pgn">${richPgn()}</div>
+                            <div class="pgn"><strong>${richPgn()}</strong></div>
                        </td>
                        <td>
                             <input type="hidden" name="practice.recallGames[0].root" value="${fen}">

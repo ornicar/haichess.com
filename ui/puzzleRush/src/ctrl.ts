@@ -47,6 +47,7 @@ export default function(opts, redraw: () => void): Controller {
   const defaultRankData = {
     "userHisRank":{"no":-1,"score":-1},
     "userTdyRank":{"no":-1,"score":-1},
+    "userRank":{"no":-1,"score":-1},
     "rankList":[]
   };
   const defaultCondition = { minutes: 3, limit: 3 };

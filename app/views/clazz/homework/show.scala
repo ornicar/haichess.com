@@ -200,7 +200,9 @@ object show {
                                   )
                                 ),
                                 div(cls := "pgn")(
-                                  lila.common.String.html.richText(recallGame.pgn)
+                                  strong(
+                                    recallGame.pgn.split("\r\n\r\n")(1)
+                                  )
                                 )
                               )
                             )

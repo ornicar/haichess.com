@@ -83,7 +83,7 @@ function rankingContent(ctrl: Controller) {
           h('span.group', [
             h('input', {
               attrs: {
-                type: 'radio', name: 'date', id: 'rk-rd-today', checked: true, value: 'today'
+                type: 'radio', name: 'date', id: 'rk-rd-today', value: 'today'
               },
               hook: bind('click', e => {
                 e.stopPropagation();
@@ -96,7 +96,7 @@ function rankingContent(ctrl: Controller) {
           h('span.group', [
             h('input', {
               attrs: {
-                type: 'radio', name: 'date', id: 'rk-rd-season', value: 'season'
+                type: 'radio', name: 'date', id: 'rk-rd-season', checked: true, value: 'season'
               },
               hook: bind('click', e => {
                 e.stopPropagation();
@@ -126,9 +126,20 @@ function rankingContent(ctrl: Controller) {
       ])
     ]),
     h('div.list', [
-      ctrl.vm.rankLoading ? spinner() : h('table', renderTable(ctrl))
+      ctrl.vm.rankLoading ? spinner() : h('div', [
+        (ctrl.vm.rankScope === 'personal' || !ctrl.vm.rankData.userRank || ctrl.vm.rankData.userRank.no <= 10) ? null : h('table', renderUserTable(ctrl)),
+        h('table', renderTable(ctrl))
+      ])
     ])
   ])
+}
+
+function renderUserTable(ctrl: Controller) {
+  let rankData = ctrl.vm.rankData;
+  let rankList = rankData.userRank ? [rankData.userRank] : [];
+  return rankList.map(function (r) {
+    return renderTr(ctrl, r);
+  });
 }
 
 function renderTable(ctrl: Controller) {
@@ -140,7 +151,11 @@ function renderTable(ctrl: Controller) {
 }
 
 function renderTr(ctrl: Controller, rank) {
-  return h('tr', [
+  return h('tr', {
+    class: {
+      mine: rank.user && rank.user.name === ctrl.user.username
+    }
+  }, [
     h('td', [
       h('span.no', '#' + rank.no)
     ]),

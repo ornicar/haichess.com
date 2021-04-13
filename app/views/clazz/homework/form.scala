@@ -217,8 +217,8 @@ object form {
                                   span("回合数：", recallGameField("turns").value | "所有")
                                 ),
                                 div(cls := "pgn")(
-                                  lila.common.String.html.richText(
-                                    recallGameField("pgn").value | ""
+                                  strong(
+                                    (recallGameField("pgn").value | "").split("\r\n\r\n")(1)
                                   )
                                 )
                               ),

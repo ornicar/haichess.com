@@ -187,9 +187,11 @@ object PuzzleRush extends LilaController {
                 userTdyRank <- env.puzzleRushRankTodayApi.userRank(PuzzleRushMode.Mode(mode), date, me.id)
                 rankList <- env.puzzleRushRankHistoryApi.rankList(PuzzleRushMode.Mode(mode))
               } yield {
-                Ok(countryRankJson(
+                Ok(rankJson(
+                  me,
                   userHisRank,
                   userTdyRank,
+                  userHisRank,
                   rankList.map(r => (r.userId, r.win))
                 )) as JSON
               }
@@ -200,11 +202,14 @@ object PuzzleRush extends LilaController {
               for {
                 userHisRank <- env.puzzleRushRankHistoryApi.userRank(PuzzleRushMode.Mode(mode), me.id)
                 userTdyRank <- env.puzzleRushRankTodayApi.userRank(PuzzleRushMode.Mode(mode), date, me.id)
+                userRank <- env.puzzleRushRankSeasonApi.userRank(PuzzleRushMode.Mode(mode), season, me.id)
                 rankList <- env.puzzleRushRankSeasonApi.rankList(PuzzleRushMode.Mode(mode), season)
               } yield {
-                Ok(countryRankJson(
+                Ok(rankJson(
+                  me,
                   userHisRank,
                   userTdyRank,
+                  userRank,
                   rankList.map(r => (r.userId, r.win))
                 )) as JSON
               }
@@ -215,8 +220,10 @@ object PuzzleRush extends LilaController {
                 userTdyRank <- env.puzzleRushRankTodayApi.userRank(PuzzleRushMode.Mode(mode), date, me.id)
                 rankList <- env.puzzleRushRankTodayApi.rankList(PuzzleRushMode.Mode(mode), date)
               } yield {
-                Ok(countryRankJson(
+                Ok(rankJson(
+                  me,
                   userHisRank,
+                  userTdyRank,
                   userTdyRank,
                   rankList.map(r => (r.userId, r.win))
                 )) as JSON
@@ -231,11 +238,13 @@ object PuzzleRush extends LilaController {
                 userHisRank <- env.puzzleRushRankHistoryApi.userRank(PuzzleRushMode.Mode(mode), me.id)
                 userTdyRank <- env.puzzleRushRankTodayApi.userRank(PuzzleRushMode.Mode(mode), date, me.id)
                 userList <- UserRepo.userIdsSameLevel(me.profileOrDefault.currentLevel.level)
-                rankList <- env.puzzleRushRankHistoryApi.rankList(PuzzleRushMode.Mode(mode), userList.filter(_ != me.id).some)
+                rankList <- env.puzzleRushRankHistoryApi.rankList(PuzzleRushMode.Mode(mode), userList.some)
               } yield {
-                Ok(countryRankJson(
+                Ok(rankJson(
+                  me,
                   userHisRank,
                   userTdyRank,
+                  userHisRank,
                   rankList.map(r => (r.userId, r.win))
                 )) as JSON
               }
@@ -247,11 +256,14 @@ object PuzzleRush extends LilaController {
                 userHisRank <- env.puzzleRushRankHistoryApi.userRank(PuzzleRushMode.Mode(mode), me.id)
                 userTdyRank <- env.puzzleRushRankTodayApi.userRank(PuzzleRushMode.Mode(mode), date, me.id)
                 userList <- UserRepo.userIdsSameLevel(me.profileOrDefault.currentLevel.level)
-                rankList <- env.puzzleRushRankSeasonApi.rankList(PuzzleRushMode.Mode(mode), season, userList.filter(_ != me.id).some)
+                userRank <- env.puzzleRushRankSeasonApi.userRank(PuzzleRushMode.Mode(mode), season, me.id)
+                rankList <- env.puzzleRushRankSeasonApi.rankList(PuzzleRushMode.Mode(mode), season, userList.some)
               } yield {
-                Ok(countryRankJson(
+                Ok(rankJson(
+                  me,
                   userHisRank,
                   userTdyRank,
+                  userRank,
                   rankList.map(r => (r.userId, r.win))
                 )) as JSON
               }
@@ -261,10 +273,12 @@ object PuzzleRush extends LilaController {
                 userHisRank <- env.puzzleRushRankHistoryApi.userRank(PuzzleRushMode.Mode(mode), me.id)
                 userTdyRank <- env.puzzleRushRankTodayApi.userRank(PuzzleRushMode.Mode(mode), date, me.id)
                 userList <- UserRepo.userIdsSameLevel(me.id)
-                rankList <- env.puzzleRushRankTodayApi.rankList(PuzzleRushMode.Mode(mode), date, userList.filter(_ != me.id).some)
+                rankList <- env.puzzleRushRankTodayApi.rankList(PuzzleRushMode.Mode(mode), date, userList.some)
               } yield {
-                Ok(countryRankJson(
+                Ok(rankJson(
+                  me,
                   userHisRank,
+                  userTdyRank,
                   userTdyRank,
                   rankList.map(r => (r.userId, r.win))
                 )) as JSON
@@ -279,11 +293,13 @@ object PuzzleRush extends LilaController {
                 userHisRank <- env.puzzleRushRankHistoryApi.userRank(PuzzleRushMode.Mode(mode), me.id)
                 userTdyRank <- env.puzzleRushRankTodayApi.userRank(PuzzleRushMode.Mode(mode), date, me.id)
                 userSet <- Env.relation.api.fetchFollowing(me.id)
-                rankList <- env.puzzleRushRankHistoryApi.rankList(PuzzleRushMode.Mode(mode), userSet.toList.some)
+                rankList <- env.puzzleRushRankHistoryApi.rankList(PuzzleRushMode.Mode(mode), (userSet.toList :+ me.id).some)
               } yield {
-                Ok(countryRankJson(
+                Ok(rankJson(
+                  me,
                   userHisRank,
                   userTdyRank,
+                  userHisRank,
                   rankList.map(r => (r.userId, r.win))
                 )) as JSON
               }
@@ -295,11 +311,14 @@ object PuzzleRush extends LilaController {
                 userHisRank <- env.puzzleRushRankHistoryApi.userRank(PuzzleRushMode.Mode(mode), me.id)
                 userTdyRank <- env.puzzleRushRankTodayApi.userRank(PuzzleRushMode.Mode(mode), date, me.id)
                 userSet <- Env.relation.api.fetchFollowing(me.id)
-                rankList <- env.puzzleRushRankSeasonApi.rankList(PuzzleRushMode.Mode(mode), season, userSet.toList.some)
+                userRank <- env.puzzleRushRankSeasonApi.userRank(PuzzleRushMode.Mode(mode), season, me.id)
+                rankList <- env.puzzleRushRankSeasonApi.rankList(PuzzleRushMode.Mode(mode), season, (userSet.toList :+ me.id).some)
               } yield {
-                Ok(countryRankJson(
+                Ok(rankJson(
+                  me,
                   userHisRank,
                   userTdyRank,
+                  userRank,
                   rankList.map(r => (r.userId, r.win))
                 )) as JSON
               }
@@ -309,10 +328,12 @@ object PuzzleRush extends LilaController {
                 userHisRank <- env.puzzleRushRankHistoryApi.userRank(PuzzleRushMode.Mode(mode), me.id)
                 userTdyRank <- env.puzzleRushRankTodayApi.userRank(PuzzleRushMode.Mode(mode), date, me.id)
                 userSet <- Env.relation.api.fetchFollowing(me.id)
-                rankList <- env.puzzleRushRankTodayApi.rankList(PuzzleRushMode.Mode(mode), date, userSet.toList.some)
+                rankList <- env.puzzleRushRankTodayApi.rankList(PuzzleRushMode.Mode(mode), date, (userSet.toList :+ me.id).some)
               } yield {
-                Ok(countryRankJson(
+                Ok(rankJson(
+                  me,
                   userHisRank,
+                  userTdyRank,
                   userTdyRank,
                   rankList.map(r => (r.userId, r.win))
                 )) as JSON
@@ -438,7 +459,7 @@ object PuzzleRush extends LilaController {
       )
     }
 
-  private def countryRankJson(userHisRank: (Int, Int), userTdyRank: (Int, Int), rankList: List[(lila.user.User.ID, Int)]) = {
+  private def rankJson(user: lila.user.User, userHisRank: (Int, Int), userTdyRank: (Int, Int), userRank: (Int, Int), rankList: List[(lila.user.User.ID, Int)]) = {
     Json.obj(
       "userHisRank" -> Json.obj(
         "no" -> userHisRank._1,
@@ -447,6 +468,11 @@ object PuzzleRush extends LilaController {
       "userTdyRank" -> Json.obj(
         "no" -> userTdyRank._1,
         "score" -> userTdyRank._2
+      ),
+      "userRank" -> Json.obj(
+        "no" -> userRank._1,
+        "user" -> env.userJsonView.user(user.id),
+        "score" -> userRank._2
       ),
       "rankList" -> rankList.zipWithIndex.map {
         case (rank, no) => Json.obj(

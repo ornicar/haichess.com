@@ -94,6 +94,14 @@
           }
         }
       }
+
+      tr.mine {
+        td {
+          border-top: $border-width $border-style $c-accent;
+          border-bottom: $border-width $border-style $c-accent;
+        }
+      }
+
       tr:nth-child(even) {
         background: $c-bg-zebra;
       }

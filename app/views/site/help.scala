@@ -110,6 +110,7 @@ object help {
                 <li>电话：18001162691</li>
                 <li>邮箱：haichess@163.com</li>
                 <li>QQ：151448702</li>
+                <li>客服：<a href="inbox/new?user=Haichess客服">Haichess客服</a></li>
             </ul>
         """
         ))
@@ -600,20 +601,21 @@ object help {
       ))
   }
 
-  def source(doc: io.prismic.Document, resolver: io.prismic.DocumentLinkResolver)(implicit ctx: Context) = {
-    val title = ~doc.getText("doc.title")
+  def source()(implicit ctx: Context) = {
     layout(
-      title = title,
+      title = "源代码",
       active = "source",
-      moreCss = frag(cssTag("source")),
-      contentCls = "page"
+      contentCls = "page box box-pad",
+      moreCss = cssTag("page")
     )(frag(
-        div(cls := "box box-pad body")(
-          h1(title),
-          raw(~doc.getHtml("doc.content", resolver))
-        ),
-        br,
-        div(cls := "box")(freeJs())
+        h1(cls := "page-title")("源代码"),
+        div(cls := "body")(raw(
+          """
+          <p>我们的网站基于知名开源网站<a href="https://lichess.org">Lichess</a>开发，遵守并使用与Lichess相同的开源协议，开放全部代码，您可以在<a href="https://gitee.com/baidaye/lila">这里</a>找到我们的代码，并可以在协议允许下进行下载、阅读、修改或使用。</p>
+          <br/>
+          <p>关于整个代码库的结构，请参考lichess，您可以点击以下链接详细了解<a href="https://lichess.org/source">源代码</a></p>
+        """
+        ))
       ))
   }
 
@@ -735,6 +737,7 @@ object help {
         a(activeCls("database"), href := "https://database.lichess.org")(trans.database(), external),
         a(activeCls("api"), href := routes.Api.index)("API", external),
         sep,*/
+        a(activeCls("source"), href := routes.Page.source)("源代码"),
         a(activeCls("lag"), href := routes.Main.lag)("延迟?")
       ),
       div(cls := s"page-menu__content $contentCls")(body)

@@ -33,12 +33,14 @@ play {
   }
   http {
     session {
+
       cookieName = "haichess-cookie"
       maxAge = 365 days
     }
     parser.maxMemoryBuffer=1MB
   }
   ws {
+
     useragent = "haichess.org"
     compressionEnabled = true
     timeout {
@@ -50,6 +52,7 @@ play {
   crypto {
     secret=""
   }
+
   akka.actor-system = "haichess"
 }
 app {
@@ -103,6 +106,7 @@ accessibility {
   }
 }
 prismic {
+
   api_url = "http://localhost/prismic/api"
 }
 blog {
@@ -141,6 +145,7 @@ puzzle {
     rush_rank_today = puzzle_rush_rank_today
     rush_rank_history = puzzle_rush_rank_history
     rush_rank_season = puzzle_rush_rank_season
+	puzzle_theme_record = puzzle_theme_record
   }
   api.token = ${api.token}
   selector {
@@ -187,6 +192,7 @@ team {
     request = team_request
     invite = team_invite
     tag = team_tag
+	rating = team_rating
     image = ${mongodb.image.collection}
   }
   paginator.max_per_page = 15
@@ -498,6 +504,7 @@ contest {
     timeout = 10 minutes
   }
   net.base_url = ${net.base_url}
+  actor.name = contest
 }
 offlineContest {
   collection {
@@ -783,6 +790,7 @@ hub {
     mod = ${mod.actor.name}
     chat = ${chat.actor.name}
     notify = ${notify.actor.name}
+	contest = ${contest.actor.name}
   }
 }
 

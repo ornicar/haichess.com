@@ -2,8 +2,8 @@ package lila.puzzle
 
 import lila.db.dsl._
 import lila.user.User
+import org.joda.time.DateTime
 import scala.concurrent.duration._
-import reactivemongo.api.ReadPreference
 
 private[puzzle] final class PuzzleRushRankSeasonApi(
     puzzleRushRankSeasonColl: Coll,
@@ -30,6 +30,30 @@ private[puzzle] final class PuzzleRushRankSeasonApi(
       PuzzleRushRankSeason.make(rush),
       upsert = true
     ).void
+
+  def userRank(mode: PuzzleRush.Mode, season: Int, userId: User.ID) =
+    puzzleRushRankSeasonColl.byId(id(mode, season, userId)) flatMap { rank =>
+      rank.fold(fuccess(-1, -1)) { r =>
+        userRankNo(mode, season, r.updateTime, r.win).map { no =>
+          ((no + 1), r.win)
+        }
+      }
+    }
+
+  def userRankNo(mode: PuzzleRush.Mode, season: Int, updateTime: DateTime, win: Int): Fu[Int] = puzzleRushRankSeasonColl.countSel(
+    $doc(
+      "mode" -> mode.id,
+      "season" -> season,
+      "win" $gt win
+    )
+  ) zip puzzleRushRankSeasonColl.countSel(
+      $doc(
+        "mode" -> mode.id,
+        "season" -> season,
+        "win" -> win,
+        "updateTime" $gt updateTime
+      )
+    ) map (gtAndEq => gtAndEq._1 + gtAndEq._2)
 
   def rankList(mode: PuzzleRush.Mode, season: Int, userIds: Option[List[User.ID]] = None): Fu[List[PuzzleRushRankSeason]] =
     puzzleRushRankSeasonColl.find(
