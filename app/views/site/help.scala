@@ -611,7 +611,7 @@ object help {
         h1(cls := "page-title")("源代码"),
         div(cls := "body")(raw(
           """
-          <p>我们的网站基于知名开源网站<a href="https://lichess.org">Lichess</a>开发，遵守并使用与Lichess相同的开源协议，开放全部代码，您可以在<a href="https://gitee.com/baidaye/lila">这里</a>找到我们的代码，并可以在协议允许下进行下载、阅读、修改或使用。</p>
+          <p>我们的网站基于知名开源网站Lichess开发，遵守并使用与Lichess相同的开源协议，开放全部代码，您可以在<a href="https://gitee.com/baidaye/lila">这里</a>找到我们的代码，并可以在协议允许下进行下载、阅读、修改或使用。</p>
           <br/>
           <p>关于整个代码库的结构，请参考lichess，您可以点击以下链接详细了解<a href="https://lichess.org/source">源代码</a></p>
         """

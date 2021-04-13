@@ -26,26 +26,30 @@ private[puzzle] final class PuzzleRushRankHistoryApi(puzzleRushRankHistoryColl: 
       upsert = true
     ).void
 
-  def userRank(mode: PuzzleRush.Mode, userId: User.ID) =
+  def userRank(mode: PuzzleRush.Mode, userId: User.ID, userIds: Option[List[User.ID]] = None) =
     puzzleRushRankHistoryColl.byId(id(mode, userId)) flatMap { rank =>
       rank.fold(fuccess(-1, -1)) { r =>
-        userRankNo(mode, r.updateTime, r.win).map { no =>
+        userRankNo(mode, r.updateTime, r.win, userIds).map { no =>
           ((no + 1), r.win)
         }
       }
     }
 
-  def userRankNo(mode: PuzzleRush.Mode, updateTime: DateTime, win: Int): Fu[Int] = puzzleRushRankHistoryColl.countSel(
+  def userRankNo(mode: PuzzleRush.Mode, updateTime: DateTime, win: Int, userIds: Option[List[User.ID]] = None): Fu[Int] = puzzleRushRankHistoryColl.countSel(
     $doc(
       "mode" -> mode.id,
       "win" $gt win
-    )
+    ) ++ userIds.?? { uids =>
+        $doc("userId" -> $in(uids: _*))
+      }
   ) zip puzzleRushRankHistoryColl.countSel(
       $doc(
         "mode" -> mode.id,
         "win" -> win,
         "updateTime" $gt updateTime
-      )
+      ) ++ userIds.?? { uids =>
+          $doc("userId" -> $in(uids: _*))
+        }
     ) map (gtAndEq => gtAndEq._1 + gtAndEq._2)
 
   def rankList(mode: PuzzleRush.Mode, userIds: Option[List[User.ID]] = None): Fu[List[PuzzleRushRankHistory]] =

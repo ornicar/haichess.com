@@ -126,25 +126,18 @@ function rankingContent(ctrl: Controller) {
       ])
     ]),
     h('div.list', [
-      ctrl.vm.rankLoading ? spinner() : h('div', [
-        (ctrl.vm.rankScope === 'personal' || !ctrl.vm.rankData.userRank || ctrl.vm.rankData.userRank.no <= 10) ? null : h('table', renderUserTable(ctrl)),
-        h('table', renderTable(ctrl))
-      ])
+      ctrl.vm.rankLoading ? spinner() : h('table', renderTable(ctrl))
     ])
   ])
 }
 
-function renderUserTable(ctrl: Controller) {
-  let rankData = ctrl.vm.rankData;
-  let rankList = rankData.userRank ? [rankData.userRank] : [];
-  return rankList.map(function (r) {
-    return renderTr(ctrl, r);
-  });
-}
 
 function renderTable(ctrl: Controller) {
   let rankData = ctrl.vm.rankData;
   let rankList = rankData.rankList ? rankData.rankList : [];
+  if(ctrl.vm.rankScope != 'personal' && ctrl.vm.rankData.userRank && ctrl.vm.rankData.userRank.no > 20) {
+    rankList.unshift(ctrl.vm.rankData.userRank);
+  }
   return rankList.map(function (r) {
     return renderTr(ctrl, r);
   });

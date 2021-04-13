@@ -19,35 +19,39 @@ private[puzzle] final class PuzzleRushRankTodayApi(puzzleRushRankTodayColl: Coll
     } else funit
   }
 
-  def create(rush: PuzzleRush) =
+  def create(rush: PuzzleRush): Funit =
     puzzleRushRankTodayColl.update(
       $id(PuzzleRushRankToday.makeId(rush)),
       PuzzleRushRankToday.make(rush),
       upsert = true
     ).void
 
-  def userRank(mode: PuzzleRush.Mode, date: Int, userId: User.ID) =
+  def userRank(mode: PuzzleRush.Mode, date: Int, userId: User.ID, userIds: Option[List[User.ID]] = None) =
     puzzleRushRankTodayColl.byId(id(mode, date, userId)) flatMap { rank =>
       rank.fold(fuccess(-1, -1)) { r =>
-        userRankNo(mode, date, r.updateTime, r.win).map { no =>
+        userRankNo(mode, date, r.updateTime, r.win, userIds).map { no =>
           ((no + 1), r.win)
         }
       }
     }
 
-  def userRankNo(mode: PuzzleRush.Mode, date: Int, updateTime: DateTime, win: Int): Fu[Int] = puzzleRushRankTodayColl.countSel(
+  def userRankNo(mode: PuzzleRush.Mode, date: Int, updateTime: DateTime, win: Int, userIds: Option[List[User.ID]] = None): Fu[Int] = puzzleRushRankTodayColl.countSel(
     $doc(
       "mode" -> mode.id,
       "date" -> date,
       "win" $gt win
-    )
+    ) ++ userIds.?? { uids =>
+        $doc("userId" -> $in(uids: _*))
+      }
   ) zip puzzleRushRankTodayColl.countSel(
       $doc(
         "mode" -> mode.id,
         "date" -> date,
         "win" -> win,
         "updateTime" $gt updateTime
-      )
+      ) ++ userIds.?? { uids =>
+          $doc("userId" -> $in(uids: _*))
+        }
     ) map (gtAndEq => gtAndEq._1 + gtAndEq._2)
 
   def rankList(mode: PuzzleRush.Mode, date: Int, userIds: Option[List[User.ID]] = None): Fu[List[PuzzleRushRankHistory]] =

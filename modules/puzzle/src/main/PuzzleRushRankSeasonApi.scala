@@ -31,28 +31,32 @@ private[puzzle] final class PuzzleRushRankSeasonApi(
       upsert = true
     ).void
 
-  def userRank(mode: PuzzleRush.Mode, season: Int, userId: User.ID) =
+  def userRank(mode: PuzzleRush.Mode, season: Int, userId: User.ID, userIds: Option[List[User.ID]] = None) =
     puzzleRushRankSeasonColl.byId(id(mode, season, userId)) flatMap { rank =>
       rank.fold(fuccess(-1, -1)) { r =>
-        userRankNo(mode, season, r.updateTime, r.win).map { no =>
+        userRankNo(mode, season, r.updateTime, r.win, userIds).map { no =>
           ((no + 1), r.win)
         }
       }
     }
 
-  def userRankNo(mode: PuzzleRush.Mode, season: Int, updateTime: DateTime, win: Int): Fu[Int] = puzzleRushRankSeasonColl.countSel(
+  def userRankNo(mode: PuzzleRush.Mode, season: Int, updateTime: DateTime, win: Int, userIds: Option[List[User.ID]] = None): Fu[Int] = puzzleRushRankSeasonColl.countSel(
     $doc(
       "mode" -> mode.id,
       "season" -> season,
       "win" $gt win
-    )
+    ) ++ userIds.?? { uids =>
+        $doc("userId" -> $in(uids: _*))
+      }
   ) zip puzzleRushRankSeasonColl.countSel(
       $doc(
         "mode" -> mode.id,
         "season" -> season,
         "win" -> win,
         "updateTime" $gt updateTime
-      )
+      ) ++ userIds.?? { uids =>
+          $doc("userId" -> $in(uids: _*))
+        }
     ) map (gtAndEq => gtAndEq._1 + gtAndEq._2)
 
   def rankList(mode: PuzzleRush.Mode, season: Int, userIds: Option[List[User.ID]] = None): Fu[List[PuzzleRushRankSeason]] =
